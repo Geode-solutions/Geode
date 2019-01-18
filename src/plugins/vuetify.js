@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
-import 'vuetify/src/stylus/app.styl'
-import colors from 'vuetify/es5/util/colors'
+import Vue from "vue";
+import Vuetify from "vuetify/lib";
+import "vuetify/src/stylus/app.styl";
+import colors from "vuetify/es5/util/colors";
 
 Vue.use(Vuetify, {
   theme: {
@@ -13,5 +13,5 @@ Vue.use(Vuetify, {
     error: colors.deepOrange.accent4,
     success: colors.green.accent3
   },
-  iconfont: 'md',
-})
+  iconfont: "md"
+});
