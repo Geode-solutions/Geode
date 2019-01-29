@@ -25,7 +25,7 @@
     "@vue/cli-service": "^3.3.1",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.1",
-    "electron": "^4.0.1",
+    "electron": "^4.0.2",
     "eslint": "^5.12.1",
     "eslint-plugin-vue": "^5.1.0",
     "kw-web-suite": "^8.0.0",
