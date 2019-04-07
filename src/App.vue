@@ -4,22 +4,16 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> |
       <input id="fileInput" type="file" style="display:none;" />
-        <v-btn
-          flat
-          @click.native="openFile"
-        >
-            <v-icon>publish</v-icon>
-            <span>LOAD</span>
-        </v-btn>
-        <v-btn
-          flat
-          @click.native="toto"
-        >
-            <v-icon>publish</v-icon>
-            <span>Test</span>
-        </v-btn>
+      <v-btn flat @click.native="openFile">
+        <v-icon>publish</v-icon>
+        <span>LOAD</span>
+      </v-btn>
+      <v-btn flat @click.native="toto">
+        <v-icon>publish</v-icon>
+        <span>Test</span>
+      </v-btn>
     </div>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -30,10 +24,11 @@ export default {
   name: "App",
   methods: {
     load_plugin(plugin) {
+      var path = require('path');
       //require('app-module-path').addPath(this.ringmeshPath + '/node')
       //return eval(`require('${plugin}')`)
       return __non_webpack_require__(
-        "/home/camaud/programming/OpenGeode_node/build/lib/" + plugin
+        path.normalize("D:\\Programming\\OpenGeode_node\\build\\bin\\Release\\" + plugin)
       );
     },
     toto() {
@@ -66,17 +61,17 @@ export default {
 
       const myRepresentations = proxyManager
         .getRepresentations()
-        .filter((r) => r.getInput() === source);
+        .filter(r => r.getInput() === source);
       console.log(proxyManager.getRepresentations());
       console.log(myRepresentations);
-      myRepresentations[0].setRepresentation( "Surface with edges" );
-      myRepresentations[0].setPointSize( 10 );
-      myRepresentations[0].setVisibility( true );
-      myRepresentations[0].setColor( 1,0,0 );
+      myRepresentations[0].setRepresentation("Surface with edges");
+      myRepresentations[0].setPointSize(10);
+      myRepresentations[0].setVisibility(true);
+      myRepresentations[0].setColor(1, 0, 0);
       proxyManager.renderAllViews();
     },
     openFile() {
-      const geomodelCore = this.load_plugin("basic");
+      //const geomodelCore = this.load_plugin("basic");
       console.log("======");
       var input = document.getElementById("fileInput");
       //    const mesh = requireFunc('/home/camaud/programming/georep/build/Debug/georep/node/georep/basi.node')
@@ -84,6 +79,7 @@ export default {
       input.click();
       input.onchange = function() {
         console.log(document.getElementById("fileInput").files[0]);
+        const basic = require('bindings')(document.getElementById("fileInput").files[0].path);
       };
     }
   }

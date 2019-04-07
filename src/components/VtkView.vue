@@ -1,17 +1,14 @@
 <template>
-<v-container fluid>
-  <v-layout column fill-height>
-    <v-flex
-      fill-height
-      class="vtkView js-view"
-      v-on:click="view.activate()"
-    />
-    <div
-      class="activeview"
-      v-if="proxyManager.getActiveView() === view"
-    />
-  </v-layout>
-</v-container>
+  <v-container fluid>
+    <v-layout column fill-height>
+      <v-flex
+        fill-height
+        class="vtkView js-view"
+        v-on:click="view.activate()"
+      />
+      <div class="activeview" v-if="proxyManager.getActiveView() === view" />
+    </v-layout>
+  </v-container>
 </template>
 
 <script>

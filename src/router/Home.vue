@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <vtk-view/>
+    <vtk-view />
   </div>
 </template>
 
