@@ -79,7 +79,12 @@ export default {
       input.click();
       input.onchange = function() {
         console.log(document.getElementById("fileInput").files[0]);
-        const basic = require('bindings')(document.getElementById("fileInput").files[0].path);
+        const basic = require('bindings')(
+          {
+            module_root: "D:\\Programming\\OpenGeode_node",
+            bindings: document.getElementById("fileInput").files[0].name
+          });
+        console.log(basic);
       };
     }
   }
