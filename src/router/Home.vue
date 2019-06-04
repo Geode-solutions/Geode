@@ -5,7 +5,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
 import VtkView from "@/components/VtkView.vue";
 
 export default {
