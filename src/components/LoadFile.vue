@@ -49,13 +49,13 @@ export default {
       input.click();
     },
     load_file({ name, action }) {
-      console.log(this);
       let files = document.getElementById("Input" + name).files;
+      console.log(files);
       for (let i = 0; i < files.length; i++) {
         let file = files.item(i);
         this.$store.dispatch(action, file.path);
       }
-      this.dialog = false;      
+      this.dialog = false;
     }
   }
 };

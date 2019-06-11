@@ -9,42 +9,57 @@ import ui from "./ui";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+  strict: process.env.NODE_ENV !== "production",
   state: {
     proxyManager: vtkProxyManager.newInstance({
       proxyConfiguration: ProxyConfig
     }),
-    data: new Map()
+    tree: [],
+    data: new Map(),
+    count: 0,
+    value: []
   },
   getters: {
     view: state => {
       return viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE);
+    },
+    items: state => {
+      return state.tree.filter(item => item.children.length);
     }
   },
   mutations: {
-    load_module(state, path) {
-      console.log(path);
-      const module = __non_webpack_require__(path);
-      console.log(module);
-      console.log(state.data);
-      console.log(state.ui.input);
-      module(this);
-    },
     register_object_type(state, type) {
-      if (!state.data.has(type)) {
-        state.data.set(type, []);
+      if (!state.tree.filter(item => item.name === type).length) {
+        state.tree.push({ id: state.count++, name: type, children: [] });
       }
     },
-    add_object(state, {type,name,cpp,vtk}) {
+    register_object(state, { type, name, cpp, source }) {
+      let node = state.tree.find(item => {
+        return item.name === type;
+      });
+      let new_object = { id: state.count++, name, cpp, source };
+      node.children.push(new_object);
+      state.data.set(new_object.id, new_object);
+      this._vm.$emit("tutu");
+      state.value.push(new_object.id);
+    }
+  },
+  actions: {
+    load_module(context, path) {
+      console.log(context);
+      __non_webpack_require__(path)(this);
+    },
+    add_object({ state, commit }, { type, name, cpp, vtk }) {
       const proxyManager = state.proxyManager;
       const source = proxyManager.createProxy("Sources", "TrivialProducer");
       source.setInputData(vtk);
       source.activate();
       proxyManager.createRepresentationInAllViews(source);
       proxyManager.renderAllViews();
-      state.data.get(type).push( {name,cpp,source});
+      commit("register_object", { type, name, cpp, source });
+      return source;
     }
   },
-  actions: {},
   modules: {
     ui
   }

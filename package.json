@@ -23,12 +23,13 @@
     "vuex": "^3.1.1"
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.9.0",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
     "@vue/cli-service": "^3.8.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "babel-eslint": "^10.0.1",
-    "electron": "^4.2.2",
+    "electron": "^5.0.2",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
     "kw-web-suite": "^8.0.0",

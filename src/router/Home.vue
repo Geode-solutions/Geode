@@ -1,7 +1,5 @@
 <template>
-  <div class="home">
-    <vtk-view />
-  </div>
+  <vtk-view />
 </template>
 
 <script>

@@ -1,28 +1,20 @@
 <template>
-  <v-container fluid>
-    <v-layout column fill-height>
-      <v-flex
-        fill-height
-        class="vtkView js-view"
-        v-on:click="view.activate()"
-      />
-      <div class="activeview" v-if="proxyManager.getActiveView() === view" />
+  <v-container fluid pa-0 ma-0 fill-height>
+    <v-layout column>
+      <v-flex d-flex class="js-view" v-on:click="view.activate()" />
     </v-layout>
   </v-container>
 </template>
 
 <script>
+import { mapGetters, mapState } from "vuex";
 import viewHelper from "@/config/viewHelper";
 
 export default {
   name: "VtkView",
   computed: {
-    proxyManager() {
-      return this.$store.state.proxyManager;
-    },
-    view() {
-      return this.$store.getters["view"];
-    }
+    ...mapState(["proxyManager"]),
+    ...mapGetters(["view"])
   },
   mounted() {
     this.$nextTick(() => {
@@ -68,7 +60,6 @@ export default {
           }
         }).unsubscribe
       ];
-      this.initialSubscriptionLength = this.subscriptions.length;
 
       // Initial setup
       this.resizeCurrentView();
@@ -84,30 +75,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.container {
-  position: relative;
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
-.vtkView {
-  position: relative;
-  z-index: 0;
-  overflow: hidden;
-}
-.activeView {
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  width: 8px;
-  height: 8px;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 50%,
-    rgba(255, 255, 255, 0) 51%
-  );
-}
-</style>
