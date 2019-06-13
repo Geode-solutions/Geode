@@ -1,5 +1,12 @@
 <template>
-  <v-treeview v-model="tree" :items="items" selectable return-object>
+  <v-treeview
+    v-model="selected_tree"
+    :items="items"
+    :active.sync="active"
+    activatable
+    selectable
+    return-object
+  >
   </v-treeview>
 </template>
 
@@ -8,15 +15,24 @@ import { mapGetters, mapState } from "vuex";
 
 export default {
   data: () => ({
-    tree: []
+    selected_tree: []
   }),
   computed: {
     ...mapState(["proxyManager"]),
-    ...mapGetters(["items"]),
+    ...mapGetters({
+      items: "treeview/items"
+    }),
+    active: {
+      get() {
+        return this.$store.state.treeview.active;
+      },
+      set(value) {
+        this.$store.commit("treeview/update_active", value);
+      }
+    },
     selections() {
-      console.log("selections");
       const selections = [];
-      this.tree.forEach(node => {
+      this.selected_tree.forEach(node => {
         if (node.source) {
           selections.push(node);
         }

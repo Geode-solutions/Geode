@@ -44,16 +44,14 @@ export default {
   },
   methods: {
     show_input(name) {
-      let input = document.getElementById("Input" + name);
+      const input = document.getElementById("Input" + name);
       input.value = null;
       input.click();
     },
     load_file({ name, action }) {
-      let files = document.getElementById("Input" + name).files;
-      console.log(files);
+      const files = document.getElementById("Input" + name).files;
       for (let i = 0; i < files.length; i++) {
-        let file = files.item(i);
-        this.$store.dispatch(action, file.path);
+        this.$store.dispatch(action, files.item(i).path);
       }
       this.dialog = false;
     }

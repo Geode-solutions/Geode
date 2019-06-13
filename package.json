@@ -16,6 +16,7 @@
     "bindings": "^1.5.0",
     "material-design-icons-iconfont": "^5.0.1",
     "roboto-fontface": "*",
+    "uuid": "^3.3.2",
     "vtk.js": "^8.5.8",
     "vue": "^2.6.10",
     "vue-router": "^3.0.6",

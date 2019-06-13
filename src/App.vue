@@ -26,7 +26,7 @@ export default {
     ObjectTree
   },
   computed: {
-    ...mapState(["proxyManager"]),
+    ...mapState(["proxyManager"])
   },
   mounted() {
     this.$store.dispatch(
