@@ -11,7 +11,7 @@
     <v-layout column fill-height>
       <v-flex
         d-flex
-        style="z-index: 0"
+        style="z-index: 0; background: linear-gradient(#666, #999)"
         class="vtkView"
         @click="view.activate()"
       />

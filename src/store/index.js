@@ -14,24 +14,32 @@ export default new Vuex.Store({
   state: {
     proxyManager: vtkProxyManager.newInstance({
       proxyConfiguration: ProxyConfig
-    })
+    }),
+    data: []
   },
   getters: {
     view: state => viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE)
+  },
+  mutations: {
+    register_data(state, object) {
+      state.data.push(object);
+    }
   },
   actions: {
     load_module(context, path) {
       __non_webpack_require__(path)(this);
     },
-    register_object_type({ commit }, type) {
-      commit("treeview/register_object_type", type);
+    register_object_type({ dispatch }, type) {
+      dispatch("treeview/register_object_type", type);
     },
-    add_object({ state, commit }, { type, name, cpp, vtk }) {
+    add_object({ state, commit, dispatch }, { type, name, cpp, vtk }) {
       const proxyManager = state.proxyManager;
       const source = proxyManager.createProxy("Sources", "TrivialProducer");
       source.setInputData(vtk);
       source.activate();
-      commit("treeview/register_object", { type, name, cpp, source });
+      dispatch("treeview/register_object", { type, name, cpp, source }).then(
+        object => commit("register_data", object)
+      );
       proxyManager.createRepresentationInAllViews(source);
       proxyManager.renderAllViews();
       return source;

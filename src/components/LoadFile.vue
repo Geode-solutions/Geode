@@ -38,9 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-      inputs: state => state.ui.input
-    })
+    ...mapState("ui",["inputs"])
   },
   methods: {
     show_input(name) {

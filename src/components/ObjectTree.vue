@@ -5,7 +5,6 @@
     :active.sync="active"
     activatable
     selectable
-    return-object
   >
   </v-treeview>
 </template>
@@ -14,11 +13,8 @@
 import { mapGetters, mapState } from "vuex";
 
 export default {
-  data: () => ({
-    selected_tree: []
-  }),
   computed: {
-    ...mapState(["proxyManager"]),
+    ...mapState(["proxyManager", "data"]),
     ...mapGetters({
       items: "treeview/items"
     }),
@@ -30,10 +26,19 @@ export default {
         this.$store.commit("treeview/update_active", value);
       }
     },
+    selected_tree: {
+      get() {
+        return this.$store.state.treeview.selected_tree;
+      },
+      set(value) {
+        this.$store.commit("treeview/update_selected_tree", value);
+      }
+    },
     selections() {
       const selections = [];
-      this.selected_tree.forEach(node => {
-        if (node.source) {
+      this.selected_tree.forEach(id => {
+        const node = this.data.find(item => item.id === id);
+        if (node && node.source) {
           selections.push(node);
         }
       });

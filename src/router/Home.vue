@@ -6,7 +6,7 @@
 import VtkView from "@/components/VtkView.vue";
 
 export default {
-  name: "home",
+  name: "Home",
   components: {
     VtkView
   }
