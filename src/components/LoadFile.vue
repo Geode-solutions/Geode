@@ -38,7 +38,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("ui",["inputs"])
+    ...mapState("ui", ["inputs"])
   },
   methods: {
     show_input(name) {

@@ -1,4 +1,5 @@
 import { VIEW_ORIENTATIONS, ANNOTATIONS } from "./viewConstants";
+import vtkNorthActor from "./northActor";
 
 // ----------------------------------------------------------------------------
 
@@ -67,8 +68,9 @@ function getView(proxyManager, viewType) {
     // set background to transparent
     view.setBackground(0, 0, 0, 0);
 
-    // FIXME: Use storage to choose defaults
-    view.setPresetToOrientationAxes("default");
+    const north = vtkNorthActor.newInstance();
+    view.registerOrientationAxis("north", north);
+    view.setOrientationAxesType("north");
   }
 
   return view;
