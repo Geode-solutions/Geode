@@ -59,7 +59,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["proxyManager"]),
+    ...mapState(["proxyManager", "data"]),
     ...mapGetters({
       view: "view"
     })
@@ -104,10 +104,6 @@ export default {
               renderer
             );
             const pickedPoint = picker.getPickPosition();
-            const pickedPoint2 = picker.getPickedPositions();
-            console.log(pickedPoint);
-            console.log(pickedPoint2);
-
             renderer
               .getActiveCamera()
               .setFocalPoint(pickedPoint[0], pickedPoint[1], pickedPoint[2]);
@@ -128,6 +124,35 @@ export default {
 
             this.view.getOpenglRenderWindow().setCursor("pointer");
             this.centering = false;
+          });
+
+        this.view
+          .getRenderWindow()
+          .getInteractor()
+          .onRightButtonPress(callData => {
+            const renderer = this.view.getRenderer();
+            if (this.centering || renderer !== callData.pokedRenderer) {
+              return;
+            }
+            const picker = vtkPicker.newInstance();
+            picker.pick(
+              [callData.position.x, callData.position.y, 0.0],
+              renderer
+            );
+            picker.getActors().forEach(actor => {
+              const rep = this.proxyManager
+                .getRepresentations()
+                .filter(r => r.getActors()[0] === actor);
+              );
+              const sourceID = this.proxyManager.getReferenceByName(
+                "r2svMapping"
+              )[rep[0].getProxyId()].sourceId;
+              this.data.forEach(item => {
+                if (item.source.getProxyId() == sourceID) {
+                  console.log("FOUND ", item.name);
+                }
+              });
+            });
           });
       }
 
