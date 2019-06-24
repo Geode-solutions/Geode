@@ -13,6 +13,20 @@
           <v-icon>fas fa-compress-arrows-alt</v-icon>
         </v-btn>
       </v-tooltip>
+      <v-speed-dial direction="left">
+        <template v-slot:activator>
+          <v-tooltip left>
+            Clipping
+            <v-btn slot="activator" icon dark small>
+              <v-icon>fas fa-crop-alt</v-icon>
+            </v-btn>
+          </v-tooltip>
+        </template>
+        <v-btn fab dark small color="primary" @click="clipping = !clipping">
+          <v-icon v-if="clipping">fas fa-toggle-on</v-icon>
+          <v-icon v-else>fas fa-toggle-off</v-icon>
+        </v-btn>
+      </v-speed-dial>
     </v-layout>
     <v-layout column fill-height>
       <v-flex
@@ -31,6 +45,7 @@ import { mapGetters, mapState } from "vuex";
 import viewHelper from "@/config/viewHelper";
 import StatusBar from "./StatusBar.vue";
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
+import vtkImplicitPlaneWidget from "vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget";
 
 export default {
   name: "VtkView",
@@ -39,7 +54,8 @@ export default {
   },
   data() {
     return {
-      centering: false
+      centering: false,
+      clipping: false
     };
   },
   computed: {
@@ -48,10 +64,32 @@ export default {
       view: "view"
     })
   },
+  watch: {
+    clipping: function(value) {
+      const widgetManager = this.view.getReferenceByName("widgetManager");
+      if (value) {
+        widgetManager.enablePicking();
+        console.log(widgetManager.addWidget(this.clipper));
+      } else {
+        widgetManager.removeWidget(this.clipper);
+        widgetManager.disablePicking();
+      }
+      this.view.renderLater();
+    }
+  },
   mounted() {
     this.$nextTick(() => {
       if (this.view) {
         this.view.setContainer(this.$el.querySelector(".vtkView"));
+
+        const widgetManager = this.view.getReferenceByName("widgetManager");
+        widgetManager.setRenderer(this.view.getRenderer());
+        this.clipper = vtkImplicitPlaneWidget.newInstance();
+        this.clipper.getWidgetState().setNormal(0, 0, 1);
+        console.log(this.clipper);
+        console.log(widgetManager);
+        //widget.placeWidget(cone.getOutputData().getBounds());
+
         this.view
           .getRenderWindow()
           .getInteractor()
@@ -66,19 +104,27 @@ export default {
               renderer
             );
             const pickedPoint = picker.getPickPosition();
-            const camera = renderer.getActiveCamera();
-            camera.setFocalPoint(
-              pickedPoint[0],
-              pickedPoint[1],
-              pickedPoint[2]
-            );
-            camera.setPhysicalTranslation(
-              -pickedPoint[0],
-              -pickedPoint[1],
-              -pickedPoint[2]
-            );
-            this.view.getInteractorStyle2D().setCenterOfRotation(pickedPoint);
-            this.view.getInteractorStyle3D().setCenterOfRotation(pickedPoint);
+            const pickedPoint2 = picker.getPickedPositions();
+            console.log(pickedPoint);
+            console.log(pickedPoint2);
+
+            renderer
+              .getActiveCamera()
+              .setFocalPoint(pickedPoint[0], pickedPoint[1], pickedPoint[2]);
+            this.view
+              .getInteractorStyle2D()
+              .setCenterOfRotation(
+                pickedPoint[0],
+                pickedPoint[1],
+                pickedPoint[2]
+              );
+            this.view
+              .getInteractorStyle3D()
+              .setCenterOfRotation(
+                pickedPoint[0],
+                pickedPoint[1],
+                pickedPoint[2]
+              );
 
             this.view.getOpenglRenderWindow().setCursor("pointer");
             this.centering = false;

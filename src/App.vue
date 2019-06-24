@@ -3,7 +3,10 @@
     <v-navigation-drawer permanent app clipped>
       <object-tree></object-tree>
     </v-navigation-drawer>
-    <v-toolbar app clipped-left color="primary">
+    <v-toolbar dark app clipped-left color="primary">
+      <v-toolbar-side-icon>
+        <v-icon large>$vuetify.icons.logo</v-icon>
+      </v-toolbar-side-icon>
       <v-toolbar-title>Geode-solutions</v-toolbar-title>
       <v-spacer></v-spacer>
       <load-file></load-file>

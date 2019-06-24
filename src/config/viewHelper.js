@@ -1,5 +1,6 @@
 import { VIEW_ORIENTATIONS, ANNOTATIONS } from "./viewConstants";
 import vtkNorthActor from "./northActor";
+import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
 
 // ----------------------------------------------------------------------------
 
@@ -71,6 +72,12 @@ function getView(proxyManager, viewType) {
     const north = vtkNorthActor.newInstance();
     view.registerOrientationAxis("north", north);
     view.setOrientationAxesType("north");
+
+    if (!view.getReferenceByName("widgetManager")) {
+      const widgetManager = vtkWidgetManager.newInstance();
+      widgetManager.disablePicking();
+      view.set({ widgetManager }, true);
+    }
   }
 
   return view;

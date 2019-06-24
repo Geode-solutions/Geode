@@ -1,5 +1,4 @@
 import macro from "vtk.js/Sources/macro";
-import vtkMatrixBuilder from "vtk.js/Sources/Common/Core/MatrixBuilder";
 import vtkDataArray from "vtk.js/Sources/Common/Core/DataArray";
 import vtkActor from "vtk.js/Sources/Rendering/Core/Actor";
 import vtkMapper from "vtk.js/Sources/Rendering/Core/Mapper";
@@ -185,13 +184,14 @@ function vtkNorthActor(publicAPI, model) {
         })
       )
       .getOutputData();
-    addColor(cylinder, 3, 169, 244);
+    addColor(cylinder, 0, 150, 136);
 
+    const color = [224, 242, 241];
     const arrow = create_arrow();
-    addColor(arrow, 183, 28, 28);
+    addColor(arrow, ...color);
 
     const N = create_N();
-    addColor(N, 183, 28, 28);
+    addColor(N, ...color);
 
     const source = vtkAppendPolyData.newInstance();
     source.setInputData(cylinder);
