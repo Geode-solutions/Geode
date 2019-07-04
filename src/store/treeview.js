@@ -43,7 +43,8 @@ export default {
         id: uuidv4(),
         name,
         cpp,
-        source
+        source,
+        type
       };
       commit("add_children_tree", { type, value: new_object });
       commit("add_selected_tree", new_object.id);

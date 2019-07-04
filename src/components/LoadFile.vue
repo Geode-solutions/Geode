@@ -1,6 +1,6 @@
 <template>
   <v-dialog v-model="dialog" width="500">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn flat v-on="on">
         <v-icon>publish</v-icon>
         <span>LOAD</span>

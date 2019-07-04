@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import VtkView from "@/components/VtkView.vue";
+import VtkView from "@/components/view/VtkView";
 
 export default {
   name: "Home",

@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import LoadFile from "@/components/LoadFile.vue";
-import ObjectTree from "@/components/ObjectTree.vue";
+import LoadFile from "@/components/LoadFile";
+import ObjectTree from "@/components/ObjectTree";
 import vtkListenerHelper from "@/ListenerHelper";
 import { mapState } from "vuex";
 

@@ -3,7 +3,7 @@ import Vuetify from "vuetify/lib";
 import "vuetify/src/stylus/app.styl";
 import colors from "vuetify/es5/util/colors";
 import "@fortawesome/fontawesome-free/css/all.css";
-import Logo from "@/components/Logo.vue";
+import Logo from "@/components/Logo";
 
 Vue.use(Vuetify, {
   theme: {

@@ -6,11 +6,11 @@ import viewHelper from "@/config/viewHelper";
 import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
 import treeview from "./treeview";
 import ui from "./ui";
+import os from "os";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  strict: process.env.NODE_ENV !== "production",
   state: {
     proxyManager: vtkProxyManager.newInstance({
       proxyConfiguration: ProxyConfig
@@ -27,7 +27,7 @@ export default new Vuex.Store({
   },
   actions: {
     load_module(context, path) {
-      __non_webpack_require__(path)(this);
+      __non_webpack_require__(path)(this, os.platform());
     },
     register_object_type({ dispatch }, type) {
       dispatch("treeview/register_object_type", type);
