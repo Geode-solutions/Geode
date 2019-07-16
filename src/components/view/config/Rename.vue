@@ -23,7 +23,7 @@ export default {
   }),
   methods: {
     rename() {
-        this.item.name = this.newName;
+      this.item.name = this.newName;
     }
   }
 };

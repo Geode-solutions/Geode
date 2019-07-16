@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="display">
-      <div :class="[$style.disk, $style.outerDisk, 'ring']" :style="diskStyle">
+      <div :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']" :style="diskStyle">
         <v-tooltip v-for="(item, index) in contextualItems" :key="index" bottom>
           {{ item.tooltip }}
           <template #activator="{ on }">
@@ -14,7 +14,7 @@
                 width: btnSize + 'px',
                 height: btnSize + 'px'
               }"
-              @click="selectItem(item)"
+              @click="selectItem(item, index)"
               v-on="on"
             >
               <v-icon large>{{ item.icon }}</v-icon>
@@ -27,12 +27,16 @@
         :style="innerDiskStyle"
       ></div>
     </div>
-    <component
-      :is="selectedComponent"
-      v-if="displayComponent"
-      :visible.sync="displayComponent"
-      :item="selectedItem"
-    />
+
+    <template v-for="(item, index) in contextualItems">
+      <component
+        :is="item.component"
+        v-if="displayComponents[index]"
+        :key="index"
+        :visible.sync="displayComponents[index]"
+        :item="selectedItem"
+      />
+    </template>
   </div>
 </template>
 
@@ -67,8 +71,8 @@ export default {
         bottom: "",
         left: ""
       },
+      displayComponents: [],
       selectedItem: "",
-      selectedComponent: "",
       displayComponent: false
     };
   },
@@ -86,6 +90,17 @@ export default {
     },
     btnSize() {
       return (3 * this.ringWidth) / 4;
+    }
+  },
+  watch: {
+    contextualItems: function(value) {
+      const size = value.length;
+      while (this.displayComponents.length > size) {
+        this.displayComponents.pop();
+      }
+      while (this.displayComponents.length < size) {
+        this.displayComponents.push(false);
+      }
     }
   },
   mounted() {
@@ -167,16 +182,14 @@ export default {
     },
     closeRing() {
       this.display = false;
-      this.selectedComponent = "";
       document
         .querySelector("[data-app]")
         .removeEventListener("mousedown", this.onClickOutside, true);
     },
-    selectItem(item) {
+    selectItem(item, index) {
       console.log(item.component);
       this.closeRing();
-      this.displayComponent = true;
-      this.selectedComponent = item.component;
+      this.displayComponents[index] = true;
     }
   }
 };
