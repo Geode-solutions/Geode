@@ -1,7 +1,10 @@
 <template>
   <div>
     <div v-if="display">
-      <div :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']" :style="diskStyle">
+      <div
+        :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"
+        :style="diskStyle"
+      >
         <v-tooltip v-for="(item, index) in contextualItems" :key="index" bottom>
           {{ item.tooltip }}
           <template #activator="{ on }">

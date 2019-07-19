@@ -35,6 +35,7 @@ export default {
     })
   },
   mounted() {
+    console.log("MOUNT VTK");
     this.$nextTick(() => {
       if (this.view) {
         this.view.setContainer(this.$refs.vtkView);

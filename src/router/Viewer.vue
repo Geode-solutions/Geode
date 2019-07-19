@@ -6,9 +6,12 @@
 import VtkView from "@/components/view/VtkView";
 
 export default {
-  name: "Home",
+  name: "Viewer",
   components: {
     VtkView
+  },
+  mounted() {
+    console.log("MOUNTED VIEWER");
   }
 };
 </script>

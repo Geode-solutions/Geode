@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <v-navigation-drawer permanent app clipped>
-      <object-tree></object-tree>
+      <route-selector />
+      <object-tree />
     </v-navigation-drawer>
     <v-toolbar dark app clipped-left color="primary">
       <v-toolbar-side-icon>
@@ -19,6 +20,7 @@
 
 <script>
 import LoadFile from "@/components/LoadFile";
+import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
 import vtkListenerHelper from "@/ListenerHelper";
 import { mapState } from "vuex";
@@ -26,6 +28,7 @@ import { mapState } from "vuex";
 export default {
   components: {
     LoadFile,
+    RouteSelector,
     ObjectTree
   },
   computed: {
