@@ -14,15 +14,15 @@
         primary-title
         @mousedown="dragMouseDown"
       >
-        <slot name="title"></slot>
+        <slot name="title" />
       </v-card-title>
       <v-card-text>
         <v-form ref="form">
-          <slot></slot>
+          <slot />
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-tooltip v-for="(button, index) in buttons" :key="index" top>
           {{ button.tooltip }}
           <template #activator="{ on }">
@@ -50,32 +50,30 @@ export default {
       type: Boolean
     }
   },
-  data() {
-    return {
-      buttons: [
-        {
-          tooltip: "Apply",
-          icon: "fas fa-check",
-          color: "primary",
-          action: this.apply
-        },
-        {
-          tooltip: "Apply & Close",
-          icon: "fas fa-check-double",
-          color: "primary",
-          action: this.applyClose
-        },
-        {
-          tooltip: "Close",
-          icon: "fas fa-times",
-          color: "accent",
-          action: this.close
-        }
-      ],
-      initX: "",
-      initY: ""
-    };
-  },
+  data: () => ({
+    buttons: [
+      {
+        tooltip: "Apply",
+        icon: "fas fa-check",
+        color: "primary",
+        action: this.apply
+      },
+      {
+        tooltip: "Apply & Close",
+        icon: "fas fa-check-double",
+        color: "primary",
+        action: this.applyClose
+      },
+      {
+        tooltip: "Close",
+        icon: "fas fa-times",
+        color: "accent",
+        action: this.close
+      }
+    ],
+    initX: "",
+    initY: ""
+  }),
   computed: {
     dialog: {
       get() {

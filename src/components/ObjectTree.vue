@@ -5,8 +5,7 @@
     :active.sync="active"
     activatable
     selectable
-  >
-  </v-treeview>
+  />
 </template>
 
 <script>

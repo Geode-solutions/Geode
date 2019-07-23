@@ -20,15 +20,14 @@
               @click="selectItem(item, index)"
               v-on="on"
             >
-              <v-icon large>{{ item.icon }}</v-icon>
+              <v-icon large>
+                {{ item.icon }}
+              </v-icon>
             </v-btn>
           </template>
         </v-tooltip>
       </div>
-      <div
-        :class="[$style.disk, $style.innerDisk]"
-        :style="innerDiskStyle"
-      ></div>
+      <div :class="[$style.disk, $style.innerDisk]" :style="innerDiskStyle" />
     </div>
 
     <template v-for="(item, index) in contextualItems">
@@ -55,30 +54,28 @@ export default {
       type: Object
     }
   },
-  data() {
-    return {
-      display: false,
-      width: 300,
-      ringWidth: 80,
-      diskStyle: {
-        width: "",
-        height: "",
-        borderWidth: "",
-        bottom: "",
-        left: ""
-      },
-      innerDiskStyle: {
-        width: "",
-        height: "",
-        borderWidth: "",
-        bottom: "",
-        left: ""
-      },
-      displayComponents: [],
-      selectedItem: "",
-      displayComponent: false
-    };
-  },
+  data: () => ({
+    display: false,
+    width: 300,
+    ringWidth: 80,
+    diskStyle: {
+      width: "",
+      height: "",
+      borderWidth: "",
+      bottom: "",
+      left: ""
+    },
+    innerDiskStyle: {
+      width: "",
+      height: "",
+      borderWidth: "",
+      bottom: "",
+      left: ""
+    },
+    displayComponents: [],
+    selectedItem: "",
+    displayComponent: false
+  }),
   computed: {
     ...mapState(["proxyManager", "data"]),
     ...mapState("ui", ["contextualItems"]),

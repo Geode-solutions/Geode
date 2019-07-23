@@ -22,8 +22,12 @@
         </v-tooltip>
       </template>
       <v-btn fab dark small color="primary" @click="clipping = !clipping">
-        <v-icon v-if="clipping">fas fa-toggle-on</v-icon>
-        <v-icon v-else>fas fa-toggle-off</v-icon>
+        <v-icon v-if="clipping">
+          fas fa-toggle-on
+        </v-icon>
+        <v-icon v-else>
+          fas fa-toggle-off
+        </v-icon>
       </v-btn>
     </v-speed-dial>
   </v-layout>
@@ -41,12 +45,10 @@ export default {
       type: Object
     }
   },
-  data() {
-    return {
-      centering: false,
-      clipping: false
-    };
-  },
+  data: () => ({
+    centering: false,
+    clipping: false
+  }),
   watch: {
     clipping: function(value) {
       const widgetManager = this.view.getReferenceByName("widgetManager");

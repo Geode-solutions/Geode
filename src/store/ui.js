@@ -20,17 +20,25 @@ export default {
     inputs: [],
     contextualItems: initialContextualItems()
   },
+  getters: {
+    filteredInputs: state => id => {
+      return state.inputs.filter(input => input.parent === id);
+    }
+  },
   mutations: {
-    register_input(state, { name, action }) {
-      state.inputs.push({
-        name: name,
-        action: action
-      });
-    },
     registerContextualItem(state, { type, icon, tooltip, component }) {
       state.contextualItems.push(
         createContextualItem(type, icon, tooltip, component)
       );
+    },
+    registerInputItem(state, { parent, name, action, icon, tooltip }) {
+      state.inputs.push({
+        parent,
+        name,
+        icon,
+        tooltip,
+        action
+      });
     }
   }
 };

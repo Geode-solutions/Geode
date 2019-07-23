@@ -6,7 +6,7 @@
     class="secondary"
   >
     <v-tooltip v-for="item in items" :key="item.tooltip" bottom>
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn
           dark
           class="grey--text"
@@ -26,13 +26,11 @@
 <script>
 export default {
   name: "RouteSelector",
-  data() {
-    return {
-      items: [
-        { tooltip: "Data manager", icon: "fas fa-database", route: "about" },
-        { tooltip: "Viewer", icon: "fas fa-video", route: "viewer" }
-      ]
-    };
-  }
+  data: () => ({
+    items: [
+      { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
+      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" }
+    ]
+  })
 };
 </script>

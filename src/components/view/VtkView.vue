@@ -8,7 +8,6 @@
         style="z-index: 0; background: linear-gradient(#666, #999)"
         @click="view.activate()"
       />
-      <status-bar />
     </v-layout>
     <contextual-menu :view="view" />
   </v-container>
@@ -17,7 +16,6 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import viewHelper from "@/config/viewHelper";
-import StatusBar from "./StatusBar";
 import ContextualMenu from "./ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
 
@@ -25,7 +23,6 @@ export default {
   name: "VtkView",
   components: {
     ContextualMenu,
-    StatusBar,
     ViewToolbar
   },
   computed: {
@@ -35,7 +32,6 @@ export default {
     })
   },
   mounted() {
-    console.log("MOUNT VTK");
     this.$nextTick(() => {
       if (this.view) {
         this.view.setContainer(this.$refs.vtkView);
