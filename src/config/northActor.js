@@ -6,7 +6,7 @@ import vtkCylinderSource from "vtk.js/Sources/Filters/Sources/CylinderSource";
 import vtkAppendPolyData from "vtk.js/Sources/Filters/General/AppendPolyData";
 import vtkPolyData from "vtk.js/Sources/Common/DataModel/PolyData";
 
-const cylinder_height = 0.2;
+const cylinderHeight = 0.2;
 
 function addColor(ds, r, g, b) {
   const size = ds.getPoints().getData().length;
@@ -28,13 +28,13 @@ function addColor(ds, r, g, b) {
   );
 }
 
-function create_arrow() {
-  const nb_vertices = 4;
-  const points = new Float32Array(3 * 2 * nb_vertices);
+function createArrow() {
+  const nbVertices = 4;
+  const points = new Float32Array(3 * 2 * nbVertices);
   let count = 0;
 
-  function one_side_points(side) {
-    const z = side * cylinder_height;
+  function oneSidePoints(side) {
+    const z = side * cylinderHeight;
     points[count++] = 0;
     points[count++] = 0.8;
     points[count++] = z;
@@ -48,8 +48,8 @@ function create_arrow() {
     points[count++] = 0;
     points[count++] = z;
   }
-  one_side_points(1);
-  one_side_points(-1);
+  oneSidePoints(1);
+  oneSidePoints(-1);
 
   const polygons = new Uint32Array(30);
   count = 0;
@@ -65,26 +65,26 @@ function create_arrow() {
   polygons[count++] = 6;
   polygons[count++] = 7;
 
-  function arrow_side(p0, p1) {
+  function arrowSide(p0, p1) {
     polygons[count++] = 4;
     polygons[count++] = p0;
     polygons[count++] = p1;
-    polygons[count++] = p1 + nb_vertices;
-    polygons[count++] = p0 + nb_vertices;
+    polygons[count++] = p1 + nbVertices;
+    polygons[count++] = p0 + nbVertices;
   }
-  for (let side = 0; side < nb_vertices - 1; side++) {
-    arrow_side(side, side + 1);
+  for (let side = 0; side < nbVertices - 1; side++) {
+    arrowSide(side, side + 1);
   }
-  arrow_side(nb_vertices - 1, 0);
+  arrowSide(nbVertices - 1, 0);
   const arrow = vtkPolyData.newInstance();
   arrow.getPoints().setData(points, 3);
   arrow.getPolys().setData(polygons);
   return arrow;
 }
 
-function create_N() {
-  const nb_vertices = 10;
-  const points = new Float32Array(3 * 2 * nb_vertices);
+function createN() {
+  const nbVertices = 10;
+  const points = new Float32Array(3 * 2 * nbVertices);
   let count = 0;
   const ytop = -0.2;
   const ybot = -0.7;
@@ -93,8 +93,8 @@ function create_N() {
   const x1 = x0 + thick;
   const x2 = -x1;
   const x3 = -x0;
-  function one_side_points(side) {
-    const z = side * cylinder_height;
+  function oneSidePoints(side) {
+    const z = side * cylinderHeight;
     points[count++] = x0;
     points[count++] = ybot;
     points[count++] = z;
@@ -126,12 +126,12 @@ function create_N() {
     points[count++] = ybot;
     points[count++] = z;
   }
-  one_side_points(1);
-  one_side_points(-1);
+  oneSidePoints(1);
+  oneSidePoints(-1);
 
   const polygons = new Uint32Array(80);
   count = 0;
-  function N_letter(offset) {
+  function NLetter(offset) {
     polygons[count++] = 4;
     polygons[count++] = offset + 0;
     polygons[count++] = offset + 1;
@@ -150,20 +150,20 @@ function create_N() {
     polygons[count++] = offset + 6;
     polygons[count++] = offset + 7;
   }
-  N_letter(0);
-  N_letter(10);
+  NLetter(0);
+  NLetter(10);
 
-  function N_side(p0, p1) {
+  function NSide(p0, p1) {
     polygons[count++] = 4;
     polygons[count++] = p0;
     polygons[count++] = p1;
-    polygons[count++] = p1 + nb_vertices;
-    polygons[count++] = p0 + nb_vertices;
+    polygons[count++] = p1 + nbVertices;
+    polygons[count++] = p0 + nbVertices;
   }
-  for (let side = 0; side < nb_vertices - 1; side++) {
-    N_side(side, side + 1);
+  for (let side = 0; side < nbVertices - 1; side++) {
+    NSide(side, side + 1);
   }
-  N_side(nb_vertices - 1, 0);
+  NSide(nbVertices - 1, 0);
   const N = vtkPolyData.newInstance();
   N.getPoints().setData(points, 3);
   N.getPolys().setData(polygons);
@@ -178,7 +178,7 @@ function vtkNorthActor(publicAPI, model) {
     const cylinder = vtkCylinderSource
       .newInstance(
         Object.assign({
-          height: cylinder_height,
+          height: cylinderHeight,
           resolution: 20,
           direction: [0, 0, 1]
         })
@@ -187,10 +187,10 @@ function vtkNorthActor(publicAPI, model) {
     addColor(cylinder, 0, 150, 136);
 
     const color = [224, 242, 241];
-    const arrow = create_arrow();
+    const arrow = createArrow();
     addColor(arrow, ...color);
 
-    const N = create_N();
+    const N = createN();
     addColor(N, ...color);
 
     const source = vtkAppendPolyData.newInstance();

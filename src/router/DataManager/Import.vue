@@ -17,7 +17,7 @@
               hover
               @click="
                 node.action
-                  ? show_input(node.name)
+                  ? showInput(node.name)
                   : path.push({ text: node.name })
               "
               v-on="on"
@@ -28,7 +28,7 @@
                 type="file"
                 multiple
                 style="display:none;"
-                @change="load_file(node)"
+                @change="loadFile(node)"
               />
               <v-card-actions class="justify-center align-center">
                 <v-icon size="200">
@@ -58,12 +58,12 @@ export default {
     }
   },
   methods: {
-    show_input(name) {
+    showInput(name) {
       const input = document.getElementById("Input" + name);
       input.value = null;
       input.click();
     },
-    load_file({ name, action }) {
+    loadFile({ name, action }) {
       const files = document.getElementById("Input" + name).files;
       for (let i = 0; i < files.length; i++) {
         this.$store.dispatch(action, files.item(i).path);

@@ -10,6 +10,14 @@ import os from "os";
 
 Vue.use(Vuex);
 
+function createSource(proxyManager, dataset) {
+  const source = proxyManager.createProxy("Sources", "TrivialProducer");
+  source.setInputData(dataset);
+  source.activate();
+  proxyManager.createRepresentationInAllViews(source);
+  return source;
+}
+
 export default new Vuex.Store({
   state: {
     proxyManager: vtkProxyManager.newInstance({
@@ -21,26 +29,33 @@ export default new Vuex.Store({
     view: state => viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE)
   },
   mutations: {
-    register_data(state, object) {
+    registerData(state, object) {
       state.data.push(object);
     }
   },
   actions: {
-    load_module(context, path) {
+    loadModule(context, path) {
       __non_webpack_require__(path)(this, os.platform());
     },
-    register_object_type({ dispatch }, type) {
-      dispatch("treeview/register_object_type", type);
+    registerObjectType({ dispatch }, type) {
+      dispatch("treeview/registerObjectType", type);
     },
-    add_object({ state, commit, dispatch }, { type, name, cpp, vtk }) {
+    addObject({ state, commit, dispatch }, { type, name, cpp, vtk }) {
       const proxyManager = state.proxyManager;
-      const source = proxyManager.createProxy("Sources", "TrivialProducer");
-      source.setInputData(vtk);
-      source.activate();
-      dispatch("treeview/register_object", { type, name, cpp, source }).then(
-        object => commit("register_data", object)
+      let source = {};
+      if (vtk.isA && vtk.isA("vtkPolyData")) {
+        source = createSource(proxyManager, vtk);
+      } else {
+        Object.keys(vtk).forEach(key => {
+          source[key] = [];
+          vtk[key].forEach(dataset => {
+            source[key].push(createSource(proxyManager, dataset));
+          });
+        });
+      }
+      dispatch("treeview/registerObject", { type, name, cpp, source }).then(
+        object => commit("registerData", object)
       );
-      proxyManager.createRepresentationInAllViews(source);
       proxyManager.renderAllViews();
       return source;
     }

@@ -36,7 +36,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch(
-      "load_module",
+      "loadModule",
       "/home/camaud/programming/OpenGeode_node"
     );
 
