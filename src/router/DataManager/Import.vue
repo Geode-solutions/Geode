@@ -23,8 +23,8 @@ Lesser General Public License for more details.
         }}</a>
       </template>
     </v-breadcrumbs>
-    <v-layout row wrap justify-space-around align-center>
-      <v-flex v-for="(node, index) in nodes" :key="index" xs3 ma-2>
+    <v-layout wrap justify-space-around align-center>
+      <v-flex v-for="(node, index) in nodes" :key="index" class="ma-2" xs3>
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-card

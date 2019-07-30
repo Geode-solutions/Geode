@@ -17,19 +17,19 @@ Lesser General Public License for more details.
 <template>
   <v-app>
     <v-navigation-drawer permanent app clipped>
-      <v-layout fill-height>
+      <v-layout class="fill-height">
         <route-selector />
         <object-tree />
       </v-layout>
     </v-navigation-drawer>
-    <v-toolbar dark app clipped-left color="primary">
-      <v-toolbar-side-icon>
+    <v-app-bar app dark clipped-left color="primary">
+      <v-app-bar-nav-icon>
         <v-icon large>
           $vuetify.icons.logo
         </v-icon>
-      </v-toolbar-side-icon>
+      </v-app-bar-nav-icon>
       <v-toolbar-title>Geode-solutions</v-toolbar-title>
-    </v-toolbar>
+    </v-app-bar>
     <v-content>
       <router-view />
     </v-content>

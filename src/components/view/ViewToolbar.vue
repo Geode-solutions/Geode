@@ -2,23 +2,29 @@
   <v-layout column :class="$style.floatToolbar">
     <v-tooltip left>
       Reset camera
-      <v-btn slot="activator" icon dark small @click="resetCamera()">
-        <v-icon>fas fa-expand</v-icon>
-      </v-btn>
+      <template #activator="{ on }">
+        <v-btn icon dark small v-on="on" @click="resetCamera()">
+          <v-icon>fas fa-expand</v-icon>
+        </v-btn>
+      </template>
     </v-tooltip>
     <v-tooltip left>
       Center camera
-      <v-btn slot="activator" icon dark small @click="centerCamera()">
-        <v-icon>fas fa-compress-arrows-alt</v-icon>
-      </v-btn>
+      <template #activator="{ on }">
+        <v-btn icon dark small v-on="on" @click="centerCamera()">
+          <v-icon>fas fa-compress-arrows-alt</v-icon>
+        </v-btn>
+      </template>
     </v-tooltip>
     <v-speed-dial direction="left">
       <template #activator>
         <v-tooltip left>
           Clipping
-          <v-btn slot="activator" icon dark small>
-            <v-icon>fas fa-crop-alt</v-icon>
-          </v-btn>
+          <template #activator="{ on }">
+            <v-btn icon dark small v-on="on">
+              <v-icon>fas fa-crop-alt</v-icon>
+            </v-btn>
+          </template>
         </v-tooltip>
       </template>
       <v-btn fab dark small color="primary" @click="clipping = !clipping">

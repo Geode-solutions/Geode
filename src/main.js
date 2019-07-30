@@ -16,7 +16,7 @@
  */
 
 import Vue from "vue";
-import "./plugins/vuetify";
+import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import App from "./App";
@@ -26,6 +26,7 @@ import router from "./router";
 Vue.config.productionTip = false;
 
 new Vue({
+  vuetify,
   store,
   router,
   render: h => h(App)

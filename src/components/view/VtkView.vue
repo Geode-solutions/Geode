@@ -1,10 +1,10 @@
 <template>
-  <v-container pa-0 ma-0 fluid style="height: 100%">
+  <v-container class="pa-0 ma-0" fluid style="height: 100%">
     <view-toolbar :view="view" />
-    <v-layout column fill-height>
+    <v-layout class="fill-height">
       <v-flex
         ref="vtkView"
-        d-flex
+        class="d-flex"
         style="z-index: 0; background: linear-gradient(#666, #999)"
         @click="view.activate()"
       />

@@ -24,7 +24,6 @@ Lesser General Public License for more details.
     <v-tooltip v-for="item in items" :key="item.tooltip" bottom>
       <template #activator="{ on }">
         <v-btn
-          dark
           class="grey--text"
           icon
           active-class="text--darken-2"

@@ -15,7 +15,7 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-container fill-height>
+  <v-container class="fill-height">
     <v-layout column>
       <h1 class="display-3">
         Data Manager

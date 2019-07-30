@@ -15,7 +15,7 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-layout row wrap justify-space-around align-center>
+  <v-layout justify-space-around align-center>
     <v-tooltip v-for="(action, index) in actions" :key="index" bottom>
       <template #activator="{ on }">
         <v-card
