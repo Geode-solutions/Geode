@@ -31,10 +31,10 @@ export default new Vuetify({
         secondary: colors.teal.lighten4,
         accent: colors.red.darken4
       }
+    },
+    options: {
+      customProperties: true
     }
-  },
-  options: {
-    customProperties: true
   },
   icons: {
     iconfont: "fa",

@@ -44,7 +44,8 @@ export default {
   data: () => ({
     items: [
       { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
-      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" }
+      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" },
+      { tooltip: "SlideShow", icon: "fas fa-chalkboard-teacher", route: "/slideshow" }
     ]
   })
 };

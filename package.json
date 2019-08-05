@@ -16,6 +16,7 @@
   "dependencies": {
     "bindings": "^1.5.0",
     "material-design-icons-iconfont": "^5.0.1",
+    "reveal.js": "^3.8.0",
     "roboto-fontface": "*",
     "uuid": "^3.3.2",
     "vtk.js": "^9.1.0",

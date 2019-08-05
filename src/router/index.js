@@ -20,6 +20,7 @@ import Router from "vue-router";
 import DataManager from "./DataManager";
 import DataManagerHome from "./DataManager/Home";
 import DataManagerImport from "./DataManager/Import";
+import SlideShow from "./SlideShow";
 import Viewer from "./Viewer";
 
 Vue.use(Router);
@@ -39,6 +40,7 @@ export default new Router({
         }
       ]
     },
-    { path: "/viewer", component: Viewer }
+    { path: "/viewer", component: Viewer },
+    { path: "/slideshow", component: SlideShow }
   ]
 });
