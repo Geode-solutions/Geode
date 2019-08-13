@@ -17,6 +17,7 @@ Lesser General Public License for more details.
 <template>
   <v-treeview
     v-model="selectedTree"
+    width="200"
     :items="items"
     :active.sync="active"
     activatable
