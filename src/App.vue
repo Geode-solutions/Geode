@@ -16,19 +16,21 @@ Lesser General Public License for more details.
 
 <template>
   <v-app>
-    <v-navigation-drawer permanent app clipped>
+    <v-navigation-drawer v-if="visible[index]" permanent app clipped>
       <v-layout class="fill-height">
-        <route-selector />
+        <route-selector v-if="visible[index + 1]" />
         <object-tree />
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
-      <v-app-bar-nav-icon>
-        <v-icon large>
-          $vuetify.icons.logo
-        </v-icon>
-      </v-app-bar-nav-icon>
-      <v-toolbar-title>Geode-solutions</v-toolbar-title>
+      <v-btn text class="pa-0" @click="index = (index + 1) % 3">
+        <v-app-bar-nav-icon>
+          <v-icon large>
+            $vuetify.icons.logo
+          </v-icon>
+        </v-app-bar-nav-icon>
+        <v-toolbar-title>Geode-solutions</v-toolbar-title>
+      </v-btn>
     </v-app-bar>
     <v-content>
       <router-view />
@@ -47,6 +49,10 @@ export default {
     RouteSelector,
     ObjectTree
   },
+  data: () => ({
+    visible: [true, true, false, false],
+    index: 0
+  }),
   computed: {
     ...mapState(["proxyManager"])
   },
