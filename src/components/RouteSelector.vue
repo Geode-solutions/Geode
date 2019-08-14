@@ -16,7 +16,8 @@ Lesser General Public License for more details.
 
 <template>
   <v-navigation-drawer
-    permanent
+    v-model="visible"
+    stateless
     mini-variant
     mini-variant-width="50"
     class="secondary"
@@ -41,6 +42,12 @@ Lesser General Public License for more details.
 <script>
 export default {
   name: "RouteSelector",
+  props: {
+    visible: {
+      type: Boolean,
+      default: true
+    }
+  },
   data: () => ({
     items: [
       { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
