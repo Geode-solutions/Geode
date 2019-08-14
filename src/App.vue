@@ -16,14 +16,20 @@ Lesser General Public License for more details.
 
 <template>
   <v-app>
-    <v-navigation-drawer v-if="visible[index]" permanent app clipped>
+    <v-navigation-drawer
+      v-model="visible"
+      stateless
+      app
+      clipped
+      @transitionend="hide_drawer"
+    >
       <v-layout class="fill-height">
-        <route-selector v-if="visible[index + 1]" />
+        <route-selector visible="visible" />
         <object-tree />
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
-      <v-btn text class="pa-0" @click="index = (index + 1) % 3">
+      <v-btn text class="pa-0" @click="visible = !visible">
         <v-app-bar-nav-icon>
           <v-icon large>
             $vuetify.icons.logo
@@ -51,8 +57,7 @@ export default {
     ObjectTree
   },
   data: () => ({
-    visible: [true, true, false, false],
-    index: 0
+    visible: true
   }),
   computed: {
     ...mapState(["proxyManager"])
@@ -79,6 +84,20 @@ export default {
     this.pxmSub = this.proxyManager.onProxyRegistrationChange(
       this.renderListener.resetListeners
     );
+  },
+  methods: {
+    hide_drawer() {
+      this.$root.$emit("hide_drawer");
+    }
   }
 };
 </script>
+
+<style scoped>
+* {
+  text-transform: none !important;
+}
+.v-btn {
+  margin-top: -5px;
+}
+</style>

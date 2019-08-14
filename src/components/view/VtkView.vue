@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-0 ma-0" fluid style="height: 100%">
     <view-toolbar :view="view" />
-    <v-layout class="fill-height">
+    <v-layout v-resize="test" class="fill-height">
       <v-flex
         ref="vtkView"
         class="d-flex"
@@ -33,20 +33,11 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      if (this.view) {
-        this.view.setContainer(this.$refs.vtkView);
-      }
-
-      // Closure creation for callback
-      this.resizeCurrentView = () => {
-        if (this.view) {
-          this.view.getOpenglRenderWindow().setSize(0, 0);
-          this.view.resize();
-        }
-      };
+      this.view.setContainer(this.$refs.vtkView);
 
       // Event handling
       window.addEventListener("resize", this.resizeCurrentView);
+      this.$root.$on("hide_drawer", this.resizeCurrentView);
 
       // Capture event handler to release then at exit
       this.subscriptions = [
@@ -82,11 +73,20 @@ export default {
     });
   },
   beforeDestroy() {
-    if (this.view) {
-      this.view.setContainer(null);
-    }
+    this.view.setContainer(null);
     while (this.subscriptions.length) {
       this.subscriptions.pop()();
+    }
+  },
+  methods: {
+    resizeCurrentView() {
+      console.log("TUTU");
+      console.log(this.$refs.vtkView.clientWidth);
+      this.view.getOpenglRenderWindow().setSize(0, 0);
+      this.view.resize();
+    },
+    test() {
+      console.log("TOTO");
     }
   }
 };
