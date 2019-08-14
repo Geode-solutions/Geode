@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-0 ma-0" fluid style="height: 100%">
     <view-toolbar :view="view" />
-    <v-layout v-resize="test" class="fill-height">
+    <v-layout class="fill-height">
       <v-flex
         ref="vtkView"
         class="d-flex"
@@ -80,13 +80,8 @@ export default {
   },
   methods: {
     resizeCurrentView() {
-      console.log("TUTU");
-      console.log(this.$refs.vtkView.clientWidth);
       this.view.getOpenglRenderWindow().setSize(0, 0);
       this.view.resize();
-    },
-    test() {
-      console.log("TOTO");
     }
   }
 };
