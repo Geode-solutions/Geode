@@ -41,6 +41,7 @@ import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
 import vtkListenerHelper from "@/ListenerHelper";
 import { mapState } from "vuex";
+import { remote } from "electron";
 
 export default {
   components: {
@@ -52,8 +53,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch(
-      "loadModule",
-      "/home/camaud/programming/OpenGeode_node"
+      "loadConfigFile",
+      remote.app.getPath("userData") + "/config.json"
     );
 
     this.renderListener = vtkListenerHelper.newInstance(
