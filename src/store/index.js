@@ -40,6 +40,7 @@ export default new Vuex.Store({
     proxyManager: vtkProxyManager.newInstance({
       proxyConfiguration: ProxyConfig
     }),
+    vtkBackground: "#666",
     data: []
   },
   getters: {
@@ -48,6 +49,9 @@ export default new Vuex.Store({
   mutations: {
     registerData(state, object) {
       state.data.push(object);
+    },
+    setBackground(state, background) {
+      state.vtkBackground = background;
     }
   },
   actions: {

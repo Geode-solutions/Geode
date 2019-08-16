@@ -5,7 +5,7 @@
       <v-flex
         ref="vtkView"
         class="d-flex"
-        style="z-index: 0; background: linear-gradient(#666, #999)"
+        :style="{ 'z-index': '0', background: vtkBackground }"
         @click="view.activate()"
       />
     </v-layout>
@@ -26,7 +26,7 @@ export default {
     ViewToolbar
   },
   computed: {
-    ...mapState(["proxyManager", "data"]),
+    ...mapState(["proxyManager", "data", "vtkBackground"]),
     ...mapGetters({
       view: "view"
     })
