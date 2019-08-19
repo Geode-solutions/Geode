@@ -51,8 +51,13 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    loadModule(context, path) {
-      __non_webpack_require__(path)(this, os.platform());
+    loadConfigFile(context, path) {
+      const config = __non_webpack_require__(path);
+      if (config.modules) {
+        config.modules.forEach(module =>
+          __non_webpack_require__(module)(this, os.platform())
+        );
+      }
     },
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);
