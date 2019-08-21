@@ -15,49 +15,56 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-layout column>
-    <v-breadcrumbs :items="path">
-      <template v-slot:item="props">
-        <a @click="updateBreadcrumbs(props.item.text)">{{
-          props.item.text.charAt(0).toUpperCase() + props.item.text.slice(1)
-        }}</a>
-      </template>
-    </v-breadcrumbs>
-    <v-layout wrap justify-space-around align-center>
-      <v-flex v-for="(node, index) in nodes" :key="index" class="ma-2" xs3>
-        <v-tooltip bottom>
-          <template #activator="{ on }">
-            <v-card
-              raised
-              :class="$style.roundedCard"
-              hover
-              @click="
-                node.action
-                  ? showInput(node.name)
-                  : path.push({ text: node.name })
-              "
-              v-on="on"
-            >
-              <input
-                v-if="node.action"
-                :id="'Input' + node.name"
-                type="file"
-                multiple
-                style="display:none;"
-                @change="loadFile(node)"
-              />
-              <v-card-actions class="justify-center align-center">
-                <v-icon size="200">
-                  {{ node.icon }}
-                </v-icon>
-              </v-card-actions>
-            </v-card>
-          </template>
-          <span>{{ node.tooltip }}</span>
-        </v-tooltip>
-      </v-flex>
-    </v-layout>
-  </v-layout>
+  <v-row>
+    <v-col>
+      <v-breadcrumbs :items="path">
+        <template v-slot:item="props">
+          <a @click="updateBreadcrumbs(props.item.text)">{{
+            props.item.text.charAt(0).toUpperCase() + props.item.text.slice(1)
+          }}</a>
+        </template>
+      </v-breadcrumbs>
+      <v-row justify="space-around" align="center">
+        <v-col
+          v-for="(node, index) in nodes"
+          :key="index"
+          class="ma-2"
+          cols="3"
+        >
+          <v-tooltip bottom>
+            <template #activator="{ on }">
+              <v-card
+                raised
+                :class="$style.roundedCard"
+                hover
+                @click="
+                  node.action
+                    ? showInput(node.name)
+                    : path.push({ text: node.name })
+                "
+                v-on="on"
+              >
+                <input
+                  v-if="node.action"
+                  :id="'Input' + node.name"
+                  type="file"
+                  multiple
+                  style="display:none;"
+                  @change="loadFile(node)"
+                />
+                <v-card-actions class="justify-center align-center">
+                  <v-icon size="200">
+                    {{ node.icon }}
+                  </v-icon>
+                </v-card-actions>
+              </v-card>
+            </template>
+            <span>{{ node.tooltip }}</span>
+          </v-tooltip>
+        </v-col>
+      </v-row>
+    </v-col>
+  </v-row>
 </template>
 
 <script>

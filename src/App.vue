@@ -23,10 +23,10 @@ Lesser General Public License for more details.
       clipped
       @transitionend="hide_drawer"
     >
-      <v-layout class="fill-height">
+      <v-row class="fill-height">
         <route-selector visible="visible" />
         <object-tree />
-      </v-layout>
+      </v-row>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
       <v-btn text class="pa-0" @click="visible = !visible">

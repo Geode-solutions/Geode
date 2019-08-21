@@ -15,13 +15,15 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-container class="fill-height">
-    <v-layout column>
-      <h1 class="display-3">
-        Data Manager
-      </h1>
-      <router-view />
-    </v-layout>
+  <v-container>
+    <v-row>
+      <v-col>
+        <h1 class="display-3">
+          Data Manager
+        </h1>
+        <router-view />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

@@ -19,13 +19,13 @@ Lesser General Public License for more details.
     v-model="visible"
     stateless
     mini-variant
-    mini-variant-width="50"
+    mini-variant-width="60"
     class="secondary"
   >
     <v-tooltip v-for="item in items" :key="item.tooltip" bottom>
       <template #activator="{ on }">
         <v-btn
-          class="grey--text"
+          class="grey--text mx-2"
           icon
           active-class="text--darken-2"
           :to="item.route"
@@ -56,3 +56,9 @@ export default {
   })
 };
 </script>
+
+<style scoped>
+.v-btn:not(.v-btn--text):not(.v-btn--outlined).v-btn--active:before {
+  opacity: 0;
+}
+</style>
