@@ -29,62 +29,129 @@ Lesser General Public License for more details.
       </section>
       <section>
         <span class="slidetitle">BRep for CAD</span></br>
-
-        <p>Need of a BRep in CAD for:</p>
-        <img src="@/assets/Plane-Model.jpg" height="400">
+        <img src="@/assets/Plane-Model.jpg" height="300">
         <p class="caption">Copyright © 2019 NeoMetrix Technologies, Inc.</p>
+
+        <p>Need of a BRep in CAD for meshing solid</p>
+        <ul>
+          <li>Mesh conformity</li>
+          <li>Tags on mesh elements</li>
+        </ul>
       </section>
-      <section>Special needs for Geosciences</section>
-      <section>First attempts</br>
-        GeoMesh: JP, one article, 2013 - 2015<br/>
-        RINGMesh: RING, RING team research, 2014 - 2017
+      <section>
+        <p class="slidetitle">Specific needs for Geosciences</p>
+        <p> Multi-materials models </p>
+        <img src="@/assets/faraj_2016.png" height="200">
+        <p class="caption">Faraj et al., Computers & Graphics, 2016</p>
+        <p> Internal features (fractures, faults) </p>
+        <img src="@/assets/caumon_2009.png" height="200">
+        <p class="caption">Caumon et al., Math Geosci, 2009</p>
       </section>
-      <section>Key points
+
+      <section>
+        <p class="slidetitle">First attempts</p>
+        <img src="@/assets/attempt.svg" >
+      </section>
+      <section>
+        <p class="slidetitle">Key points </p>
         <ul>
           <li>Geosciences</li>
           <li>Industrial quality</li>
           <li>Open source</li>
         </ul>
       </section>
-
-      <section>II - OpenGeode</section>
       <section>
-        <body>Industrial quality</body>
-        <body>CI/CD</body>
-      </section>
-      <section>
-        <body>Multi-platform</body>
-        <body>Pre-compiled binaries for Linux, Windows and macOS</body>
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Apple_logo_black.svg/1200px-Apple_logo_black.svg.png"  height="200" width="200">
-      </section>
-            <section>
-        <body>Extensible</body>
-        <body>Modules</body>
-      </section>
-      <section>
-        <section>Redesigned UI
-            <body>JS, web based</body>
-        </section>
-        <section style="height: 100%">
-          <vtk-view />
-        </section>
+        <p class="slidetitle">Inheritance</p>
+        <img src="@/assets/inheritance.svg" >
       </section>
 
-      <section>III - BRep in OpenGeode</section>
+      <section class="sectiontitle">II - OpenGeode requirements</section>
       <section>
-        <section>Assembly of Components
-          <body>Corners, Lines, Surfaces, Blocks</body>
-        </section>
-        <section style="height: 100%">
-          <vtk-view />
-        </section>
-      </section>
-      <section>
-        <section>Data structure
-          <body>Mixins</body>
+        <section>
+          <p class="slidetitle">Industrial quality</p>
+          <p>What is needed?</p>
         </section>
         <section>
-          Show code
+          <p class="slidetitle">Industrial quality</p>
+          <p>Code quality</p>
+        </section>
+        <section>
+          <p class="slidetitle">Industrial quality</p>
+          <p>Multi-platform</p>
+          <p>Pre-compiled binaries for <br/> Linux, Windows and macOS</p>
+          <img src="@/assets/linux.jpeg" height="200">
+          <img src="@/assets/windows.png" height="200">
+          <img src="@/assets/apple.png" height="200">
+        </section>
+                <section>
+          <p class="slidetitle">Industrial quality</p>
+          <p>Continuous Integration</p>
+          <p>Continuous Deployment</p>
+        </section>
+        <section>
+          <p class="slidetitle">Industrial quality</p>
+          <p>Export/Import</p>
+        </section>
+      </section>
+      <section>
+        <section>
+          <p class="slidetitle">Open source model</p>
+          <p>Core code is freely accessible on GitHub</p>
+          <img src="@/assets/github.png" height="200"> Geode-solutions
+          <p>Very permissive License (MIT)</p>
+        </section>
+        <section>
+          <p class="slidetitle">Open source model</p>
+          <p>Usage of open source dependancies:</p>
+          <ul>
+            <li>Async++: concurrency programming</li>
+            <li>Bitsery: serialization of objects</li>
+            <li>others...</li>
+          </ul>
+        </section>
+        <section>
+          <p class="slidetitle">Open source model</p>
+          <p>Create of an open source ecosystem:</p>
+          <ul>
+            <li>Open the door to contributions</li>
+            <li>Capitalize on open source projects</li>
+          </ul>
+          <p>Can be seen as one wide task force</p> 
+          <img src="@/assets/groupe.jpg" height="300">
+        </section>
+      </section>
+      <section>
+        <p class="slidetitle">Extensibility</p>
+        <p>Modules</p>
+        <img src="@/assets/lego.jpg" height="300">
+      </section>
+      <section>
+        <section>
+          <p class="slidetitle">Redesigned UI<p>
+          <p>JS, web based</p>
+          <img src="@/assets/vue.png" height="300">
+        </section>
+        <section style="height: 100%">
+          <vtk-view />
+        </section>
+      </section>
+
+      <section class="sectiontitle">III - OpenGeode data model</section>
+      <section>
+        <section>
+          <p class="slidetitle">Assembly of Components</p>
+          <p>Corners, Lines, Surfaces, Blocks</p>
+        </section>
+        <section style="height: 100%">
+          <vtk-view />
+        </section>
+      </section>
+      <section>
+        <section>
+          <p class="slidetitle">Data structure</p>
+          <p>Mixins</p>
+        </section>
+        <section>
           <pre><code>
             namespace geode
             {
@@ -102,11 +169,25 @@ Lesser General Public License for more details.
         </section>
       </section>
       <section>
-        Non continuous indexing - UUID</br>
-        Model edition 
+        <p class="slidetitle">Non continuous indexing</p>
+        <p>Using unordered maps of UUIDs</p>
+        <p>Enable easy model editing</p> 
       </section>
 
-      <section>IV - Demo</section>
+      <section class="sectiontitle">IV - Short demo</section>
+
+      <section class="sectiontitle">Perspectives</section>
+      <section>
+        <p class="slidetitle">User Interface 
+        <p>still in progress</p>
+        <p>Soon open sourced</p>
+        <p>If you want to stay tuned, follow us</p>
+        <img src="@/assets/twitter.png" height="200"> @GeodeSolutions
+      </section>
+
+            <section>
+        <p class="slidetitle">Thank you for your participation!</p>
+      </section>
       
     </div>
   </div>
@@ -138,6 +219,7 @@ export default {
 }
 .reveal .progress {
   color: var(--v-primary-base);
+  height:8px;
 }
 .reveal .slide-number {
   left: 8px;
@@ -145,10 +227,14 @@ export default {
   background-color: rgba(0,0,0,0);
   font-size: 18px;
 }
+.reveal section p {
+  margin: 5px;
+}
 .reveal section img {
   border: 0px;
   background-color: rgba(0,0,0,0);
   box-shadow: 0 0 0px rgba(0, 0, 0, 0);
+  margin-bottom: 0px;
 }
 .sectiontitle {
 	font-weight: bolder;
