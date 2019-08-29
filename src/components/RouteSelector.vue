@@ -19,7 +19,7 @@ Lesser General Public License for more details.
     v-model="visible"
     stateless
     mini-variant
-    mini-variant-width="50"
+    mini-variant-width="40"
     class="secondary"
   >
     <v-tooltip v-for="item in items" :key="item.tooltip" bottom>
