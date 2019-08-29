@@ -1,61 +1,37 @@
 <template>
   <div>
-    <div v-if="display">
-      <div
-        :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"
-        :style="diskStyle"
-      >
-        <v-tooltip v-for="(item, index) in contextualItems" :key="index" bottom>
-          {{ item.tooltip }}
-          <template #activator="{ on }">
-            <v-btn
-              icon
-              absolute
-              :style="{
-                left: item.left,
-                top: item.top,
-                width: btnSize + 'px',
-                height: btnSize + 'px'
-              }"
-              @click="selectItem(item, index)"
-              v-on="on"
-            >
-              <v-icon large>
-                {{ item.icon }}
-              </v-icon>
-            </v-btn>
-          </template>
-        </v-tooltip>
-      </div>
-      <div :class="[$style.disk, $style.innerDisk]" :style="innerDiskStyle" />
-    </div>
-
-    <template v-for="(item, index) in contextualItems">
+    <div
+      :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"
+      :style="diskStyle"
+      @click.stop
+    >
       <component
         :is="item.component"
-        v-if="displayComponents[index]"
+        v-for="(item, index) in contextualItems"
         :key="index"
-        :visible.sync="displayComponents[index]"
+        :btn-style="item.btnStyle"
         :item="selectedItem"
+        @update="computeItems"
       />
-    </template>
+    </div>
+    <div :class="[$style.disk, $style.innerDisk]" :style="innerDiskStyle" />
   </div>
 </template>
 
 <script>
-import { mapState } from "vuex";
-import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
-
 export default {
   name: "ContextualMenu",
   props: {
-    view: {
+    position: {
+      required: true,
+      type: Object
+    },
+    selectedItem: {
       required: true,
       type: Object
     }
   },
   data: () => ({
-    display: false,
     width: 300,
     ringWidth: 80,
     diskStyle: {
@@ -72,13 +48,9 @@ export default {
       bottom: "",
       left: ""
     },
-    displayComponents: [],
-    selectedItem: "",
-    displayComponent: false
+    contextualItems: []
   }),
   computed: {
-    ...mapState(["proxyManager", "data"]),
-    ...mapState("ui", ["contextualItems"]),
     radius() {
       return this.width / 2;
     },
@@ -92,104 +64,51 @@ export default {
       return (3 * this.ringWidth) / 4;
     }
   },
-  watch: {
-    contextualItems: function(value) {
-      const size = value.length;
-      while (this.displayComponents.length > size) {
-        this.displayComponents.pop();
-      }
-      while (this.displayComponents.length < size) {
-        this.displayComponents.push(false);
-      }
-    }
-  },
   mounted() {
-    this.diskStyle.width = this.width + "px";
-    this.diskStyle.height = this.width + "px";
-    this.diskStyle.borderWidth = this.ringWidth + "px";
-    this.innerDiskStyle.width = this.innerWidth + "px";
-    this.innerDiskStyle.height = this.innerWidth + "px";
-    this.innerDiskStyle.borderWidth = this.innerRadius + "px";
-    this.$nextTick(() => {
-      this.view
-        .getRenderWindow()
-        .getInteractor()
-        .onRightButtonPress(callData => {
-          const renderer = this.view.getRenderer();
-          if (renderer !== callData.pokedRenderer) {
-            return;
-          }
-          const picker = vtkPicker.newInstance();
-          picker.pick(
-            [callData.position.x, callData.position.y, 0.0],
-            renderer
-          );
-          picker.getActors().forEach(actor => {
-            const rep = this.proxyManager
-              .getRepresentations()
-              .filter(r => r.getActors()[0] === actor);
-            const sourceID = this.proxyManager.getReferenceByName(
-              "r2svMapping"
-            )[rep[0].getProxyId()].sourceId;
-            this.data.forEach(item => {
-              if (item.source.getProxyId() == sourceID) {
-                console.log("FOUND ", item.name);
-                this.selectedItem = item;
-                this.display = true;
-                this.diskStyle.left = callData.position.x - this.radius + "px";
-                this.diskStyle.bottom =
-                  callData.position.y - this.radius + "px";
-                this.innerDiskStyle.left =
-                  callData.position.x - this.innerRadius + "px";
-                this.innerDiskStyle.bottom =
-                  callData.position.y - this.innerRadius + "px";
-                document
-                  .querySelector("[data-app]")
-                  .addEventListener("mousedown", this.onClickOutside, true);
-
-                const frags = 360 / this.contextualItems.length;
-                const angles = this.contextualItems.map(
-                  (item, index) => (frags * index * Math.PI) / 180
-                );
-                this.contextualItems.forEach((item, index) => {
-                  item.left =
-                    this.innerRadius +
-                    (Math.cos(angles[index]) *
-                      (this.innerRadius + this.radius)) /
-                      2 -
-                    this.btnSize / 2 +
-                    "px";
-                  item.top =
-                    this.innerRadius -
-                    (Math.sin(angles[index]) *
-                      (this.innerRadius + this.radius)) /
-                      2 -
-                    this.btnSize / 2 +
-                    "px";
-                });
-              }
-            });
-          });
-        });
-    });
+    this.computeSizes();
+    this.computePositions();
+    this.computeItems();
   },
   methods: {
-    onClickOutside(event) {
-      const ring = document.querySelector(".ring");
-      if (ring && !ring.contains(event.target)) {
-        this.closeRing();
-      }
+    computeSizes() {
+      this.diskStyle.width = this.width + "px";
+      this.diskStyle.height = this.width + "px";
+      this.diskStyle.borderWidth = this.ringWidth + "px";
+      this.innerDiskStyle.width = this.innerWidth + "px";
+      this.innerDiskStyle.height = this.innerWidth + "px";
+      this.innerDiskStyle.borderWidth = this.innerRadius + "px";
     },
-    closeRing() {
-      this.display = false;
-      document
-        .querySelector("[data-app]")
-        .removeEventListener("mousedown", this.onClickOutside, true);
+    computePositions() {
+      this.diskStyle.left = this.position.x - this.radius + "px";
+      this.diskStyle.bottom = this.position.y - this.radius + "px";
+      this.innerDiskStyle.left = this.position.x - this.innerRadius + "px";
+      this.innerDiskStyle.bottom = this.position.y - this.innerRadius + "px";
     },
-    selectItem(item, index) {
-      console.log(item.component);
-      this.closeRing();
-      this.displayComponents[index] = true;
+    computeItems() {
+      console.log("new items");
+      this.contextualItems = this.$store.getters["ui/contextualItems"](
+        this.selectedItem.type
+      );
+      const frags = 360 / this.contextualItems.length;
+      const angles = this.contextualItems.map(
+        (item, index) => (frags * index * Math.PI) / 180
+      );
+      this.contextualItems.forEach((item, index) => {
+        let left =
+          this.innerRadius +
+          (Math.cos(angles[index]) * (this.innerRadius + this.radius)) / 2 -
+          this.btnSize / 2;
+        let top =
+          this.innerRadius +
+          (Math.sin(angles[index]) * (this.innerRadius + this.radius)) / 2 -
+          this.btnSize / 2;
+          item.btnStyle = {
+            left: left + 'px',
+            top: top + 'px',
+            width: this.btnSize + 'px',
+            height: this.btnSize + 'px'
+          }
+      });
     }
   }
 };

@@ -55,17 +55,9 @@ export default {
         });
       }
     },
-    registerObject({ commit }, { type, name, cpp, source }) {
-      const newObject = {
-        id: uuidv4(),
-        name,
-        cpp,
-        source,
-        type
-      };
-      commit("addChildrenTree", { type, value: newObject });
-      commit("addSelectedTree", newObject.id);
-      return newObject;
+    registerObject({ commit }, object) {
+      commit("addChildrenTree", { type: object.type, value: object });
+      commit("addSelectedTree", object.id);
     }
   }
 };

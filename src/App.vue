@@ -16,19 +16,27 @@ Lesser General Public License for more details.
 
 <template>
   <v-app>
-    <v-navigation-drawer permanent app clipped>
+    <v-navigation-drawer
+      v-model="visible"
+      stateless
+      app
+      clipped
+      @transitionend="hide_drawer"
+    >
       <v-layout class="fill-height">
-        <route-selector />
+        <route-selector visible="visible" />
         <object-tree />
       </v-layout>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
-      <v-app-bar-nav-icon>
-        <v-icon large>
-          $vuetify.icons.logo
-        </v-icon>
-      </v-app-bar-nav-icon>
-      <v-toolbar-title>Geode-solutions</v-toolbar-title>
+      <v-btn text class="pa-0" @click="visible = !visible">
+        <v-app-bar-nav-icon>
+          <v-icon large>
+            $vuetify.icons.logo
+          </v-icon>
+        </v-app-bar-nav-icon>
+        <v-toolbar-title>Geode-solutions</v-toolbar-title>
+      </v-btn>
     </v-app-bar>
     <v-content>
       <router-view />
@@ -41,19 +49,23 @@ import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
 import vtkListenerHelper from "@/ListenerHelper";
 import { mapState } from "vuex";
+import { remote } from "electron";
 
 export default {
   components: {
     RouteSelector,
     ObjectTree
   },
+  data: () => ({
+    visible: true
+  }),
   computed: {
     ...mapState(["proxyManager"])
   },
   mounted() {
     this.$store.dispatch(
-      "loadModule",
-      "/home/camaud/programming/OpenGeode_node"
+      "loadConfigFile",
+      remote.app.getPath("userData") + "/config.json"
     );
 
     this.renderListener = vtkListenerHelper.newInstance(
@@ -72,6 +84,20 @@ export default {
     this.pxmSub = this.proxyManager.onProxyRegistrationChange(
       this.renderListener.resetListeners
     );
+  },
+  methods: {
+    hide_drawer() {
+      this.$root.$emit("hide_drawer");
+    }
   }
 };
 </script>
+
+<style scoped>
+* {
+  text-transform: none !important;
+}
+.v-btn {
+  margin-top: -5px;
+}
+</style>

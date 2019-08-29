@@ -27,6 +27,13 @@ Lesser General Public License for more details.
 <script>
 import { mapGetters, mapState } from "vuex";
 
+function toggleVisibility(proxyManager, source, visible) {
+  proxyManager
+    .getRepresentations()
+    .filter(r => r.getInput() === source)
+    .forEach(r => r.setVisibility(visible));
+}
+
 export default {
   computed: {
     ...mapState(["proxyManager", "data"]),
@@ -72,10 +79,15 @@ export default {
   },
   methods: {
     setVisibility(source, visible) {
-      this.proxyManager
-        .getRepresentations()
-        .filter(r => r.getInput() === source)
-        .forEach(r => r.setVisibility(visible));
+      if (source.isA) {
+        toggleVisibility(this.proxyManager, source, visible);
+      } else {
+        Object.keys(source).forEach(key => {
+          source[key].forEach(item =>
+            toggleVisibility(this.proxyManager, item, visible)
+          );
+        });
+      }
     }
   }
 };
