@@ -20,7 +20,6 @@ import Vuex from "vuex";
 import vtkProxyManager from "vtk.js/Sources/Proxy/Core/ProxyManager";
 import ProxyConfig from "@/config/proxy";
 import viewHelper from "@/config/viewHelper";
-import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
 import treeview from "./treeview";
 import ui from "./ui";
 import os from "os";
@@ -46,7 +45,7 @@ export default new Vuex.Store({
     data: []
   },
   getters: {
-    view: state => viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE)
+    view: state => type => viewHelper.getView(state.proxyManager, type)
   },
   mutations: {
     registerData(state, object) {

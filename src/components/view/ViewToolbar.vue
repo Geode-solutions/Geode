@@ -74,7 +74,6 @@ export default {
       const widgetManager = this.view.getReferenceByName("widgetManager");
       if (value) {
         widgetManager.enablePicking();
-        console.log(widgetManager.addWidget(this.clipper));
       } else {
         widgetManager.removeWidget(this.clipper);
         widgetManager.disablePicking();
@@ -83,12 +82,11 @@ export default {
     }
   },
   mounted() {
+    this.$nextTick(() => {
       const widgetManager = this.view.getReferenceByName("widgetManager");
       widgetManager.setRenderer(this.view.getRenderer());
       this.clipper = vtkImplicitPlaneWidget.newInstance();
       this.clipper.getWidgetState().setNormal(0, 0, 1);
-      console.log(this.clipper);
-      console.log(widgetManager);
       //widget.placeWidget(cone.getOutputData().getBounds());
 
       this.view
@@ -108,6 +106,7 @@ export default {
           this.view.getOpenglRenderWindow().setCursor("pointer");
           this.centering = false;
         });
+    });
   },
   methods: {
     resetCamera() {

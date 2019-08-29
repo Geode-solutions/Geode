@@ -63,7 +63,7 @@ Lesser General Public License for more details.
             <body>JS, web based</body>
         </section>
         <section style="height: 100%">
-          <vtk-view />
+          <vtk-view view-type="View3D:toto"/>
         </section>
       </section>
 
@@ -121,7 +121,16 @@ export default {
     VtkView
   },
   mounted() {
+    this.$store.commit("setBackground", "#00000000");
     Reveal.initialize({slideNumber: true});
+    Reveal.configure({
+      keyboard: {
+        40: function() {
+          Reveal.down();
+          window.dispatchEvent(new Event('resize'));
+        }
+      }
+    });
   }
 };
 </script>

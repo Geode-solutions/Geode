@@ -17,6 +17,7 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
+import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
 import viewHelper from "@/config/viewHelper";
 import ContextualMenu from "./ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
@@ -46,16 +47,22 @@ export default {
   data: () => ({
     selectedItem: "",
     displayMenu: false,
-    menuPosition: {}
+    menuPosition: {},
+    view: {}
   }),
+  props: {
+    viewType: {
+      type: String,
+      default: DEFAULT_VIEW_TYPE
+    }
+  },
   computed: {
-    ...mapState(["proxyManager", "data", "vtkBackground"]),
-    ...mapGetters({
-      view: "view"
-    })
+    ...mapState(["proxyManager", "data", "vtkBackground"])
   },
   mounted() {
+    this.view = this.$store.getters["view"](this.viewType);
     this.$nextTick(() => {
+      console.log("VTK MOUNT");
       this.view.setContainer(this.$refs.vtkView);
       this.configContextualMenu();
 
@@ -136,6 +143,7 @@ export default {
     resizeCurrentView() {
       this.view.getOpenglRenderWindow().setSize(0, 0);
       this.view.resize();
+      console.log("size ", this.viewType, " ", this.view.getOpenglRenderWindow().getSize());
     },
     viewClick() {
       if (this.displayMenu) {
