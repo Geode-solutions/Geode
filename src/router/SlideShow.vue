@@ -132,7 +132,7 @@ Lesser General Public License for more details.
           <img src="@/assets/vue.png" height="300">
         </section>
         <section style="height: 100%">
-          <vtk-view />
+          <vtk-view view-type="View3D:toto"/>
         </section>
       </section>
 
@@ -205,7 +205,16 @@ export default {
     VtkView
   },
   mounted() {
+    this.$store.commit("setBackground", "#00000000");
     Reveal.initialize({slideNumber: true});
+    Reveal.configure({
+      keyboard: {
+        40: function() {
+          Reveal.down();
+          window.dispatchEvent(new Event('resize'));
+        }
+      }
+    });
   }
 };
 </script>

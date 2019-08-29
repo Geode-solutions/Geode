@@ -39,7 +39,7 @@ Lesser General Public License for more details.
       </v-btn>
     </v-app-bar>
     <v-content>
-      <keep-alive>
+      <keep-alive include="SlideShow">
         <router-view />
       </keep-alive>
     </v-content>

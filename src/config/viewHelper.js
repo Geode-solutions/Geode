@@ -56,6 +56,7 @@ function getViewType(view) {
 // ----------------------------------------------------------------------------
 
 function getView(proxyManager, viewType) {
+  console.log("viewType ", viewType)
   const [type, name] = viewType.split(":");
   let view = null;
   const views = proxyManager.getViews();
@@ -70,9 +71,12 @@ function getView(proxyManager, viewType) {
       }
     }
   }
+  console.log("view ", view)
 
   if (!view) {
     view = proxyManager.createProxy("Views", type, { name });
+  console.log("view2 ", view)
+
 
     // Make sure represention is created for new view
     proxyManager
@@ -80,7 +84,7 @@ function getView(proxyManager, viewType) {
       .forEach(s => proxyManager.getRepresentation(s, view));
 
     // Update orientation
-    const { axis, orientation, viewUp } = VIEW_ORIENTATIONS[name];
+    const { axis, orientation, viewUp } = VIEW_ORIENTATIONS["default"];
     view.updateOrientation(axis, orientation, viewUp);
 
     // set background to transparent
@@ -96,6 +100,7 @@ function getView(proxyManager, viewType) {
       view.set({ widgetManager }, true);
     }
   }
+  console.log("view ", view)
 
   return view;
 }
