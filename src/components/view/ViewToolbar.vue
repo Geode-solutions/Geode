@@ -1,6 +1,15 @@
 <template>
   <v-layout column :class="$style.floatToolbar">
     <v-tooltip left>
+      Settings
+      <template #activator="{ on }">
+        <v-btn icon dark small v-on="on" @click="settings = !settings">
+          <v-icon>fas fa-cog</v-icon>
+        </v-btn>
+      </template>
+    </v-tooltip>
+    <view-settings v-if="settings" />
+    <v-tooltip left>
       Reset camera
       <template #activator="{ on }">
         <v-btn icon dark small v-on="on" @click="resetCamera()">
@@ -42,9 +51,13 @@
 <script>
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import vtkImplicitPlaneWidget from "vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget";
+import ViewSettings from "./ViewSettings";
 
 export default {
   name: "ViewToolbar",
+  components: {
+    ViewSettings
+  },
   props: {
     view: {
       required: true,
@@ -52,6 +65,7 @@ export default {
     }
   },
   data: () => ({
+    settings: false,
     centering: false,
     clipping: false
   }),
@@ -69,7 +83,6 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
       const widgetManager = this.view.getReferenceByName("widgetManager");
       widgetManager.setRenderer(this.view.getRenderer());
       this.clipper = vtkImplicitPlaneWidget.newInstance();
@@ -95,7 +108,6 @@ export default {
           this.view.getOpenglRenderWindow().setCursor("pointer");
           this.centering = false;
         });
-    });
   },
   methods: {
     resetCamera() {

@@ -25,6 +25,8 @@ import treeview from "./treeview";
 import ui from "./ui";
 import os from "os";
 
+import uuidv4 from "uuid/v4";
+
 Vue.use(Vuex);
 
 function createSource(proxyManager, dataset) {
@@ -40,6 +42,7 @@ export default new Vuex.Store({
     proxyManager: vtkProxyManager.newInstance({
       proxyConfiguration: ProxyConfig
     }),
+    vtkBackground: "#666",
     data: []
   },
   getters: {
@@ -48,16 +51,36 @@ export default new Vuex.Store({
   mutations: {
     registerData(state, object) {
       state.data.push(object);
+    },
+    setBackground(state, background) {
+      state.vtkBackground = background;
+    },
+    setObjectStyle(state, { id, style, value }) {
+      const index = state.data.findIndex(item => item.id === id);
+      console.log("style ", value, " index ", index);
+      let object = state.data[index].style;
+      for (let i = 0; i < style.length; ++i) {
+        let key = style[i];
+        if (key in object) {
+          object = object[key];
+        }
+      }
+      object = value;
     }
   },
   actions: {
-    loadModule(context, path) {
-      __non_webpack_require__(path)(this, os.platform());
+    loadConfigFile(context, path) {
+      const config = __non_webpack_require__(path);
+      if (config.modules) {
+        config.modules.forEach(module =>
+          __non_webpack_require__(module)(this, os.platform())
+        );
+      }
     },
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);
     },
-    addObject({ state, commit, dispatch }, { type, name, cpp, vtk }) {
+    addObject({ state, commit, dispatch }, { type, name, cpp, vtk, style }) {
       const proxyManager = state.proxyManager;
       let source = {};
       if (vtk.isA && vtk.isA("vtkPolyData")) {
@@ -70,9 +93,16 @@ export default new Vuex.Store({
           });
         });
       }
-      dispatch("treeview/registerObject", { type, name, cpp, source }).then(
-        object => commit("registerData", object)
-      );
+      const newObject = {
+        id: uuidv4(),
+        name,
+        cpp,
+        source,
+        type,
+        style
+      };
+      dispatch("treeview/registerObject", newObject);
+      commit("registerData", newObject);
       proxyManager.renderAllViews();
       return source;
     }
