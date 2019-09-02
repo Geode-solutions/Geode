@@ -1,51 +1,59 @@
 <template>
-  <v-layout column :class="$style.floatToolbar">
-    <v-tooltip left>
-      Settings
-      <template #activator="{ on }">
-        <v-btn icon dark small v-on="on" @click="settings = !settings">
-          <v-icon>fas fa-cog</v-icon>
+  <v-row dense :class="[$style.floatToolbar, 'flex-column']">
+    <v-col>
+      <v-tooltip left>
+        Settings
+        <template #activator="{ on }">
+          <v-btn icon dark small v-on="on" @click="settings = !settings">
+            <v-icon>fas fa-cog</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
+      <view-settings v-if="settings" />
+    </v-col>
+    <v-col>
+      <v-tooltip left>
+        Reset camera
+        <template #activator="{ on }">
+          <v-btn icon dark small v-on="on" @click="resetCamera()">
+            <v-icon>fas fa-expand</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </v-col>
+    <v-col>
+      <v-tooltip left>
+        Center camera
+        <template #activator="{ on }">
+          <v-btn icon dark small v-on="on" @click="centerCamera()">
+            <v-icon>fas fa-compress-arrows-alt</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </v-col>
+    <v-col>
+      <v-speed-dial direction="left">
+        <template #activator>
+          <v-tooltip left>
+            Clipping
+            <template #activator="{ on }">
+              <v-btn icon dark small v-on="on">
+                <v-icon>fas fa-crop-alt</v-icon>
+              </v-btn>
+            </template>
+          </v-tooltip>
+        </template>
+        <v-btn fab dark small color="primary" @click="clipping = !clipping">
+          <v-icon v-if="clipping">
+            fas fa-toggle-on
+          </v-icon>
+          <v-icon v-else>
+            fas fa-toggle-off
+          </v-icon>
         </v-btn>
-      </template>
-    </v-tooltip>
-    <view-settings v-if="settings" />
-    <v-tooltip left>
-      Reset camera
-      <template #activator="{ on }">
-        <v-btn icon dark small v-on="on" @click="resetCamera()">
-          <v-icon>fas fa-expand</v-icon>
-        </v-btn>
-      </template>
-    </v-tooltip>
-    <v-tooltip left>
-      Center camera
-      <template #activator="{ on }">
-        <v-btn icon dark small v-on="on" @click="centerCamera()">
-          <v-icon>fas fa-compress-arrows-alt</v-icon>
-        </v-btn>
-      </template>
-    </v-tooltip>
-    <v-speed-dial direction="left">
-      <template #activator>
-        <v-tooltip left>
-          Clipping
-          <template #activator="{ on }">
-            <v-btn icon dark small v-on="on">
-              <v-icon>fas fa-crop-alt</v-icon>
-            </v-btn>
-          </template>
-        </v-tooltip>
-      </template>
-      <v-btn fab dark small color="primary" @click="clipping = !clipping">
-        <v-icon v-if="clipping">
-          fas fa-toggle-on
-        </v-icon>
-        <v-icon v-else>
-          fas fa-toggle-off
-        </v-icon>
-      </v-btn>
-    </v-speed-dial>
-  </v-layout>
+      </v-speed-dial>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -128,7 +136,7 @@ export default {
 .floatToolbar {
   position: absolute;
   z-index: 1;
-  right: 10px;
+  right: 20px;
   top: 10px;
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 16px;
