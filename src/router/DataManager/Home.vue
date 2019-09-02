@@ -15,7 +15,7 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-layout justify-space-around align-center>
+  <v-row justify="space-around" align="center">
     <v-tooltip v-for="(action, index) in actions" :key="index" bottom>
       <template #activator="{ on }">
         <v-card
@@ -36,7 +36,7 @@ Lesser General Public License for more details.
       </template>
       <span>{{ action.tooltip }}</span>
     </v-tooltip>
-  </v-layout>
+  </v-row>
 </template>
 
 <script>
