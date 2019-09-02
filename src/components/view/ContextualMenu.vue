@@ -10,6 +10,7 @@
         v-for="(item, index) in contextualItems"
         :key="index"
         :btn-style="item.btnStyle"
+        :left="item.left"
         :item="selectedItem"
         @update="computeItems"
       />
@@ -102,6 +103,7 @@ export default {
           this.innerRadius +
           (Math.sin(angles[index]) * (this.innerRadius + this.radius)) / 2 -
           this.btnSize / 2;
+          item.left = left;
           item.btnStyle = {
             left: left + 'px',
             top: top + 'px',

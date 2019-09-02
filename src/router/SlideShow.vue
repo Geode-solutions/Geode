@@ -40,12 +40,16 @@ Lesser General Public License for more details.
       </section>
       <section>
         <p class="slidetitle">Specific needs for Geosciences</p>
-        <p> Multi-materials models </p>
-        <img src="@/assets/faraj_2016.png" height="200">
-        <p class="caption">Faraj et al., Computers & Graphics, 2016</p>
-        <p> Internal features (fractures, faults) </p>
-        <img src="@/assets/caumon_2009.png" height="200">
-        <p class="caption">Caumon et al., Math Geosci, 2009</p>
+        <div class="fragment">
+          <p> Multi-materials models </p>
+          <img src="@/assets/faraj_2016.png" height="200">
+          <p class="caption">Faraj et al., Computers & Graphics, 2016</p>
+        </div>
+        <div class="fragment">
+          <p> Internal features (fractures, faults) </p>
+          <img src="@/assets/caumon_2009.png" height="200">
+          <p class="caption">Caumon et al., Math Geosci, 2009</p>
+        </div>
       </section>
 
       <section>
@@ -132,7 +136,7 @@ Lesser General Public License for more details.
           <img src="@/assets/vue.png" height="300">
         </section>
         <section style="height: 100%">
-          <vtk-view view-type="View3D:toto"/>
+          <vtk-view view-type="View3D:UI"/>
         </section>
       </section>
 
@@ -143,7 +147,7 @@ Lesser General Public License for more details.
           <p>Corners, Lines, Surfaces, Blocks</p>
         </section>
         <section style="height: 100%">
-          <vtk-view />
+          <vtk-view view-type="View3D:assembly"/>
         </section>
       </section>
       <section>
@@ -153,8 +157,6 @@ Lesser General Public License for more details.
         </section>
         <section>
           <pre><code>
-            namespace geode
-            {
                 template < index_t dimension, template < index_t > class... Components >
                 class GeoRepresentation : public Components< dimension >...
                 {
@@ -164,7 +166,6 @@ Lesser General Public License for more details.
                 {
                   // methods
                 };
-            }
           </code></pre>
         </section>
       </section>
