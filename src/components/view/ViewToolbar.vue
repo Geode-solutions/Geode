@@ -91,7 +91,6 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
       const widgetManager = this.view.getReferenceByName("widgetManager");
       widgetManager.setRenderer(this.view.getRenderer());
       this.clipper = vtkImplicitPlaneWidget.newInstance();
@@ -117,7 +116,6 @@ export default {
           this.view.getOpenglRenderWindow().setCursor("pointer");
           this.centering = false;
         });
-    });
   },
   methods: {
     resetCamera() {

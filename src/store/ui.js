@@ -21,7 +21,7 @@ import Vue from "vue";
 
 function createContextualItem(type, icon, tooltip, component) {
   Vue.component(component.name + "ContextualItem", component);
-  return { type, icon, tooltip, component, top: "", left: "" };
+  return { type, icon, tooltip, component };
 }
 
 function initialContextualItems() {
@@ -35,26 +35,40 @@ export default {
   namespaced: true,
   state: {
     inputs: [],
-    contextualItems: initialContextualItems()
+    contextualItems: [] //initialContextualItems()
   },
   getters: {
     filteredInputs: state => id => {
       return state.inputs.filter(input => input.parent === id);
+    },
+    contextualItems: state => type => {
+      return state.contextualItems.filter(
+        item => (item.type === "all" || item.type === type) && item.visible
+      );
     }
   },
   mutations: {
-    registerContextualItem(state, { type, icon, tooltip, component }) {
-      state.contextualItems.push(
-        createContextualItem(type, icon, tooltip, component)
-      );
+    registerContextualItem(state, { type, component }) {
+      state.contextualItems.push({ type, component, visible: true });
     },
-    registerInputItem(state, { parent, name, action, icon, tooltip }) {
+    registerInputItem(
+      state,
+      { parent, name, action, icon, component, tooltip }
+    ) {
       state.inputs.push({
         parent,
         name,
         icon,
+        component,
         tooltip,
         action
+      });
+    },
+    setContextualItemVisibility(state, { name, value }) {
+      state.contextualItems.forEach(item => {
+        if (item.component.name === name) {
+          item.visible = value;
+        }
       });
     }
   }
