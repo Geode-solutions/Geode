@@ -22,20 +22,25 @@ Lesser General Public License for more details.
     mini-variant-width="60"
     class="secondary"
   >
-    <v-tooltip v-for="item in items" :key="item.tooltip" bottom>
-      <template #activator="{ on }">
-        <v-btn
-          class="grey--text mx-2"
-          icon
-          active-class="text--darken-2"
-          :to="item.route"
-          v-on="on"
-        >
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-btn>
-      </template>
-      <span>{{ item.tooltip }}</span>
-    </v-tooltip>
+    <v-row dense class="flex-column">
+      <v-col v-for="item in items" :key="item.tooltip">
+        <v-tooltip bottom>
+          <template #activator="{ on }">
+            <v-btn
+              class="grey--text mx-2"
+              style="left: 10px"
+              icon
+              active-class="text--darken-2"
+              :to="item.route"
+              v-on="on"
+            >
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-btn>
+          </template>
+          <span>{{ item.tooltip }}</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
   </v-navigation-drawer>
 </template>
 

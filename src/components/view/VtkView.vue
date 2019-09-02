@@ -1,14 +1,14 @@
 <template>
   <v-container class="pa-0 ma-0" fluid style="height: 100%">
-    <view-toolbar :view="view" />
     <v-row no-gutters class="fill-height">
+      <view-toolbar :view="view" />
       <v-col
         ref="vtkView"
         :style="{ 'z-index': '0', background: vtkBackground }"
         @click="view.activate()"
       />
+      <contextual-menu :view="view" />
     </v-row>
-    <contextual-menu :view="view" />
   </v-container>
 </template>
 
