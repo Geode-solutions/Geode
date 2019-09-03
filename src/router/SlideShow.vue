@@ -25,10 +25,21 @@ Lesser General Public License for more details.
         <span class="display-2" >Geode-solutions</span>
       </section>
       
-      <section class="sectiontitle">I - Why another data model dedicated to Geosciences?
+      <section>
+        <p class="sectiontitle">Introduction</p> 
+          Why another data model dedicated to Geosciences?
+      </section>
+      <section> 
+        <span class="slidetitle">The geomodeling goal is simulating physics</span><br/> 
+        <p>Geological model</p> 
+        <p class="sub-item">Describe geometry and properties</p> 
+        <!-- Add vertical space -->
+        <p>Physical simulations</p> 
+        <p class="sub-item">Response to these geometry and properties</p> 
+        <p class="message"> Meshes are used to transcribe geometry and properties to simulators</p>
       </section>
       <section>
-        <span class="slidetitle">BRep for CAD</span></br>
+        <span class="slidetitle">BRep for CAD</span><br/>
         <img src="@/assets/Plane-Model.jpg" height="300">
         <p class="caption">Copyright © 2019 NeoMetrix Technologies, Inc.</p>
 
@@ -58,26 +69,30 @@ Lesser General Public License for more details.
       </section>
       <section>
         <p class="slidetitle">Key points </p>
+        <p class="py-5">Need for a data model that is:</p>
         <ul>
-          <li>Geosciences</li>
-          <li>Industrial quality</li>
-          <li>Open source</li>
+          <li class="fragment">Dedicated for Geosciences</li>
+          <li class="fragment">Reliable (industrial quality)</li>
+          <li class="fragment">Handy (open, flexible, ...)</li>
         </ul>
+        <p class="message fragment py-5">No data model combine these three points.</p>
       </section>
       <section>
         <p class="slidetitle">Inheritance</p>
         <img src="@/assets/inheritance.svg" >
       </section>
 
-      <section class="sectiontitle">II - OpenGeode requirements</section>
+      <section class="sectiontitle">I - OpenGeode: requirements</section>
       <section>
         <section>
           <p class="slidetitle">Industrial quality</p>
           <p>What is needed?</p>
+          <p class="fragment">Reliability</p>
         </section>
         <section>
           <p class="slidetitle">Industrial quality</p>
           <p>Code quality</p>
+          <p class="sub-item">Modern programming (CMake, C++, ...)</p>
         </section>
         <section>
           <p class="slidetitle">Industrial quality</p>
@@ -91,60 +106,68 @@ Lesser General Public License for more details.
           <p class="slidetitle">Industrial quality</p>
           <p>Continuous Integration</p>
           <p>Continuous Deployment</p>
+          <p class="sub-item">Using GitHub and Azure DevOps</p>
         </section>
         <section>
           <p class="slidetitle">Industrial quality</p>
           <p>Export/Import</p>
+          <p class="sub-item">From/to standard mesh file formats (stl, ply, obj)</p>
+          <p class="sub-item">From/to geological standard RESQML</p>
         </section>
       </section>
       <section>
         <section>
-          <p class="slidetitle">Open source model</p>
+          <p class="slidetitle">Open model</p>  
           <p>Core code is freely accessible on GitHub</p>
-          <img src="@/assets/github.png" height="200"> Geode-solutions
-          <p>Very permissive License (MIT)</p>
+          <div class="align-center">
+            <img src="@/assets/github.png" height="200"> 
+             Geode-solutions
+          </div>
+          <p class="sub-item">Very permissive License (MIT)</p>
         </section>
         <section>
-          <p class="slidetitle">Open source model</p>
+          <p class="slidetitle">Open model</p>
           <p>Usage of open source dependancies:</p>
           <ul>
             <li>Async++: concurrency programming</li>
             <li>Bitsery: serialization of objects</li>
-            <li>others...</li>
+            <li>...</li>
           </ul>
         </section>
         <section>
-          <p class="slidetitle">Open source model</p>
-          <p>Create of an open source ecosystem:</p>
+          <p class="slidetitle">Open model</p>
+          <p>Create an open source ecosystem:</p>
           <ul>
             <li>Open the door to contributions</li>
             <li>Capitalize on open source projects</li>
           </ul>
-          <p>Can be seen as one wide task force</p> 
-          <img src="@/assets/groupe.jpg" height="300">
+          <p class="message">Increase task force</p> 
+          <img src="@/assets/groupe.jpg" height="200">
         </section>
       </section>
       <section>
         <p class="slidetitle">Extensibility</p>
-        <p>Modules</p>
-        <img src="@/assets/lego.jpg" height="300">
+        <p>Providing tools for creating modules</p>
+        <p class="sub-item">Template repository, flexible data structures</p>
+        <img src="@/assets/lego.jpg" height="250">
       </section>
       <section>
         <section>
           <p class="slidetitle">Redesigned UI<p>
-          <p>JS, web based</p>
-          <img src="@/assets/vue.png" height="300">
+          <p>Using JS and web-based technologies</p>
+          <img src="@/assets/vue.png" height="150" class="mx-5"> 
+          <img src="@/assets/vuetify.png" height="150" class="mx-5">
         </section>
         <section style="height: 100%">
           <vtk-view view-type="View3D:UI"/>
         </section>
       </section>
 
-      <section class="sectiontitle">III - OpenGeode data model</section>
+      <section class="sectiontitle">II - OpenGeode: data model</section>
       <section>
         <section>
-          <p class="slidetitle">Assembly of Components</p>
-          <p>Corners, Lines, Surfaces, Blocks</p>
+          <p class="slidetitle">Models are assemblies of Components</p>
+          <p class="sub-item">Corners, Lines, Surfaces, Blocks</p>
         </section>
         <section style="height: 100%">
           <vtk-view view-type="View3D:assembly"/>
@@ -172,22 +195,41 @@ Lesser General Public License for more details.
       <section>
         <p class="slidetitle">Non continuous indexing</p>
         <p>Using unordered maps of UUIDs</p>
-        <p>Enable easy model editing</p> 
+        <p class="message">Enable easy model editing</p> 
       </section>
 
-      <section class="sectiontitle">IV - Short demo</section>
+      <section class="sectiontitle">III - Short demo</section>
 
-      <section class="sectiontitle">Perspectives</section>
+      <section class="sectiontitle">Conclusions and perspectives</section>
+      <section>OpenGeode is designed to be a framework
+          <ul>
+            <li>Dedicated to Geosciences</li>
+            <li class="fragment">Handy & Open</li>
+            <li class="fragment">Reaching industrial quality</li>
+            <li class="fragment">Highly extensible</li>
+          </ul>
+      </section>
+
       <section>
         <p class="slidetitle">User Interface 
-        <p>still in progress</p>
-        <p>Soon open sourced</p>
-        <p>If you want to stay tuned, follow us</p>
-        <img src="@/assets/twitter.png" height="200"> @GeodeSolutions
+        <p>Still in progress</p>
+        <p class="fragment">Soon open sourced (by the end of 2019)</p>
+        <div class="fragment">
+          <p class="sub-item mt-5 pt-5">If you want to stay tuned, follow us</p>
+          <img src="@/assets/twitter.png" height="100"> @GeodeSolutions
+        </div>
       </section>
 
-            <section>
-        <p class="slidetitle">Thank you for your participation!</p>
+      <section>
+        <p class="slidetitle">So now...</p>
+        <p>We think we are fully equipped to
+        design tools for meshing/remeshing<br/>
+        <b>100% of valid geological models.</b></p>
+        <p class="message fragment">Planned for the next RINGMeeting!</p>
+      </section>
+      
+      <section>
+        <p class="slidetitle">Thank you for your participation</p>
       </section>
       
     </div>
@@ -224,6 +266,19 @@ export default {
 .reveal {
   font-family: Roboto;
 }
+.reveal section ul {
+  list-style: none; /* Remove default bullets */
+}
+
+.reveal section ul li::before {
+  content: "\25A0";  
+  color: var(--v-primary-base); 
+  display: inline-block;
+  width: 2em; 
+  margin-left: -2em; 
+}
+
+
 .reveal .controls {
   color: var(--v-primary-base);
 }
@@ -253,6 +308,15 @@ export default {
 .slidetitle {
 	font-weight: bolder;
   color: var(--v-primary-base);
+}
+.sub-item {
+  font-size:smaller;
+	font-weight: light;
+  color : slategrey;
+}
+.message {
+  font-size:larger;
+  color : var(--v-primary-base);
 }
 .caption {
 	font-size: 14px;
