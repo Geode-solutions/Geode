@@ -95,13 +95,16 @@ export default {
         (item, index) => (frags * index * Math.PI) / 180
       );
       this.contextualItems.forEach((item, index) => {
-        item.left = 
-            this.innerRadius +
-           (Math.cos(angles[index]) * (this.innerRadius + this.radius) / 2) - this.btnSize / 2;
-        item.top = 
-           this.innerRadius +
-           (Math.sin(angles[index]) * (this.innerRadius + this.radius) / 2) - this.btnSize / 2;
-      });   }
+        item.left =
+          this.innerRadius +
+          (Math.cos(angles[index]) * (this.innerRadius + this.radius)) / 2 -
+          this.btnSize / 2;
+        item.top =
+          this.innerRadius +
+          (Math.sin(angles[index]) * (this.innerRadius + this.radius)) / 2 -
+          this.btnSize / 2;
+      });
+    }
   }
 };
 </script>

@@ -8,7 +8,11 @@
         @click="view.activate()"
       />
     </v-row>
-    <contextual-menu v-if="displayMenu" :selected-item="selectedItem" :position="menuPosition" />
+    <contextual-menu
+      v-if="displayMenu"
+      :selected-item="selectedItem"
+      :position="menuPosition"
+    />
   </v-container>
 </template>
 
@@ -129,7 +133,7 @@ export default {
               }
             });
           });
-        });      
+        });
     },
     resizeCurrentView() {
       this.view.getOpenglRenderWindow().setSize(0, 0);

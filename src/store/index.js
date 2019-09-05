@@ -65,19 +65,22 @@ export default new Vuex.Store({
         }
       }
       let key = style[style.length - 1];
-        if (key in object) {
+      if (key in object) {
         object[key] = value;
       }
     }
   },
   actions: {
-    loadConfigFile(context, path) {
+    loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
         config.modules.forEach(module =>
-          __non_webpack_require__(module)(this, os.platform())
+          dispatch("loadModule", module)
         );
       }
+    },
+    loadModule(context, module) {
+      __non_webpack_require__(module)(this, os.platform());
     },
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);
