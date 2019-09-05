@@ -57,15 +57,17 @@ export default new Vuex.Store({
     },
     setObjectStyle(state, { id, style, value }) {
       const index = state.data.findIndex(item => item.id === id);
-      console.log("style ", value, " index ", index);
       let object = state.data[index].style;
-      for (let i = 0; i < style.length; ++i) {
+      for (let i = 0; i < style.length - 1; ++i) {
         let key = style[i];
         if (key in object) {
           object = object[key];
         }
       }
-      object = value;
+      let key = style[style.length - 1];
+        if (key in object) {
+        object[key] = value;
+      }
     }
   },
   actions: {

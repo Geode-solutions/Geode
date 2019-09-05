@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 ma-0" fluid style="height: 100%">
+  <v-container class="pa-0 ma-0" fluid style="height: 100%" @click="viewClick">
     <view-toolbar :view="view" />
     <v-row no-gutters class="fill-height">
       <v-col

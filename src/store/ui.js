@@ -16,7 +16,7 @@
  */
 
 import Hide from "@/components/view/config/Hide";
-import Rename from "@/components/view/config/Rename";
+//import Rename from "@/components/view/config/Rename";
 import Vue from "vue";
 
 function createContextualItem(type, icon, tooltip, component) {
@@ -24,12 +24,12 @@ function createContextualItem(type, icon, tooltip, component) {
   return { type, icon, tooltip, component };
 }
 
-function initialContextualItems() {
-  let items = [];
-  items.push(createContextualItem("all", "fas fa-eye-slash", "Hide", Hide));
-  items.push(createContextualItem("all", "fas fa-edit", "Rename", Rename));
-  return items;
-}
+// function initialContextualItems() {
+//   let items = [];
+//   items.push(createContextualItem("all", "fas fa-eye-slash", "Hide", Hide));
+//   items.push(createContextualItem("all", "fas fa-edit", "Rename", Rename));
+//   return items;
+//}
 
 export default {
   namespaced: true,
