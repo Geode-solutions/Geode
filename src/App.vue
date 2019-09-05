@@ -43,7 +43,7 @@ Lesser General Public License for more details.
         <input
           ref="input"
           type="file"
-          accept=".node"
+          accept=".js"
           multiple
           style="display:none;"
           @change="loadModule"
