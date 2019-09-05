@@ -23,9 +23,9 @@ Lesser General Public License for more details.
       clipped
       @transitionend="hide_drawer"
     >
-      <v-row class="fill-height">
+      <v-row class="fill-height flex-nowrap">
         <route-selector visible="visible" />
-        <object-tree />
+        <object-tree style="overflow-x: hidden"/>
       </v-row>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
