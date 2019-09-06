@@ -215,10 +215,10 @@ Lesser General Public License for more details.
           <p class="slidetitle">Assembly design</p>
           <p>Mixin pattern</p>
         <section>
-          <img class="elevation-10" src="@/assets/code1.svg">
+          <img class="elevation-10" src="@/assets/code1.png">
         </section>
         <section>
-          <img class="elevation-10" src="@/assets/code2.svg">
+          <img class="elevation-10" src="@/assets/code2.png">
         </section>
       </section>
       <section>
@@ -244,7 +244,7 @@ Lesser General Public License for more details.
 
 
       <section class="slidetitle">Executed code
-        TODO
+        <img class="elevation-10" src="@/assets/script_code.png">
       </section>
 
       <section class="sectiontitle">Conclusions and perspectives</section>
