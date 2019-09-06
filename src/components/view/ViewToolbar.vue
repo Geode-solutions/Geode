@@ -90,31 +90,28 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      const widgetManager = this.view.getReferenceByName("widgetManager");
-      widgetManager.setRenderer(this.view.getRenderer());
-      this.clipper = vtkImplicitPlaneWidget.newInstance();
-      this.clipper.getWidgetState().setNormal(0, 0, 1);
-      //widget.placeWidget(cone.getOutputData().getBounds());
+    const widgetManager = this.view.getReferenceByName("widgetManager");
+    widgetManager.setRenderer(this.view.getRenderer());
+    this.clipper = vtkImplicitPlaneWidget.newInstance();
+    this.clipper.getWidgetState().setNormal(0, 0, 1);
+    console.log(this.clipper);
+    console.log(widgetManager);
+    //widget.placeWidget(cone.getOutputData().getBounds());
 
-      this.view
-        .getRenderWindow()
-        .getInteractor()
-        .onLeftButtonPress(callData => {
-          const renderer = this.view.getRenderer();
-          if (!this.centering || renderer !== callData.pokedRenderer) {
-            return;
-          }
-          const picker = vtkPicker.newInstance();
-          picker.pick(
-            [callData.position.x, callData.position.y, 0.0],
-            renderer
-          );
-          this.view.focusTo(...picker.getPickPosition());
-          this.view.getOpenglRenderWindow().setCursor("pointer");
-          this.centering = false;
-        });
-    });
+    this.view
+      .getRenderWindow()
+      .getInteractor()
+      .onLeftButtonPress(callData => {
+        const renderer = this.view.getRenderer();
+        if (!this.centering || renderer !== callData.pokedRenderer) {
+          return;
+        }
+        const picker = vtkPicker.newInstance();
+        picker.pick([callData.position.x, callData.position.y, 0.0], renderer);
+        this.view.focusTo(...picker.getPickPosition());
+        this.view.getOpenglRenderWindow().setCursor("pointer");
+        this.centering = false;
+      });
   },
   methods: {
     resetCamera() {

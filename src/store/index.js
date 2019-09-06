@@ -56,25 +56,30 @@ export default new Vuex.Store({
     },
     setObjectStyle(state, { id, style, value }) {
       const index = state.data.findIndex(item => item.id === id);
-      console.log("style ", value, " index ", index);
       let object = state.data[index].style;
-      for (let i = 0; i < style.length; ++i) {
+      for (let i = 0; i < style.length - 1; ++i) {
         let key = style[i];
         if (key in object) {
           object = object[key];
         }
       }
-      object = value;
+      let key = style[style.length - 1];
+      if (key in object) {
+        object[key] = value;
+      }
     }
   },
   actions: {
-    loadConfigFile(context, path) {
+    loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
         config.modules.forEach(module =>
-          __non_webpack_require__(module)(this, os.platform())
+          dispatch("loadModule", module)
         );
       }
+    },
+    loadModule(context, module) {
+      __non_webpack_require__(module)(this, os.platform());
     },
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);

@@ -23,9 +23,9 @@ Lesser General Public License for more details.
       clipped
       @transitionend="hide_drawer"
     >
-      <v-row class="fill-height">
+      <v-row class="fill-height flex-nowrap">
         <route-selector visible="visible" />
-        <object-tree />
+        <object-tree style="overflow-x: hidden"/>
       </v-row>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">
@@ -36,6 +36,18 @@ Lesser General Public License for more details.
           </v-icon>
         </v-app-bar-nav-icon>
         <v-toolbar-title>Geode-solutions</v-toolbar-title>
+      </v-btn>
+      <v-spacer />
+      <v-btn text icon @click="showInput">
+        <v-icon>fas fa-layer-group</v-icon>
+        <input
+          ref="input"
+          type="file"
+          accept=".js"
+          multiple
+          style="display:none;"
+          @change="loadModule"
+        />
       </v-btn>
     </v-app-bar>
     <v-content>
@@ -90,6 +102,17 @@ export default {
   methods: {
     hide_drawer() {
       this.$root.$emit("hide_drawer");
+    },
+    showInput() {
+      const input = this.$refs.input;
+      input.value = null;
+      input.click();
+    },
+    loadModule() {
+      const files = this.$refs.input.files;
+      for (let i = 0; i < files.length; i++) {
+        this.$store.dispatch("loadModule", files.item(i).path);
+      }
     }
   }
 };

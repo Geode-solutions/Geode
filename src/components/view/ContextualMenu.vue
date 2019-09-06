@@ -9,8 +9,9 @@
         :is="item.component"
         v-for="(item, index) in contextualItems"
         :key="index"
-        :btn-style="item.btnStyle"
         :left="item.left"
+        :top="item.top"
+        :btn-size="btnSize"
         :item="selectedItem"
         @update="computeItems"
       />
@@ -34,7 +35,7 @@ export default {
   },
   data: () => ({
     width: 300,
-    ringWidth: 80,
+    ringWidth: 60,
     diskStyle: {
       width: "",
       height: "",
@@ -86,7 +87,6 @@ export default {
       this.innerDiskStyle.bottom = this.position.y - this.innerRadius + "px";
     },
     computeItems() {
-      console.log("new items");
       this.contextualItems = this.$store.getters["ui/contextualItems"](
         this.selectedItem.type
       );
@@ -95,21 +95,14 @@ export default {
         (item, index) => (frags * index * Math.PI) / 180
       );
       this.contextualItems.forEach((item, index) => {
-        let left =
+        item.left =
           this.innerRadius +
           (Math.cos(angles[index]) * (this.innerRadius + this.radius)) / 2 -
           this.btnSize / 2;
-        let top =
+        item.top =
           this.innerRadius +
           (Math.sin(angles[index]) * (this.innerRadius + this.radius)) / 2 -
           this.btnSize / 2;
-          item.left = left;
-          item.btnStyle = {
-            left: left + 'px',
-            top: top + 'px',
-            width: this.btnSize + 'px',
-            height: this.btnSize + 'px'
-          }
       });
     }
   }
