@@ -56,7 +56,7 @@ function getViewType(view) {
 // ----------------------------------------------------------------------------
 
 function getView(proxyManager, viewType) {
-  console.log("viewType ", viewType)
+  console.log("viewType ", viewType);
   const [type, name] = viewType.split(":");
   let view = null;
   const views = proxyManager.getViews();
@@ -71,12 +71,11 @@ function getView(proxyManager, viewType) {
       }
     }
   }
-  console.log("view ", view)
+  console.log("view ", view);
 
   if (!view) {
     view = proxyManager.createProxy("Views", type, { name });
-  console.log("view2 ", view)
-
+    console.log("view2 ", view);
 
     // Make sure represention is created for new view
     proxyManager
@@ -100,7 +99,7 @@ function getView(proxyManager, viewType) {
       view.set({ widgetManager }, true);
     }
   }
-  console.log("view ", view)
+  console.log("view ", view);
 
   return view;
 }

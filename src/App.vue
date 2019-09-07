@@ -25,7 +25,7 @@ Lesser General Public License for more details.
     >
       <v-row class="fill-height flex-nowrap">
         <route-selector visible="visible" />
-        <object-tree style="overflow-x: hidden"/>
+        <object-tree style="overflow-x: hidden" />
       </v-row>
     </v-navigation-drawer>
     <v-app-bar app dark clipped-left color="primary">

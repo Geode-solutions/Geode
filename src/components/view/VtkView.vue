@@ -46,18 +46,18 @@ export default {
     ContextualMenu,
     ViewToolbar
   },
-  data: () => ({
-    selectedItem: "",
-    displayMenu: false,
-    menuPosition: {},
-    view: {}
-  }),
   props: {
     viewType: {
       type: String,
       default: DEFAULT_VIEW_TYPE
     }
   },
+  data: () => ({
+    selectedItem: "",
+    displayMenu: false,
+    menuPosition: {},
+    view: {}
+  }),
   computed: {
     ...mapState(["proxyManager", "data", "vtkBackground"])
   },
@@ -145,7 +145,12 @@ export default {
     resizeCurrentView() {
       this.view.getOpenglRenderWindow().setSize(0, 0);
       this.view.resize();
-      console.log("size ", this.viewType, " ", this.view.getOpenglRenderWindow().getSize());
+      console.log(
+        "size ",
+        this.viewType,
+        " ",
+        this.view.getOpenglRenderWindow().getSize()
+      );
     },
     viewClick() {
       if (this.displayMenu) {
