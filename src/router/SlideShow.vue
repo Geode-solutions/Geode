@@ -33,11 +33,7 @@ Lesser General Public License for more details.
         <span class="display-2">Geode-solutions</span>
       </section>
 
-      <section>
-        <p class="sectiontitle">Introduction</p>
-        Why another data model dedicated to mesh Geosciences?
-      </section>
-      <section>
+      <!-- <section>
         <span class="slidetitle"
           >Geomodeling goal is to understand subsurface</span
         ><br />
@@ -62,6 +58,10 @@ Lesser General Public License for more details.
           Meshes discretize model geometry and properties for numerical
           computations
         </p>
+      </section> -->
+      <section>
+        <p class="sectiontitle">Introduction</p>
+        Why another <b>data model</b> dedicated to <b>mesh</b> Geosciences?
       </section>
       <section>
         <span class="slidetitle">Boundary Representations</span><br />
@@ -92,6 +92,7 @@ Lesser General Public License for more details.
 
       <section>
         <p class="slidetitle">SDK providing data model for geological BReps</p>
+        <div class="fragment">
         <v-layout class="justify-space-between align-center">
           <v-flex xs4>
             <img src="@/assets/skua.png" />
@@ -111,7 +112,19 @@ Lesser General Public License for more details.
             <img src="@/assets/logo_ring.png" />
           </v-flex>
           <v-flex xs4>
-            <p>China Geological Survey (CGS)</p>
+            <p>China Geological Survey</p>
+          </v-flex>
+        </v-layout>
+        </div>
+        <v-layout class="justify-space-between align-center">
+          <v-flex xs4>
+            <p class="sub-item fragment">Industrial, proprietary</p>
+          </v-flex>
+          <v-flex xs4>
+            <p class="sub-item fragment">Open source, research</p>
+          </v-flex>
+          <v-flex xs4>
+            <p class="sub-item fragment">Open source,<br/> doc in Chinese</p>
           </v-flex>
         </v-layout>
       </section>
@@ -134,14 +147,12 @@ Lesser General Public License for more details.
           class="justify-center"
         >
           <img
-            class="fragment fade-out"
-            data-fragment-index="0"
+            class="fragment fade-in-then-out"
             style="position:absolute;top:0;left:0;"
             src="@/assets/attempt.svg"
           />
           <img
             class="fragment"
-            data-fragment-index="0"
             style="position:absolute;top:0;left:0;"
             src="@/assets/inheritance.svg"
           />
@@ -183,20 +194,20 @@ Lesser General Public License for more details.
           <div class="fragment">
             <p>Continuous Deployment</p>
             <p class="sub-item">Using GitHub and Azure DevOps</p>
-            <img src="@/assets/cd.png" height="100" />
-            <img src="@/assets/Azure-pipelines.png" height="100" />
+            <img src="@/assets/cd.png" height="100" class="mx-5" />
+            <img src="@/assets/Azure-pipelines.png" height="100"  class="mx-5"  />
           </div>
         </section>
       </section>
       <section>
         <p class="slidetitle">Open model</p>
         <section>
-          <p>Complete framework is accessible on GitHub</p>
+          <p><b>Complete</b> framework is accessible on GitHub</p>
           <p class="sub-item">Very permissive License (MIT)</p>
           <img src="@/assets/Github_GS.png" height="300" />
         </section>
         <section>
-          <p>Usage of open source dependencies:</p>
+          <p>Usage of open source dependencies</p>
           <ul>
             <li>Async++: concurrency programming</li>
             <li>Bitsery: serialization of objects</li>
@@ -205,7 +216,7 @@ Lesser General Public License for more details.
           </ul>
         </section>
         <section>
-          <p>Create an open source ecosystem:</p>
+          <p>Create an open source ecosystem</p>
           <ul>
             <li>Open the door to contributions</li>
             <li>Capitalize on open source projects</li>
@@ -231,6 +242,10 @@ Lesser General Public License for more details.
           <p>Using JavaScript and web-based technologies</p>
           <img src="@/assets/vue.png" height="150" class="mx-5" />
           <img src="@/assets/vuetify.jpeg" height="150" class="mx-5" />
+          <v-layout class="justify-space-around">
+            <img src="@/assets/vue_used_by.png" height="50" class="mx-5" />
+            <img src="@/assets/vuetify_used_by.png" height="50" class="mx-5" />
+          </v-layout> 
         </section>
         <section style="height: 100%">
           <vtk-view view-type="View3D:UI" />
@@ -269,7 +284,7 @@ Lesser General Public License for more details.
       <section>
         <p class="slidetitle">Assembly design</p>
         <p>Mixin pattern</p>
-          <img class="elevation-10" src="@/assets/mixins.png" height="300" />
+          <img class="elevation-10 fragment" src="@/assets/mixins.png" height="300" />
       </section>
       <section>
         <p class="slidetitle">Ease model editing</p>
