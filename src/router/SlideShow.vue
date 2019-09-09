@@ -193,7 +193,7 @@ Lesser General Public License for more details.
           <img src="@/assets/ci.png" height="200" />
           <div class="fragment">
             <p>Continuous Deployment</p>
-            <p class="sub-item">Using GitHub and Azure DevOps</p>
+            <p class="sub-item">Using ]Azure DevOps</p>
             <img src="@/assets/cd.png" height="100" class="mx-5" />
             <img src="@/assets/Azure-pipelines.png" height="100"  class="mx-5"  />
           </div>
@@ -237,7 +237,7 @@ Lesser General Public License for more details.
         </div>
       </section>
       <section>
-        <p class="slidetitle">Redesigned UI</p>
+        <p class="slidetitle">Redesigned User Interface</p>
         <section>
           <p>Using JavaScript and web-based technologies</p>
           <img src="@/assets/vue.png" height="150" class="mx-5" />
@@ -276,9 +276,6 @@ Lesser General Public License for more details.
             <li>Faults</li>
             <li>...</li>
           </ul>
-        </section>
-        <section style="height: 100%">
-          <vtk-view view-type="View3D:assembly" />
         </section>
       </section>
       <section>
