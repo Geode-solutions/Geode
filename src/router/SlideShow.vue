@@ -265,7 +265,7 @@ Lesser General Public License for more details.
 
       <section class="sectiontitle">II - OpenGeode features</section>
       <section>
-        <p class="slidetitle">Objects are assemblies of Components</p>
+        <p class="slidetitle">Models are assemblies of Components</p>
         <section>
           <p>Provided components</p>
           <ul>
