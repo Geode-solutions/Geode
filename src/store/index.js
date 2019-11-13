@@ -74,9 +74,7 @@ export default new Vuex.Store({
     loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
-        config.modules.forEach(module =>
-          dispatch("loadModule", module)
-        );
+        config.modules.forEach(module => dispatch("loadModule", module));
       }
     },
     loadModule(context, module) {
@@ -104,7 +102,8 @@ export default new Vuex.Store({
         cpp,
         source,
         type,
-        style
+        style,
+        vtk
       };
       dispatch("treeview/registerObject", newObject);
       commit("registerData", newObject);

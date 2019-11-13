@@ -1,6 +1,7 @@
 <template>
-  <div>
+  <div ref="content" style="z-index:8">
     <div
+      ref="ring"
       :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"
       :style="diskStyle"
       @click.stop
@@ -21,9 +22,23 @@
 </template>
 
 <script>
+import detachable from "vuetify/lib/mixins/detachable";
+
+function directive(e, el, close) {
+  if (!el.contains(e.target)) {
+    close(e);
+  }
+}
+
 export default {
   name: "ContextualMenu",
+  mixins: [detachable],
   props: {
+    value: {
+      default: false,
+      required: true,
+      type: Boolean
+    },
     position: {
       required: true,
       type: Object
@@ -67,11 +82,32 @@ export default {
     }
   },
   mounted() {
+    this.isBooted = true;
     this.computeSizes();
     this.computePositions();
     this.computeItems();
+    this.configClose();
+  },
+  destroyed() {
+    const app = document.querySelector("[data-app]");
+    app.removeEventListener("click", this.clickOutside, true);
+    app.removeEventListener("contextmenu", this.clickOutside, true);
   },
   methods: {
+    close() {
+      this.$emit("input", false);
+    },
+    configClose() {
+      const onClick = e => {
+        if (!this.$refs.ring.contains(e.target)) {
+          this.close();
+        }
+      };
+      const app = document.querySelector("[data-app]");
+      app.addEventListener("click", onClick, true);
+      app.addEventListener("contextmenu", onClick, true);
+      this.clickOutside = onClick;
+    },
     computeSizes() {
       this.diskStyle.width = this.width + "px";
       this.diskStyle.height = this.width + "px";

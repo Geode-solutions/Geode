@@ -15,17 +15,30 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-treeview
-    v-model="selectedTree"
-    :items="items"
-    :active.sync="active"
-    activatable
-    selectable
-  />
+  <div>
+    <v-treeview
+      v-model="selectedTree"
+      :items="items"
+      :active.sync="active"
+      activatable
+      selectable
+    >
+      <template slot="label" slot-scope="{ item }">
+        <span @contextmenu="openContextualMenu($event, item)">{{ item.name }}</span>
+      </template>
+    </v-treeview>
+    <contextual-menu
+      v-if="displayMenu"
+      v-model="displayMenu"
+      :selected-item="selectedItem"
+      :position="menuPosition"
+    />
+  </div>
 </template>
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import ContextualMenu from "./ContextualMenu";
 
 function toggleVisibility(proxyManager, source, visible) {
   proxyManager
@@ -35,6 +48,17 @@ function toggleVisibility(proxyManager, source, visible) {
 }
 
 export default {
+  name: "ObjectTree",
+  components: {
+    ContextualMenu
+  },
+  data: () => ({
+    selectedItem: {},
+    displayMenu: false,
+    menuPosition: {},
+    left: 0,
+    top: 0
+  }),
   computed: {
     ...mapState(["proxyManager", "data"]),
     ...mapGetters({
@@ -77,6 +101,10 @@ export default {
         .forEach(item => this.setVisibility(item.source, true));
     }
   },
+  mounted() {
+    this.left = this.$el.getBoundingClientRect().width;
+    this.top = this.$el.getBoundingClientRect().height;
+  },
   methods: {
     setVisibility(source, visible) {
       if (source.isA) {
@@ -88,6 +116,14 @@ export default {
           );
         });
       }
+    },
+    openContextualMenu(event, item) {
+      if (!item.type) {
+        return;
+      }
+      this.selectedItem = item;
+      this.menuPosition = { x: this.left + event.x + 50, y: this.top - event.y };
+      this.displayMenu = true;
     }
   }
 };

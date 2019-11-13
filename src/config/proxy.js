@@ -76,9 +76,7 @@ function createDefaultView(classFactory, ui, options, props) {
 export default {
   definitions: {
     Proxy: {
-      LookupTable: createProxyDefinition(vtkLookupTableProxy, [], [], {
-        presetName: "Default (Cool to Warm)"
-      }),
+      LookupTable: createProxyDefinition(vtkLookupTableProxy),
       PiecewiseFunction: createProxyDefinition(vtkPiecewiseFunctionProxy)
     },
     Sources: {

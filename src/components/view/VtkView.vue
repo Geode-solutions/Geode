@@ -1,5 +1,5 @@
 <template>
-  <v-container class="pa-0 ma-0" fluid style="height: 100%" @click="viewClick">
+  <v-container class="pa-0 ma-0" fluid style="height: 100%">
     <view-toolbar :view="view" />
     <v-row no-gutters class="fill-height">
       <v-col
@@ -10,6 +10,7 @@
     </v-row>
     <contextual-menu
       v-if="displayMenu"
+      v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
     />
@@ -20,7 +21,7 @@
 import { mapGetters, mapState } from "vuex";
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import viewHelper from "@/config/viewHelper";
-import ContextualMenu from "./ContextualMenu";
+import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
 
 function checkSourceId(source, sourceID) {
@@ -46,9 +47,10 @@ export default {
     ViewToolbar
   },
   data: () => ({
-    selectedItem: "",
+    selectedItem: {},
     displayMenu: false,
-    menuPosition: {}
+    menuPosition: {},
+    left: 0
   }),
   computed: {
     ...mapState(["proxyManager", "data", "vtkBackground"]),
@@ -59,6 +61,7 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.view.setContainer(this.$refs.vtkView);
+      this.left = this.$refs.vtkView.getBoundingClientRect().left;
       this.configContextualMenu();
 
       window.addEventListener("resize", this.resizeCurrentView);
@@ -129,7 +132,10 @@ export default {
                 console.log("FOUND ", item.name);
                 this.selectedItem = item;
                 this.displayMenu = true;
-                this.menuPosition = callData.position;
+                this.menuPosition = {
+                  x: this.left + callData.position.x,
+                  y: callData.position.y
+                };
               }
             });
           });
@@ -138,11 +144,6 @@ export default {
     resizeCurrentView() {
       this.view.getOpenglRenderWindow().setSize(0, 0);
       this.view.resize();
-    },
-    viewClick() {
-      if (this.displayMenu) {
-        this.displayMenu = false;
-      }
     }
   }
 };
