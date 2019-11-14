@@ -23,6 +23,7 @@
 
 <script>
 import detachable from "vuetify/lib/mixins/detachable";
+import dependent from "vuetify/lib/mixins/dependent";
 
 function directive(e, el, close) {
   if (!el.contains(e.target)) {
@@ -32,7 +33,7 @@ function directive(e, el, close) {
 
 export default {
   name: "ContextualMenu",
-  mixins: [detachable],
+  mixins: [detachable,dependent],
   props: {
     value: {
       default: false,
@@ -86,7 +87,7 @@ export default {
     this.computeSizes();
     this.computePositions();
     this.computeItems();
-    this.configClose();
+    setTimeout(this.configClose, 0);
   },
   destroyed() {
     const app = document.querySelector("[data-app]");
@@ -99,7 +100,7 @@ export default {
     },
     configClose() {
       const onClick = e => {
-        if (!this.$refs.ring.contains(e.target)) {
+        if (![this.$refs.ring,...this.getOpenDependentElements()].some( el => el.contains(e.target))) {
           this.close();
         }
       };
