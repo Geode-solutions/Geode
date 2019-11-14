@@ -33,7 +33,7 @@ function directive(e, el, close) {
 
 export default {
   name: "ContextualMenu",
-  mixins: [detachable,dependent],
+  mixins: [detachable, dependent],
   props: {
     value: {
       default: false,
@@ -100,7 +100,11 @@ export default {
     },
     configClose() {
       const onClick = e => {
-        if (![this.$refs.ring,...this.getOpenDependentElements()].some( el => el.contains(e.target))) {
+        if (
+          ![this.$refs.ring, ...this.getOpenDependentElements()].some(el =>
+            el.contains(e.target)
+          )
+        ) {
           this.close();
         }
       };

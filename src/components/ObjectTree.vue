@@ -24,7 +24,9 @@ Lesser General Public License for more details.
       selectable
     >
       <template slot="label" slot-scope="{ item }">
-        <span @contextmenu="openContextualMenu($event, item)">{{ item.name }}</span>
+        <span @contextmenu="openContextualMenu($event, item)">{{
+          item.name
+        }}</span>
       </template>
     </v-treeview>
     <contextual-menu
@@ -122,7 +124,10 @@ export default {
         return;
       }
       this.selectedItem = item;
-      this.menuPosition = { x: this.left + event.x + 50, y: this.top - event.y };
+      this.menuPosition = {
+        x: this.left + event.x + 50,
+        y: this.top - event.y
+      };
       this.displayMenu = true;
     }
   }
