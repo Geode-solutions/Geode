@@ -23,11 +23,12 @@ Lesser General Public License for more details.
       clipped
       @transitionend="hide_drawer"
     >
-      <v-row class="fill-height flex-nowrap">
+      <v-row class="fill-height flex-nowrap" @contextmenu.ctrl="dialog = true">
         <route-selector visible="visible" />
         <object-tree style="overflow-x: hidden" />
       </v-row>
     </v-navigation-drawer>
+    <create-point v-model="dialog" />
     <v-app-bar app dark clipped-left color="primary">
       <v-btn text class="pa-0" @click="visible = !visible">
         <v-app-bar-nav-icon>
@@ -57,6 +58,7 @@ Lesser General Public License for more details.
 </template>
 
 <script>
+import CreatePoint from "@/components/CreatePoint";
 import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
 import vtkListenerHelper from "@/ListenerHelper";
@@ -65,10 +67,12 @@ import { remote } from "electron";
 
 export default {
   components: {
+    CreatePoint,
     RouteSelector,
     ObjectTree
   },
   data: () => ({
+    dialog: false,
     visible: true
   }),
   computed: {
