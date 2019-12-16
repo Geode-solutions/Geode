@@ -22,6 +22,7 @@ Lesser General Public License for more details.
       :active.sync="active"
       activatable
       selectable
+      dense
     >
       <template slot="label" slot-scope="{ item }">
         <span @contextmenu="openContextualMenu($event, item)">{{
@@ -34,6 +35,7 @@ Lesser General Public License for more details.
       v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
+      :views="views"
     />
   </div>
 </template>
@@ -91,6 +93,9 @@ export default {
         }
       });
       return selections;
+    },
+    views() {
+      return this.proxyManager.getViews();
     }
   },
   watch: {

@@ -13,17 +13,22 @@
       v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
+      :views="[view]"
     />
   </v-container>
 </template>
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import vtkImplicitPlaneWidget from "vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget";
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import viewHelper from "@/config/viewHelper";
 import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
-
+import vtkActor from "vtk.js/Sources/Rendering/Core/Actor";
+import vtkConeSource from "vtk.js/Sources/Filters/Sources/ConeSource";
+import vtkMapper from "vtk.js/Sources/Rendering/Core/Mapper";
+import vtkPlane from "vtk.js/Sources/Common/DataModel/Plane";
 function checkSourceId(source, sourceID) {
   if (source.isA) {
     return source.getProxyId() == sourceID;
@@ -96,6 +101,16 @@ export default {
       ];
 
       this.resizeCurrentView();
+
+      const widgetManager = this.view.getReferenceByName("widgetManager");
+      if (widgetManager) {
+        const enabled = widgetManager.getPickingEnabled();
+        widgetManager.setRenderer(this.view.getRenderer());
+        // workaround to disable picking if previously disabled
+        if (!enabled) {
+          widgetManager.disablePicking();
+        }
+      }
     });
   },
   beforeDestroy() {

@@ -31,34 +31,12 @@
         </template>
       </v-tooltip>
     </v-col>
-    <v-col>
-      <v-speed-dial direction="left">
-        <template #activator>
-          <v-tooltip left>
-            Clipping
-            <template #activator="{ on }">
-              <v-btn icon dark small v-on="on">
-                <v-icon>fas fa-crop-alt</v-icon>
-              </v-btn>
-            </template>
-          </v-tooltip>
-        </template>
-        <v-btn fab dark small color="primary" @click="clipping = !clipping">
-          <v-icon v-if="clipping">
-            fas fa-toggle-on
-          </v-icon>
-          <v-icon v-else>
-            fas fa-toggle-off
-          </v-icon>
-        </v-btn>
-      </v-speed-dial>
-    </v-col>
   </v-row>
 </template>
 
 <script>
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
-import vtkImplicitPlaneWidget from "vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget";
+import { mapGetters, mapState } from "vuex";
 import ViewSettings from "./ViewSettings";
 
 export default {
@@ -74,45 +52,31 @@ export default {
   },
   data: () => ({
     settings: false,
-    centering: false,
-    clipping: false
+    centering: false
   }),
-  watch: {
-    clipping: function(value) {
-      const widgetManager = this.view.getReferenceByName("widgetManager");
-      if (value) {
-        widgetManager.enablePicking();
-        console.log(widgetManager.addWidget(this.clipper));
-      } else {
-        widgetManager.removeWidget(this.clipper);
-        widgetManager.disablePicking();
-      }
-      this.view.renderLater();
-    }
+  computed: {
+    ...mapState(["proxyManager"])
   },
   mounted() {
-    const widgetManager = this.view.getReferenceByName("widgetManager");
-    widgetManager.setRenderer(this.view.getRenderer());
-    this.clipper = vtkImplicitPlaneWidget.newInstance();
-    this.clipper.getWidgetState().setNormal(0, 0, 1);
-    console.log(this.clipper);
-    console.log(widgetManager);
-    //widget.placeWidget(cone.getOutputData().getBounds());
-
-    this.view
-      .getRenderWindow()
-      .getInteractor()
-      .onLeftButtonPress(callData => {
-        const renderer = this.view.getRenderer();
-        if (!this.centering || renderer !== callData.pokedRenderer) {
-          return;
-        }
-        const picker = vtkPicker.newInstance();
-        picker.pick([callData.position.x, callData.position.y, 0.0], renderer);
-        this.view.focusTo(...picker.getPickPosition());
-        this.view.getOpenglRenderWindow().setCursor("pointer");
-        this.centering = false;
-      });
+    this.$nextTick(() => {
+      this.view
+        .getRenderWindow()
+        .getInteractor()
+        .onLeftButtonPress(callData => {
+          const renderer = this.view.getRenderer();
+          if (!this.centering || renderer !== callData.pokedRenderer) {
+            return;
+          }
+          const picker = vtkPicker.newInstance();
+          picker.pick(
+            [callData.position.x, callData.position.y, 0.0],
+            renderer
+          );
+          this.view.focusTo(...picker.getPickPosition());
+          this.view.getOpenglRenderWindow().setCursor("pointer");
+          this.centering = false;
+        });
+    });
   },
   methods: {
     resetCamera() {

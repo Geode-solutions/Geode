@@ -15,22 +15,23 @@
  *
  */
 
-import Vue from "vue";
-import Vuex from "vuex";
-import vtkProxyManager from "vtk.js/Sources/Proxy/Core/ProxyManager";
-import ProxyConfig from "@/config/proxy";
-import viewHelper from "@/config/viewHelper";
-import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
-import treeview from "./treeview";
-import ui from "./ui";
-import os from "os";
+import ProxyConfig from '@/config/proxy';
+import {DEFAULT_VIEW_TYPE} from '@/config/viewConstants';
+import viewHelper from '@/config/viewHelper';
+import os from 'os';
+import uuidv4 from 'uuid/v4';
+import vtkProxyManager from 'vtk.js/Sources/Proxy/Core/ProxyManager';
+import vtkImplicitPlaneWidget from 'vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget';
+import Vue from 'vue';
+import Vuex from 'vuex';
 
-import uuidv4 from "uuid/v4";
+import treeview from './treeview';
+import ui from './ui';
 
 Vue.use(Vuex);
 
 function createSource(proxyManager, dataset) {
-  const source = proxyManager.createProxy("Sources", "TrivialProducer");
+  const source = proxyManager.createProxy('Sources', 'TrivialProducer');
   source.setInputData(dataset);
   source.activate();
   proxyManager.createRepresentationInAllViews(source);
@@ -39,10 +40,9 @@ function createSource(proxyManager, dataset) {
 
 export default new Vuex.Store({
   state: {
-    proxyManager: vtkProxyManager.newInstance({
-      proxyConfiguration: ProxyConfig
-    }),
-    vtkBackground: "#666",
+    proxyManager:
+        vtkProxyManager.newInstance({proxyConfiguration: ProxyConfig}),
+    vtkBackground: '#666',
     data: []
   },
   getters: {
@@ -55,7 +55,7 @@ export default new Vuex.Store({
     setBackground(state, background) {
       state.vtkBackground = background;
     },
-    setObjectStyle(state, { id, style, value }) {
+    setObjectStyle(state, {id, style, value}) {
       const index = state.data.findIndex(item => item.id === id);
       let object = state.data[index].style;
       for (let i = 0; i < style.length - 1; ++i) {
@@ -71,22 +71,22 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    loadConfigFile({ dispatch }, path) {
+    loadConfigFile({dispatch}, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
-        config.modules.forEach(module => dispatch("loadModule", module));
+        config.modules.forEach(module => dispatch('loadModule', module));
       }
     },
     loadModule(context, module) {
       __non_webpack_require__(module)(this, os.platform());
     },
-    registerObjectType({ dispatch }, type) {
-      dispatch("treeview/registerObjectType", type);
+    registerObjectType({dispatch}, type) {
+      dispatch('treeview/registerObjectType', type);
     },
-    addObject({ state, commit, dispatch }, { type, name, cpp, vtk, style }) {
+    addObject({state, commit, dispatch}, {type, name, cpp, vtk, style}) {
       const proxyManager = state.proxyManager;
       let source = {};
-      if (vtk.isA && vtk.isA("vtkPolyData")) {
+      if (vtk.isA && vtk.isA('vtkPolyData')) {
         source = createSource(proxyManager, vtk);
       } else {
         Object.keys(vtk).forEach(key => {
@@ -96,23 +96,20 @@ export default new Vuex.Store({
           });
         });
       }
-      const newObject = {
-        id: uuidv4(),
-        name,
-        cpp,
-        source,
-        type,
-        style,
-        vtk
+      let objectStyle = style || {};
+      objectStyle.clipper = {
+        widget: vtkImplicitPlaneWidget.newInstance(),
+        clip: false,
+        display: true,
+        fixed: false
       };
-      dispatch("treeview/registerObject", newObject);
-      commit("registerData", newObject);
+      const newObject =
+          {id: uuidv4(), name, cpp, source, type, style: objectStyle, vtk};
+      dispatch('treeview/registerObject', newObject);
+      commit('registerData', newObject);
       proxyManager.renderAllViews();
       return source;
     }
   },
-  modules: {
-    treeview,
-    ui
-  }
+  modules: {treeview, ui}
 });

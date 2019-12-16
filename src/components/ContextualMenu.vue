@@ -14,6 +14,7 @@
         :top="item.top"
         :btn-size="btnSize"
         :item="selectedItem"
+        :views="views"
         @update="computeItems"
       />
     </div>
@@ -23,6 +24,7 @@
 
 <script>
 import detachable from "vuetify/lib/mixins/detachable";
+import { mapState } from "vuex";
 import dependent from "vuetify/lib/mixins/dependent";
 
 function directive(e, el, close) {
@@ -47,6 +49,10 @@ export default {
     selectedItem: {
       required: true,
       type: Object
+    },
+    views: {
+      required: true,
+      type: Array
     }
   },
   data: () => ({
@@ -69,6 +75,7 @@ export default {
     contextualItems: []
   }),
   computed: {
+    ...mapState(["proxyManager"]),
     radius() {
       return this.width / 2;
     },
