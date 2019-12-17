@@ -31,12 +31,34 @@
         </template>
       </v-tooltip>
     </v-col>
+    <v-col>
+      <v-tooltip left>
+        Distance
+        <template #activator="{ on }">
+          <v-btn
+            icon
+            dark
+            small
+            :class="distanceStyle"
+            v-on="on"
+            @click="pickDistance()"
+          >
+            <v-icon>fas fa-ruler</v-icon>
+          </v-btn>
+        </template>
+      </v-tooltip>
+    </v-col>
+      <v-snackbar v-model="distanceVisible" :timeout="timeout">
+        Distance = {{ distanceValue }}
+      </v-snackbar>
   </v-row>
 </template>
 
 <script>
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
-import { mapGetters, mapState } from "vuex";
+import vtkDistanceWidget from "vtk.js/Sources/Widgets/Widgets3D/DistanceWidget";
+import vtkBoundingBox from "vtk.js/Sources/Common/DataModel/BoundingBox";
+import { mapState } from "vuex";
 import ViewSettings from "./ViewSettings";
 
 export default {
@@ -51,11 +73,18 @@ export default {
     }
   },
   data: () => ({
+    timeout: 0,
     settings: false,
-    centering: false
+    centering: false,
+    distanceWidget: {},
+    distanceVisible: false,
+    distanceValue: 0
   }),
   computed: {
-    ...mapState(["proxyManager"])
+    ...mapState(["proxyManager"]),
+    distanceStyle() {
+       return this.distanceVisible ? "teal" : "";
+    }
   },
   mounted() {
     this.$nextTick(() => {
@@ -80,15 +109,37 @@ export default {
   },
   methods: {
     resetCamera() {
-      if (this.view) {
-        this.view.resetCamera();
-      }
+      this.view.resetCamera();
     },
     centerCamera() {
-      if (this.view) {
-        this.view.getOpenglRenderWindow().setCursor("default");
-        this.centering = true;
+      this.view.getOpenglRenderWindow().setCursor("default");
+      this.centering = true;
+    },
+    pickDistance() {
+      this.distanceVisible = !this.distanceVisible;
+      const widgetManager = this.view.getReferenceByName("widgetManager");
+      if (this.distanceVisible) {
+        const box = vtkBoundingBox.newInstance();
+        for (let [key, value] of Object.entries(
+          this.proxyManager.getReferenceByName("r2svMapping")
+        )) {
+          if (value.viewId === this.view.getProxyId()) {
+            box.addBox(this.proxyManager.getProxyById(key));
+          }
+        }
+        this.distanceWidget = vtkDistanceWidget.newInstance();
+        this.distanceWidget.placeWidget(box.getBounds());
+        widgetManager.addWidget(this.distanceWidget);
+        widgetManager.enablePicking();
+        widgetManager.grabFocus(this.distanceWidget);
+        this.distanceWidget.getWidgetState().onModified(() => {
+          this.distanceValue = this.distanceWidget.getDistance();
+        });
+      } else {
+        widgetManager.removeWidget(this.distanceWidget);
+        widgetManager.disablePicking();
       }
+      this.view.modified();
     }
   }
 };
@@ -102,5 +153,8 @@ export default {
   top: 10px;
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 16px;
+}
+.teal {
+  background-color: var(--v-primary-base);
 }
 </style>

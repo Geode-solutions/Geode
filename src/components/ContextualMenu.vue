@@ -27,12 +27,6 @@ import detachable from "vuetify/lib/mixins/detachable";
 import { mapState } from "vuex";
 import dependent from "vuetify/lib/mixins/dependent";
 
-function directive(e, el, close) {
-  if (!el.contains(e.target)) {
-    close(e);
-  }
-}
-
 export default {
   name: "ContextualMenu",
   mixins: [detachable, dependent],
