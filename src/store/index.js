@@ -34,7 +34,54 @@ function createSource(proxyManager, dataset) {
   const source = proxyManager.createProxy('Sources', 'TrivialProducer');
   source.setInputData(dataset);
   source.activate();
-  proxyManager.createRepresentationInAllViews(source);
+  proxyManager.getViews().forEach(v => {
+    const rep = proxyManager.getRepresentation(source, v);
+    const mapper = rep.getMapper();
+    const ShaderReplacements = [];
+    ShaderReplacements.push({
+      shaderType: 'Vertex',
+      originalValue: '//VTK::Clip::Dec',
+      replaceFirst: true,
+      replacementValue: [
+        'uniform int numClipPlanes;                 ',
+        'uniform vec4 clipPlanes[6];                ',
+        'varying float clipDistancesVSOutput[6];    '
+      ]
+    });
+    ShaderReplacements.push({
+      shaderType: 'Vertex',
+      originalValue: '//VTK::Clip::Impl',
+      replaceFirst: true,
+      replacementValue: [
+        'for (int planeNum = 0; planeNum < 6; planeNum++) {',
+        '  if (planeNum >= numClipPlanes) { break; }       ',
+        '  bool clipped = dot(clipPlanes[planeNum], vertexMC) < 0.0;',
+        '  clipDistancesVSOutput[planeNum] = clipped ? 1.0 : 0.0;',
+        '}                                                 '
+      ]
+    });
+    ShaderReplacements.push({
+      shaderType: 'Fragment',
+      originalValue: '//VTK::Clip::Dec',
+      replaceFirst: true,
+      replacementValue: [
+        'uniform int numClipPlanes;             ',
+        'varying float clipDistancesVSOutput[6];',
+      ]
+    });
+    ShaderReplacements.push({
+      shaderType: 'Fragment',
+      originalValue: '//VTK::Clip::Impl',
+      replaceFirst: true,
+      replacementValue: [
+        'for (int planeNum = 0; planeNum < 6; planeNum++) {',
+        '  if (planeNum >= numClipPlanes) { break; }       ',
+        '  if (clipDistancesVSOutput[planeNum] > 0.0) discard;',
+        '}                                                 '
+      ]
+    });
+    mapper.getViewSpecificProperties()['OpenGL'] = {ShaderReplacements};
+  });
   return source;
 }
 
@@ -96,7 +143,7 @@ export default new Vuex.Store({
           });
         });
       }
-      let objectStyle = style || {};
+      let objectStyle = style || {};
       objectStyle.clipper = {
         widget: vtkImplicitPlaneWidget.newInstance(),
         clip: false,
