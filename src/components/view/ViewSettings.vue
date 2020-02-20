@@ -22,15 +22,32 @@ Lesser General Public License for more details.
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "ViewSettings",
+  props: {
+    view: {
+      required: true,
+      type: String
+    }
+  },
   computed: {
+    ...mapState("network", ["client"]),
     color: {
       get() {
         return this.$store.state.vtkBackground;
       },
       set(value) {
         this.$store.commit("setBackground", value);
+        this.client
+          .getConnection()
+          .getSession()
+          .call("opengeode.ui.background", [
+            this.view,
+            value.r / 255,
+            value.g / 255,
+            value.b / 255
+          ]);
       }
     }
   }

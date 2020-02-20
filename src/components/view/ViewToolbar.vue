@@ -9,7 +9,7 @@
           </v-btn>
         </template>
       </v-tooltip>
-      <view-settings v-if="settings" />
+      <view-settings v-if="settings" :view="view" />
     </v-col>
     <v-col>
       <v-tooltip left>
@@ -31,7 +31,7 @@
         </template>
       </v-tooltip>
     </v-col>
-    <v-col>
+    <!-- <v-col>
       <v-tooltip left>
         Distance
         <template #activator="{ on }">
@@ -48,9 +48,9 @@
         </template>
       </v-tooltip>
     </v-col>
-      <v-snackbar v-model="distanceVisible" :timeout="timeout">
-        Distance = {{ distanceValue }}
-      </v-snackbar>
+    <v-snackbar v-model="distanceVisible" :timeout="timeout">
+      Distance = {{ distanceValue }}
+    </v-snackbar> -->
   </v-row>
 </template>
 
@@ -69,7 +69,7 @@ export default {
   props: {
     view: {
       required: true,
-      type: Object
+      type: String
     }
   },
   data: () => ({
@@ -82,34 +82,14 @@ export default {
   }),
   computed: {
     ...mapState(["proxyManager"]),
+    ...mapState("network", ["client"]),
     distanceStyle() {
-       return this.distanceVisible ? "teal" : "";
+      return this.distanceVisible ? "teal" : "";
     }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.view
-        .getRenderWindow()
-        .getInteractor()
-        .onLeftButtonPress(callData => {
-          const renderer = this.view.getRenderer();
-          if (!this.centering || renderer !== callData.pokedRenderer) {
-            return;
-          }
-          const picker = vtkPicker.newInstance();
-          picker.pick(
-            [callData.position.x, callData.position.y, 0.0],
-            renderer
-          );
-          this.view.focusTo(...picker.getPickPosition());
-          this.view.getOpenglRenderWindow().setCursor("pointer");
-          this.centering = false;
-        });
-    });
   },
   methods: {
     resetCamera() {
-      this.view.resetCamera();
+      this.client.getRemote().ViewPort.resetCamera(this.view);
     },
     centerCamera() {
       this.view.getOpenglRenderWindow().setCursor("default");

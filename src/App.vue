@@ -52,7 +52,7 @@ Lesser General Public License for more details.
       </v-btn>
     </v-app-bar>
     <v-content>
-      <router-view />
+      <router-view v-if="ok" />
     </v-content>
   </v-app>
 </template>
@@ -61,7 +61,6 @@ Lesser General Public License for more details.
 import CreatePoint from "@/components/CreatePoint";
 import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
-import vtkListenerHelper from "@/ListenerHelper";
 import { mapState } from "vuex";
 import { remote } from "electron";
 
@@ -76,7 +75,8 @@ export default {
     visible: true
   }),
   computed: {
-    ...mapState(["proxyManager"])
+    ...mapState(["proxyManager"]),
+    ...mapState("network", ["ok"])
   },
   mounted() {
     this.$store.dispatch(
@@ -84,22 +84,15 @@ export default {
       remote.app.getPath("userData") + "/config.json"
     );
 
-    this.renderListener = vtkListenerHelper.newInstance(
-      () => {
-        if (!this.loadingState) {
-          this.proxyManager.autoAnimateViews();
-        }
-      },
-      () =>
-        [].concat(
-          this.proxyManager.getSources(),
-          this.proxyManager.getRepresentations(),
-          this.proxyManager.getViews()
-        )
-    );
-    this.pxmSub = this.proxyManager.onProxyRegistrationChange(
-      this.renderListener.resetListeners
-    );
+    const config = Object.assign({}, this.$store.getters["network/config"], {
+      sessionURL: "ws://localhost:1234/ws"
+    });
+    // if (this.token) {
+    //   config.secret = this.token;
+    // }
+
+    this.$store.commit("network/set_config", config);
+    this.$store.dispatch("network/connect");
   },
   methods: {
     hide_drawer() {

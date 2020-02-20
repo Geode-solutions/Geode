@@ -1,11 +1,10 @@
 <template>
   <v-container class="pa-0 ma-0" fluid style="height: 100%">
-    <view-toolbar :view="view" />
-    <v-row no-gutters class="fill-height">
+    <view-toolbar :view="viewId" />
+    <v-row v-resize="resizeCurrentView" no-gutters class="fill-height">
       <v-col
         ref="vtkView"
-        :style="{ 'z-index': '0', background: vtkBackground }"
-        @click="view.activate()"
+        style="overflow: hidden; height: calc(100vh - 64px); position: relative; z-index: 0;"
       />
     </v-row>
     <contextual-menu
@@ -21,9 +20,13 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
-import viewHelper from "@/config/viewHelper";
+import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
+import vtkRemoteView from "vtk.js/Sources/Rendering/Misc/RemoteView";
+// import viewHelper from "@/config/viewHelper";
+import vtkOrientationMarkerWidget from "vtk.js/Sources/Interaction/Widgets/OrientationMarkerWidget";
 import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
+import NorthActor from "@/config/northActor";
 
 function checkSourceId(source, sourceID) {
   if (source.isA) {
@@ -51,69 +54,102 @@ export default {
     selectedItem: {},
     displayMenu: false,
     menuPosition: {},
-    left: 0
+    left: 0,
+    viewId: "0"
   }),
   computed: {
     ...mapState(["proxyManager", "data", "vtkBackground"]),
+    ...mapState("network", ["client"]),
     ...mapGetters({
-      view: "view"
+      //showRenderingStats: 'PVL_VIEW_STATS',
+      //stillQuality: 'PVL_VIEW_QUALITY_STILL',
+      //interactiveQuality: 'PVL_VIEW_QUALITY_INTERACTIVE',
+      //stillRatio: 'PVL_VIEW_RATIO_STILL',
+      //interactiveRatio: 'PVL_VIEW_RATIO_INTERACTIVE',
+      //mouseThrottle: 'PVL_VIEW_MOUSE_THROTTLE',
+      //maxFPS: 'PVL_VIEW_FPS_MAX',
+      //activeSources: 'PVL_PROXY_SELECTED_IDS',
     })
   },
   mounted() {
-    this.$nextTick(() => {
-      this.view.setContainer(this.$refs.vtkView);
-      this.left = this.$refs.vtkView.getBoundingClientRect().left;
-      this.configContextualMenu();
+    this.view = vtkRemoteView.newInstance();
+    this.view.setRpcWheelEvent("opengeode.mouse.wheel");
+    this.view.setContainer(this.$refs.vtkView);
+    const session = this.client.getConnection().getSession();
+    this.view.setSession(session);
+    this.view.setViewId(this.viewId);
+    // this.orientationWidget = vtkOrientationMarkerWidget.newInstance({
+    //   actor: NorthActor.newInstance(),
+    //   interactor: this.view.getInteractor()
+    // });
+    // this.orientationWidget.setEnabled(true);
+    // this.orientationWidget.setViewportCorner(
+    //   vtkOrientationMarkerWidget.Corners.BOTTOM_LEFT
+    // );
+    // this.orientationWidget.setViewportSize(0.1);
+    // this.orientationWidget.updateMarkerOrientation();
+    
+    // this.view.getInteractorStyle().onRemoteMouseEvent(e => {
+    //   console.log("click", e);
+    //   if (session && e.buttonRight && e.action == "down") {
+    //     session
+    //       .call("geode.mouse.menu", [e])
+    //       .then(result => console.log(result));
+    //   }
+    // });
+    /*
+    this.left = this.$refs.vtkView.getBoundingClientRect().left;
+    this.configContextualMenu();
 
-      window.addEventListener("resize", this.resizeCurrentView);
-      this.$root.$on("hide_drawer", this.resizeCurrentView);
+    this.$root.$on("hide_drawer", this.resizeCurrentView);
 
-      this.subscriptions = [
-        () => window.removeEventListener("resize", this.resizeCurrentView),
-        this.proxyManager.onProxyRegistrationChange(() => {
-          // When proxy change, just re-render widget
-          viewHelper.updateViewsAnnotation(this.proxyManager);
-          this.$forceUpdate();
-        }).unsubscribe,
+    this.subscriptions = [
+      () => window.removeEventListener("resize", this.resizeCurrentView),
+      this.proxyManager.onProxyRegistrationChange(() => {
+        // When proxy change, just re-render widget
+        viewHelper.updateViewsAnnotation(this.proxyManager);
+        this.$forceUpdate();
+      }).unsubscribe,
 
-        this.view.onModified(() => {
-          this.$forceUpdate();
-        }).unsubscribe,
+      this.view.onModified(() => {
+        this.$forceUpdate();
+      }).unsubscribe,
 
-        this.proxyManager.onActiveViewChange(() => {
-          this.$forceUpdate();
-        }).unsubscribe,
+      this.proxyManager.onActiveViewChange(() => {
+        this.$forceUpdate();
+      }).unsubscribe,
 
-        this.proxyManager.onActiveSourceChange(() => {
-          if (this.view.bindRepresentationToManipulator) {
-            const activeSource = this.proxyManager.getActiveSource();
-            const representation = this.view
-              .getRepresentations()
-              .find(r => r.getInput() === activeSource);
-            this.view.bindRepresentationToManipulator(representation);
-            this.view.updateWidthHeightAnnotation();
-          }
-        }).unsubscribe
-      ];
-
-      this.resizeCurrentView();
-
-      const widgetManager = this.view.getReferenceByName("widgetManager");
-      if (widgetManager) {
-        const enabled = widgetManager.getPickingEnabled();
-        widgetManager.setRenderer(this.view.getRenderer());
-        // workaround to disable picking if previously disabled
-        if (!enabled) {
-          widgetManager.disablePicking();
+      this.proxyManager.onActiveSourceChange(() => {
+        if (this.view.bindRepresentationToManipulator) {
+          const activeSource = this.proxyManager.getActiveSource();
+          const representation = this.view
+            .getRepresentations()
+            .find(r => r.getInput() === activeSource);
+          this.view.bindRepresentationToManipulator(representation);
+          this.view.updateWidthHeightAnnotation();
         }
-      }
-    });
+      }).unsubscribe
+    ];
+
+    this.resizeCurrentView();
+
+    // const widgetManager = this.view.getReferenceByName("widgetManager");
+    // if (widgetManager) {
+    // const enabled = widgetManager.getPickingEnabled();
+    // widgetManager.setRenderer(this.view.getRenderer());
+    // workaround to disable picking if previously disabled
+    // if (!enabled) {
+    // widgetManager.disablePicking();
+    // }
+    // }
+    // });*/
   },
   beforeDestroy() {
-    this.view.setContainer(null);
-    while (this.subscriptions.length) {
-      this.subscriptions.pop()();
-    }
+    this.view.delete();
+    this.view = null;
+    // while (this.subscriptions.length) {
+    //   this.subscriptions.pop()();
+    // }
   },
   methods: {
     configContextualMenu() {
@@ -153,8 +189,10 @@ export default {
         });
     },
     resizeCurrentView() {
-      this.view.getOpenglRenderWindow().setSize(0, 0);
-      this.view.resize();
+      if (this.view) {
+        this.view.resize();
+        this.view.render();
+      }
     }
   }
 };

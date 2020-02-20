@@ -15,39 +15,22 @@
  *
  */
 
-import ProxyConfig from '@/config/proxy';
-import {DEFAULT_VIEW_TYPE} from '@/config/viewConstants';
-import viewHelper from '@/config/viewHelper';
-import os from 'os';
-import uuidv4 from 'uuid/v4';
-import vtkProxyManager from 'vtk.js/Sources/Proxy/Core/ProxyManager';
-import vtkImplicitPlaneWidget from 'vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget';
-import Vue from 'vue';
-import Vuex from 'vuex';
+import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
+import os from "os";
+// import vtkImplicitPlaneWidget from
+// 'vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget';
+import Vue from "vue";
+import Vuex from "vuex";
 
-import treeview from './treeview';
-import ui from './ui';
+import busy from "./busy";
+import network from "./network";
+import treeview from "./treeview";
+import ui from "./ui";
 
 Vue.use(Vuex);
 
-function createSource(proxyManager, dataset) {
-  const source = proxyManager.createProxy('Sources', 'TrivialProducer');
-  source.setInputData(dataset);
-  source.activate();
-  proxyManager.createRepresentationInAllViews(source);
-  return source;
-}
-
 export default new Vuex.Store({
-  state: {
-    proxyManager:
-        vtkProxyManager.newInstance({proxyConfiguration: ProxyConfig}),
-    vtkBackground: '#666',
-    data: []
-  },
-  getters: {
-    view: state => viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE)
-  },
+  state: { vtkBackground: { r: 0.4, g: 0.4, b: 0.4 }, data: [] },
   mutations: {
     registerData(state, object) {
       state.data.push(object);
@@ -55,7 +38,7 @@ export default new Vuex.Store({
     setBackground(state, background) {
       state.vtkBackground = background;
     },
-    setObjectStyle(state, {id, style, value}) {
+    setObjectStyle(state, { id, style, value }) {
       const index = state.data.findIndex(item => item.id === id);
       let object = state.data[index].style;
       for (let i = 0; i < style.length - 1; ++i) {
@@ -71,45 +54,30 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    loadConfigFile({dispatch}, path) {
+    loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
-        config.modules.forEach(module => dispatch('loadModule', module));
+        config.modules.forEach(module => dispatch("loadModule", module));
       }
     },
     loadModule(context, module) {
       __non_webpack_require__(module)(this, os.platform());
     },
-    registerObjectType({dispatch}, type) {
-      dispatch('treeview/registerObjectType', type);
+    registerObjectType({ dispatch }, type) {
+      dispatch("treeview/registerObjectType", type);
     },
-    addObject({state, commit, dispatch}, {type, name, cpp, vtk, style}) {
-      const proxyManager = state.proxyManager;
-      let source = {};
-      if (vtk.isA && vtk.isA('vtkPolyData')) {
-        source = createSource(proxyManager, vtk);
-      } else {
-        Object.keys(vtk).forEach(key => {
-          source[key] = [];
-          vtk[key].forEach(dataset => {
-            source[key].push(createSource(proxyManager, dataset));
-          });
-        });
-      }
-      let objectStyle = style || {};
-      objectStyle.clipper = {
-        widget: vtkImplicitPlaneWidget.newInstance(),
-        clip: false,
-        display: true,
-        fixed: false
-      };
-      const newObject =
-          {id: uuidv4(), name, cpp, source, type, style: objectStyle, vtk};
-      dispatch('treeview/registerObject', newObject);
-      commit('registerData', newObject);
-      proxyManager.renderAllViews();
-      return source;
+    addObject({ commit, dispatch }, { type, name, id, style }) {
+      let objectStyle = style || {};
+      // objectStyle.clipper = {
+      //   widget: vtkImplicitPlaneWidget.newInstance(),
+      //   clip: false,
+      //   display: true,
+      //   fixed: false
+      // };
+      const newObject = { id, name, type, style: objectStyle };
+      dispatch("treeview/registerObject", newObject);
+      commit("registerData", newObject);
     }
   },
-  modules: {treeview, ui}
+  modules: { busy, network, treeview, ui }
 });
