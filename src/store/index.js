@@ -15,14 +15,10 @@
  *
  */
 
-import { DEFAULT_VIEW_TYPE } from "@/config/viewConstants";
 import os from "os";
-// import vtkImplicitPlaneWidget from
-// 'vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget';
 import Vue from "vue";
 import Vuex from "vuex";
 
-import busy from "./busy";
 import network from "./network";
 import treeview from "./treeview";
 import ui from "./ui";
@@ -30,10 +26,14 @@ import ui from "./ui";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: { vtkBackground: { r: 0.4, g: 0.4, b: 0.4 }, data: [] },
+  state: {
+    vtkBackground: { r: 0.4, g: 0.4, b: 0.4 },
+    data: []
+  },
   mutations: {
     registerData(state, object) {
       state.data.push(object);
+      console.log(object.id)
     },
     setBackground(state, background) {
       state.vtkBackground = background;
@@ -53,6 +53,11 @@ export default new Vuex.Store({
       }
     }
   },
+  getters: {
+    object: state => id => {
+      return state.data.find(item => item.id == id);
+    }
+  },
   actions: {
     loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
@@ -68,16 +73,10 @@ export default new Vuex.Store({
     },
     addObject({ commit, dispatch }, { type, name, id, style }) {
       let objectStyle = style || {};
-      // objectStyle.clipper = {
-      //   widget: vtkImplicitPlaneWidget.newInstance(),
-      //   clip: false,
-      //   display: true,
-      //   fixed: false
-      // };
       const newObject = { id, name, type, style: objectStyle };
       dispatch("treeview/registerObject", newObject);
       commit("registerData", newObject);
     }
   },
-  modules: { busy, network, treeview, ui }
+  modules: { network, treeview, ui }
 });

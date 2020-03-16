@@ -14,7 +14,6 @@
         :top="item.top"
         :btn-size="btnSize"
         :item="selectedItem"
-        :views="views"
         @update="computeItems"
       />
     </div>
@@ -43,10 +42,6 @@ export default {
     selectedItem: {
       required: true,
       type: Object
-    },
-    views: {
-      required: true,
-      type: Array
     }
   },
   data: () => ({
@@ -69,7 +64,6 @@ export default {
     contextualItems: []
   }),
   computed: {
-    ...mapState(["proxyManager"]),
     radius() {
       return this.width / 2;
     },

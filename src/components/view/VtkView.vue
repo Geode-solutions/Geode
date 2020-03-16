@@ -12,37 +12,15 @@
       v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
-      :views="[view]"
     />
   </v-container>
 </template>
 
 <script>
-import { mapGetters, mapState } from "vuex";
-import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
-import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
+import { mapActions, mapGetters, mapState } from "vuex";
 import vtkRemoteView from "vtk.js/Sources/Rendering/Misc/RemoteView";
-// import viewHelper from "@/config/viewHelper";
-import vtkOrientationMarkerWidget from "vtk.js/Sources/Interaction/Widgets/OrientationMarkerWidget";
 import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
-import NorthActor from "@/config/northActor";
-
-function checkSourceId(source, sourceID) {
-  if (source.isA) {
-    return source.getProxyId() == sourceID;
-  } else {
-    let result = false;
-    Object.keys(source).forEach(key => {
-      source[key].forEach(item => {
-        if (item.isA && item.getProxyId() == sourceID) {
-          result = true;
-        }
-      });
-    });
-    return result;
-  }
-}
 
 export default {
   name: "VtkView",
@@ -54,12 +32,11 @@ export default {
     selectedItem: {},
     displayMenu: false,
     menuPosition: {},
-    left: 0,
-    viewId: "0"
+    viewId: "-1"
   }),
   computed: {
-    ...mapState(["proxyManager", "data", "vtkBackground"]),
     ...mapState("network", ["client"]),
+    ...mapGetters("treeview", ["selections"]),
     ...mapGetters({
       //showRenderingStats: 'PVL_VIEW_STATS',
       //stillQuality: 'PVL_VIEW_QUALITY_STILL',
@@ -78,116 +55,39 @@ export default {
     const session = this.client.getConnection().getSession();
     this.view.setSession(session);
     this.view.setViewId(this.viewId);
-    // this.orientationWidget = vtkOrientationMarkerWidget.newInstance({
-    //   actor: NorthActor.newInstance(),
-    //   interactor: this.view.getInteractor()
-    // });
-    // this.orientationWidget.setEnabled(true);
-    // this.orientationWidget.setViewportCorner(
-    //   vtkOrientationMarkerWidget.Corners.BOTTOM_LEFT
-    // );
-    // this.orientationWidget.setViewportSize(0.1);
-    // this.orientationWidget.updateMarkerOrientation();
-    
-    // this.view.getInteractorStyle().onRemoteMouseEvent(e => {
-    //   console.log("click", e);
-    //   if (session && e.buttonRight && e.action == "down") {
-    //     session
-    //       .call("geode.mouse.menu", [e])
-    //       .then(result => console.log(result));
-    //   }
-    // });
-    /*
+
+    this.view.getInteractorStyle().onRemoteMouseEvent(e => {
+      if (e.buttonRight && e.action == "down") {
+        const { width, height } = this.$refs.vtkView.getBoundingClientRect();
+        const x = e.x * width;
+        const y = e.y * height;
+        this.call({
+          command: "opengeode.mouse.menu",
+          args: [x, y, this.selections]
+        }).then(id => {
+          if(id != 0)
+          {
+          const item = this.$store.getters.object(id);
+          console.log("FOUND ", item.name);
+          this.selectedItem = item;
+          this.displayMenu = true;
+          this.menuPosition = {
+            x: this.left + x,
+            y
+          };
+          }
+        });
+      }
+    });
     this.left = this.$refs.vtkView.getBoundingClientRect().left;
-    this.configContextualMenu();
-
     this.$root.$on("hide_drawer", this.resizeCurrentView);
-
-    this.subscriptions = [
-      () => window.removeEventListener("resize", this.resizeCurrentView),
-      this.proxyManager.onProxyRegistrationChange(() => {
-        // When proxy change, just re-render widget
-        viewHelper.updateViewsAnnotation(this.proxyManager);
-        this.$forceUpdate();
-      }).unsubscribe,
-
-      this.view.onModified(() => {
-        this.$forceUpdate();
-      }).unsubscribe,
-
-      this.proxyManager.onActiveViewChange(() => {
-        this.$forceUpdate();
-      }).unsubscribe,
-
-      this.proxyManager.onActiveSourceChange(() => {
-        if (this.view.bindRepresentationToManipulator) {
-          const activeSource = this.proxyManager.getActiveSource();
-          const representation = this.view
-            .getRepresentations()
-            .find(r => r.getInput() === activeSource);
-          this.view.bindRepresentationToManipulator(representation);
-          this.view.updateWidthHeightAnnotation();
-        }
-      }).unsubscribe
-    ];
-
-    this.resizeCurrentView();
-
-    // const widgetManager = this.view.getReferenceByName("widgetManager");
-    // if (widgetManager) {
-    // const enabled = widgetManager.getPickingEnabled();
-    // widgetManager.setRenderer(this.view.getRenderer());
-    // workaround to disable picking if previously disabled
-    // if (!enabled) {
-    // widgetManager.disablePicking();
-    // }
-    // }
-    // });*/
   },
   beforeDestroy() {
     this.view.delete();
     this.view = null;
-    // while (this.subscriptions.length) {
-    //   this.subscriptions.pop()();
-    // }
   },
   methods: {
-    configContextualMenu() {
-      this.view
-        .getRenderWindow()
-        .getInteractor()
-        .onRightButtonPress(callData => {
-          const renderer = this.view.getRenderer();
-          if (renderer !== callData.pokedRenderer) {
-            return;
-          }
-          const picker = vtkPicker.newInstance();
-          picker.pick(
-            [callData.position.x, callData.position.y, 0.0],
-            renderer
-          );
-          picker.getActors().forEach(actor => {
-            const rep = this.proxyManager
-              .getRepresentations()
-              .filter(r => r.getActors()[0] === actor);
-            const sourceID = this.proxyManager.getReferenceByName(
-              "r2svMapping"
-            )[rep[0].getProxyId()].sourceId;
-            this.data.forEach(item => {
-              console.log(item.source);
-              if (checkSourceId(item.source, sourceID)) {
-                console.log("FOUND ", item.name);
-                this.selectedItem = item;
-                this.displayMenu = true;
-                this.menuPosition = {
-                  x: this.left + callData.position.x,
-                  y: callData.position.y
-                };
-              }
-            });
-          });
-        });
-    },
+    ...mapActions("network", ["call"]),
     resizeCurrentView() {
       if (this.view) {
         this.view.resize();

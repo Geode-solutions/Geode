@@ -15,28 +15,15 @@
  *
  */
 
-import GeodeMouseHandler from "@/config/protocols/GeodeMouseHandler";
-import ImageDelivery from "@/config/protocols/ImageDelivery";
-import IOMesh from "@/config/protocols/IOMesh";
-import MouseHandler from "@/config/protocols/MouseHandler";
-import ViewPort from "@/config/protocols/ViewPort";
 import WSLinkClient from "vtk.js/Sources/IO/Core/WSLinkClient";
 import { connectImageStream } from "vtk.js/Sources/Rendering/Misc/RemoteView";
 import SmartConnect from "wslink/src/SmartConnect";
-
-const REMOTE_API = {
-  MouseHandler,
-  IOMesh,
-  GeodeMouseHandler,
-  ViewPort,
-  ImageDelivery
-};
 
 WSLinkClient.setSmartConnectClass(SmartConnect);
 
 export default {
   namespaced: true,
-  state: { ok: false, client: null, config: null },
+  state: { connected: false, client: null, config: null, busy: 0 },
   mutations: {
     set_client(state, client) {
       state.client = client;
@@ -44,8 +31,11 @@ export default {
     set_config(state, config) {
       state.config = config;
     },
-    set_ok(state, ok) {
-      state.ok = ok;
+    set_connected(state, connected) {
+      state.connected = connected;
+    },
+    set_busy(state, busy) {
+      state.busy = busy;
     }
   },
   actions: {
@@ -55,24 +45,39 @@ export default {
         client.disconnect();
       }
       const clientToConnect = client || WSLinkClient.newInstance();
-      clientToConnect.setProtocols(REMOTE_API);
-
       clientToConnect.beginBusy();
-
       clientToConnect.onConnectionError(console.error);
       clientToConnect.onConnectionClose(console.error);
+      clientToConnect.onBusyChange(busy => {
+        commit("set_busy", busy);
+      });
       clientToConnect.onConnectionReady(validClient => {
         commit("set_client", validClient);
-        commit("set_ok", true);
-
-        // Need to bind ImageStream to connection only once.
-        // After that you can create as many viewStream as you want...
+        commit("set_connected", true);
         connectImageStream(validClient.getConnection().getSession());
-
         clientToConnect.endBusy();
       });
 
       clientToConnect.connect(config);
+    },
+    call({ state }, { command, args }) {
+      if (state.client && state.client.isConnected()) {
+        state.client.beginBusy();
+        return new Promise((resolve, reject) => {
+          state.client
+            .getConnection()
+            .getSession()
+            .call(command, args)
+            .then(response => {
+              state.client.endBusy();
+              resolve(response);
+            })
+            .catch(error => {
+              state.client.endBusy();
+              reject(error);
+            });
+        });
+      }
     }
   }
 };

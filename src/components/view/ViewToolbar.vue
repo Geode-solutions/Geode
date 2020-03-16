@@ -58,7 +58,7 @@
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import vtkDistanceWidget from "vtk.js/Sources/Widgets/Widgets3D/DistanceWidget";
 import vtkBoundingBox from "vtk.js/Sources/Common/DataModel/BoundingBox";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ViewSettings from "./ViewSettings";
 
 export default {
@@ -81,15 +81,15 @@ export default {
     distanceValue: 0
   }),
   computed: {
-    ...mapState(["proxyManager"]),
     ...mapState("network", ["client"]),
     distanceStyle() {
       return this.distanceVisible ? "teal" : "";
     }
   },
   methods: {
+    ...mapActions("network", ["call"]),
     resetCamera() {
-      this.client.getRemote().ViewPort.resetCamera(this.view);
+      this.call({ command: "opengeode.camera.reset", args: [this.view] });
     },
     centerCamera() {
       this.view.getOpenglRenderWindow().setCursor("default");

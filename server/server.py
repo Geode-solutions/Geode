@@ -36,6 +36,8 @@ class Backend(OpenGeodeServerProtocol):
             renderWindow.AddRenderer(renderer)
 
             renderWindowInteractor = vtk.vtkRenderWindowInteractor()
+            self.setSharedObject("test", renderWindowInteractor)
+
             renderWindowInteractor.SetRenderWindow(renderWindow)
             renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
         
@@ -54,6 +56,7 @@ class Backend(OpenGeodeServerProtocol):
 
 
             renderer.ResetCamera()
+            # renderWindow.OffScreenRenderingOn()
             renderWindow.Render()
 
             # VTK Web application specific

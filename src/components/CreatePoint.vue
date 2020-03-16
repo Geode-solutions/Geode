@@ -56,9 +56,7 @@ export default {
     y: 0,
     z: 0
   }),
-  computed: {
-    ...mapState(["proxyManager"])
-  },
+  computed: {},
   methods: {
     close() {
       this.$emit("input", false);

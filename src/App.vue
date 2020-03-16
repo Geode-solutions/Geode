@@ -52,7 +52,14 @@ Lesser General Public License for more details.
       </v-btn>
     </v-app-bar>
     <v-content>
-      <router-view v-if="ok" />
+      <router-view v-if="connected" />
+      <v-progress-circular
+        v-if="busy"
+        indeterminate
+        color="primary"
+        style="position: absolute; bottom: 10px; right: 10px"
+        >{{ spinner }}</v-progress-circular
+      >
     </v-content>
   </v-app>
 </template>
@@ -75,8 +82,10 @@ export default {
     visible: true
   }),
   computed: {
-    ...mapState(["proxyManager"]),
-    ...mapState("network", ["ok"])
+    ...mapState("network", ["connected", "busy"]),
+    spinner() {
+      return this.busy > 1 ? this.busy : "";
+    }
   },
   mounted() {
     this.$store.dispatch(

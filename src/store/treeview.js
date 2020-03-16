@@ -25,7 +25,10 @@ export default {
     active: []
   },
   getters: {
-    items: state => state.tree.filter(item => item.children.length)
+    items: state => state.tree.filter(item => item.children.length),
+    selections: (state, getters, rootState, rootGetters) => state.selectedTree.filter(item =>
+      rootGetters.object(item)
+    )
   },
   mutations: {
     updateActive(state, value) {
