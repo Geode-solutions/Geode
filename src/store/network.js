@@ -39,7 +39,7 @@ export default {
     }
   },
   actions: {
-    connect({ commit, state }) {
+    connect({ commit, state, dispatch }) {
       const { config, client } = state;
       if (client && client.isConnected()) {
         client.disconnect();
@@ -55,6 +55,8 @@ export default {
         commit("set_client", validClient);
         commit("set_connected", true);
         connectImageStream(validClient.getConnection().getSession());
+        console.log("RESET");
+        dispatch("call",{command:"opengeode.reset"});
         clientToConnect.endBusy();
       });
 
