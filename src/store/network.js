@@ -56,7 +56,7 @@ export default {
         commit("set_connected", true);
         connectImageStream(validClient.getConnection().getSession());
         console.log("RESET");
-        dispatch("call",{command:"opengeode.reset"});
+        dispatch("call", { command: "opengeode.reset" });
         clientToConnect.endBusy();
       });
 

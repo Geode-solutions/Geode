@@ -33,7 +33,7 @@ export default new Vuex.Store({
   mutations: {
     registerData(state, object) {
       state.data.push(object);
-      console.log(object.id)
+      console.log(object.id);
     },
     setBackground(state, background) {
       state.vtkBackground = background;
