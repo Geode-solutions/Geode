@@ -44,6 +44,7 @@ export default {
   }),
   computed: {
     ...mapState("network", ["client"]),
+    ...mapState("view", ["view", "widgetManager"]),
     ...mapGetters("treeview", ["selections"]),
     ...mapGetters({
       //showRenderingStats: 'PVL_VIEW_STATS',
@@ -64,74 +65,75 @@ export default {
     // this.view.setSession(session);
     // this.view.setViewId(this.viewId);
 
-
-
-
-
-    this.view = vtkViewProxy.newInstance();
+    // this.view = vtkViewProxy.newInstance();
     this.view.setContainer(this.$refs.vtkView);
     this.view.resize();
 
-    // Create and link viewStream
-    this.viewStream = this.client.getImageStream().createViewStream(this.viewId);
+    // // Create and link viewStream
+    this.viewStream = this.client
+      .getImageStream()
+      .createViewStream(this.viewId);
     this.view.getOpenglRenderWindow().setViewStream(this.viewStream);
-    this.view.setBackground([0, 0, 0, 0]);
-    this.camera = this.view.getCamera();
+    // this.view.setBackground([0, 0, 0, 0]);
+    // this.camera = this.view.getCamera();
     this.viewStream.setCamera(this.camera);
 
-    // Bind user input
+    // // Bind user input
     const interactor = this.view.getRenderWindow().getInteractor();
     interactor.onStartAnimation(this.viewStream.startInteraction);
     interactor.onEndAnimation(this.viewStream.endInteraction);
-    // this.mousePositionCache = vtkCacheMousePosition.newInstance();
-    // this.mousePositionCache.setInteractor(interactor);
+    // // this.mousePositionCache = vtkCacheMousePosition.newInstance();
+    // // this.mousePositionCache.setInteractor(interactor);
+    // console.log("interactor", interactor.getClassName(), interactor);
+    // interactor.onLeftButtonPress(e => console.log("3PRESS=====", e));
+    // interactor.onLeftButtonRelease(e => console.log("3RELEASE=====", e));
 
-    // Add orientation widget
+    // // Add orientation widget
     const orientationWidget = this.view.getReferenceByName("orientationWidget");
-    this.widgetManager = vtkWidgetManager.newInstance();
-    this.widgetManager.setCaptureOn(CaptureOn.MOUSE_MOVE);
+    // this.widgetManager = vtkWidgetManager.newInstance();
+    // this.widgetManager.setCaptureOn(CaptureOn.MOUSE_MOVE);
     this.widgetManager.setRenderer(orientationWidget.getRenderer());
-    orientationWidget.setViewportCorner(
-      vtkOrientationMarkerWidget.Corners.TOP_LEFT
-    );
+    // orientationWidget.setViewportCorner(
+    //   vtkOrientationMarkerWidget.Corners.TOP_LEFT
+    // );
 
-    const bounds = [-0.51, 0.51, -0.51, 0.51, -0.51, 0.51];
-    this.widget = vtkInteractiveOrientationWidget.newInstance();
-    this.widget.placeWidget(bounds);
-    this.widget.setBounds(bounds);
-    this.widget.setPlaceFactor(1);
-    this.widget.getWidgetState().onModified(() => {
-      const state = this.widget.getWidgetState();
-      if (!state.getActive()) {
-        this.orientationTooltip = "";
-        return;
-      }
-      const direction = state.getDirection();
-      const { axis, orientation, viewUp } = computeOrientation(
-        direction,
-        this.camera.getViewUp()
-      );
-      this.orientationTooltip = `Reset camera ${orientation > 0 ? "+" : "-"}${
-        "XYZ"[axis]
-      }/${vectorToLabel(viewUp)}`;
-      // this.tooltipStyle = toStyle(
-      //   this.mousePositionCache.getPosition(),
-      //   this.view.getOpenglRenderWindow().getSize()[1]
-      // );
-    });
+    // const bounds = [-0.51, 0.51, -0.51, 0.51, -0.51, 0.51];
+    // this.widget = vtkInteractiveOrientationWidget.newInstance();
+    // this.widget.placeWidget(bounds);
+    // this.widget.setBounds(bounds);
+    // this.widget.setPlaceFactor(1);
+    // this.widget.getWidgetState().onModified(() => {
+    //   const state = this.widget.getWidgetState();
+    //   if (!state.getActive()) {
+    //     this.orientationTooltip = "";
+    //     return;
+    //   }
+    //   const direction = state.getDirection();
+    //   const { axis, orientation, viewUp } = computeOrientation(
+    //     direction,
+    //     this.camera.getViewUp()
+    //   );
+    //   this.orientationTooltip = `Reset camera ${orientation > 0 ? "+" : "-"}${
+    //     "XYZ"[axis]
+    //   }/${vectorToLabel(viewUp)}`;
+    //   // this.tooltipStyle = toStyle(
+    //   //   this.mousePositionCache.getPosition(),
+    //   //   this.view.getOpenglRenderWindow().getSize()[1]
+    //   // );
+    // });
 
-    // Manage user interaction
-    this.viewWidget = this.widgetManager.addWidget(this.widget);
-    this.viewWidget.onOrientationChange(({ direction }) => {
-      this.updateOrientation(
-        computeOrientation(direction, this.camera.getViewUp())
-      );
-    });
+    // // Manage user interaction
+    // this.viewWidget = this.widgetManager.addWidget(this.widget);
+    // this.viewWidget.onOrientationChange(({ direction }) => {
+    //   this.updateOrientation(
+    //     computeOrientation(direction, this.camera.getViewUp())
+    //   );
+    // });
 
-    // Initial config
-    // this.updateQuality();
-    // this.updateRatio();
-    this.client.getImageStream().setServerAnimationFPS(this.maxFPS);
+    // // Initial config
+    // // this.updateQuality();
+    // // this.updateRatio();
+    // this.client.getImageStream().setServerAnimationFPS(this.maxFPS);
 
     // Expose viewProxy to store (for camera update...)
     // this.$store.commit("PVL_VIEW_PVL_PROXY_SET", this.view);
@@ -141,14 +143,6 @@ export default {
     //   this.updateCamera(cameraInfo);
     //   this.viewStream.pushCamera();
     // });
-
-
-
-
-
-
-
-
 
     // this.view.getInteractorStyle().onRemoteMouseEvent(e => {
     //   if (e.buttonRight && e.action == "down") {
@@ -177,15 +171,17 @@ export default {
     // this.$root.$on("hide_drawer", this.resizeCurrentView);
   },
   beforeDestroy() {
-    this.view.delete();
-    this.view = null;
+    this.view.setContainer(null);
+    // this.view.delete();
+    // this.view = null;
   },
   methods: {
     ...mapActions("network", ["call"]),
     resizeCurrentView() {
       if (this.view) {
+        console.log("view", this.view)
         this.view.resize();
-        this.view.render();
+        this.view.renderLater();
       }
     }
   }

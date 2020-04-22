@@ -55,6 +55,11 @@ export default {
         commit("set_client", validClient);
         commit("set_connected", true);
         connectImageStream(validClient.getConnection().getSession());
+        dispatch(
+          "view/createView",
+          { client: validClient, viewId: "-1" },
+          { root: true }
+        );
         console.log("RESET");
         dispatch("call", { command: "opengeode.reset" });
         clientToConnect.endBusy();

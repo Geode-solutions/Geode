@@ -22,6 +22,7 @@ import Vuex from "vuex";
 import network from "./network";
 import treeview from "./treeview";
 import ui from "./ui";
+import view from "./view";
 
 Vue.use(Vuex);
 
@@ -71,12 +72,28 @@ export default new Vuex.Store({
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);
     },
-    addObject({ commit, dispatch }, { type, name, id, style }) {
+    addObject({ commit, dispatch }, { type, name, id, style, data }) {
       let objectStyle = style || {};
-      const newObject = { id, name, type, style: objectStyle };
+      dispatch("view/createLocalObject", data).then(localObject => {
+        console.log(localObject);
+        const newObject = {
+          id,                                                                                       
+          name,
+          type,
+          style: objectStyle,
+          vtk: localObject
+        };
+        console.log(newObject);
+      });
+      const newObject = {
+        id,
+        name,
+        type,
+        style: objectStyle
+      };
       dispatch("treeview/registerObject", newObject);
       commit("registerData", newObject);
     }
   },
-  modules: { network, treeview, ui }
+  modules: { network, treeview, ui, view }
 });
