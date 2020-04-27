@@ -64,13 +64,7 @@ import ViewSettings from "./ViewSettings";
 export default {
   name: "ViewToolbar",
   components: {
-    ViewSettings
-  },
-  props: {
-    view: {
-      required: true,
-      type: String
-    }
+    ViewSettings,
   },
   data: () => ({
     timeout: 0,
@@ -78,18 +72,25 @@ export default {
     centering: false,
     distanceWidget: {},
     distanceVisible: false,
-    distanceValue: 0
+    distanceValue: 0,
   }),
   computed: {
     ...mapState("network", ["client"]),
+    ...mapState("view", ["view", "viewId"]),
     distanceStyle() {
       return this.distanceVisible ? "teal" : "";
-    }
+    },
   },
   methods: {
     ...mapActions("network", ["call"]),
     resetCamera() {
-      this.call({ command: "opengeode.camera.reset", args: [this.view] });
+      // this.call({
+      //   command: "opengeode.camera.reset",
+      //   args: [this.viewId],
+      // }).then(() => {
+      this.view.resetCamera();
+      this.$store.dispatch("view/pushCamera");
+      // });
     },
     centerCamera() {
       this.view.getOpenglRenderWindow().setCursor("default");
@@ -120,8 +121,8 @@ export default {
         widgetManager.disablePicking();
       }
       this.view.modified();
-    }
-  }
+    },
+  },
 };
 </script>
 

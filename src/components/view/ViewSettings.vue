@@ -28,8 +28,8 @@ export default {
   props: {
     view: {
       required: true,
-      type: String
-    }
+      type: String,
+    },
   },
   computed: {
     ...mapState("network", ["client"]),
@@ -41,14 +41,14 @@ export default {
         this.$store.commit("setBackground", value);
         this.call({
           command: "opengeode.ui.background",
-          args: [this.view, value.r / 255, value.g / 255, value.b / 255]
+          args: [this.view, value.r / 255, value.g / 255, value.b / 255],
         });
-      }
-    }
+      },
+    },
   },
   methods: {
-    ...mapActions("network", ["call"])
-  }
+    ...mapActions("network", ["call"]),
+  },
 };
 </script>
 

@@ -40,20 +40,6 @@ class Backend(OpenGeodeServerProtocol):
 
             renderWindowInteractor.SetRenderWindow(renderWindow)
             renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
-        
-            axes = vtk.vtkAxesActor()
-            widget = vtk.vtkOrientationMarkerWidget()
-            widget.SetOrientationMarker(axes)
-            # widget.SetOrientationMarker(self.north())
-            widget.SetInteractor(renderWindowInteractor)
-            widget.SetViewport( 0.0, 0.0, 0.2, 0.2 )
-            # widget.SetOutlineColor( 0.9300, 0.5700, 0.1300 )
-            # widget->SetOutlineColor(colors->GetColor3d("Wheat").GetRed(),
-            #                         colors->GetColor3d("Wheat").GetGreen(),
-            #                         colors->GetColor3d("Wheat").GetBlue());
-            widget.EnabledOn()
-            widget.InteractiveOn()
-
 
             renderer.ResetCamera()
             # renderWindow.OffScreenRenderingOn()

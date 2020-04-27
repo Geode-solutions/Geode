@@ -31,6 +31,6 @@ Lesser General Public License for more details.
 
 <script>
 export default {
-  name: "DataManager"
+  name: "DataManager",
 };
 </script>

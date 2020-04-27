@@ -46,14 +46,14 @@ import ContextualMenu from "./ContextualMenu";
 export default {
   name: "ObjectTree",
   components: {
-    ContextualMenu
+    ContextualMenu,
   },
   data: () => ({
     selectedItem: {},
     displayMenu: false,
     menuPosition: {},
     left: 0,
-    top: 0
+    top: 0,
   }),
   computed: {
     ...mapGetters("treeview", ["items", "selections"]),
@@ -63,7 +63,7 @@ export default {
       },
       set(value) {
         this.$store.commit("treeview/updateActive", value);
-      }
+      },
     },
     selectedTree: {
       get() {
@@ -71,28 +71,28 @@ export default {
       },
       set(value) {
         this.$store.commit("treeview/updateSelectedTree", value);
-      }
-    }
+      },
+    },
   },
   watch: {
-    selections: function(newSelections, oldSelections) {
+    selections: function (newSelections, oldSelections) {
       oldSelections
-        .filter(item => newSelections.indexOf(item) < 0)
-        .forEach(item =>
+        .filter((item) => newSelections.indexOf(item) < 0)
+        .forEach((item) =>
           this.call({
             command: "opengeode.actor.visibility",
-            args: [item, false]
+            args: [item, false],
           })
         );
       newSelections
-        .filter(item => oldSelections.indexOf(item) < 0)
-        .forEach(item =>
+        .filter((item) => oldSelections.indexOf(item) < 0)
+        .forEach((item) =>
           this.call({
             command: "opengeode.actor.visibility",
-            args: [item, true]
+            args: [item, true],
           })
         );
-    }
+    },
   },
   mounted() {
     this.left = this.$el.getBoundingClientRect().width;
@@ -107,10 +107,10 @@ export default {
       this.selectedItem = item;
       this.menuPosition = {
         x: this.left + event.x + 50,
-        y: this.top - event.y
+        y: this.top - event.y,
       };
       this.displayMenu = true;
-    }
-  }
+    },
+  },
 };
 </script>

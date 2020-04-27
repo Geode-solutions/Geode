@@ -1,13 +1,13 @@
 module.exports = {
   root: true,
   env: {
-    node: true
+    node: true,
   },
   extends: [
     "plugin:vue/recommended",
     "eslint:recommended",
     "prettier/vue",
-    "plugin:prettier/recommended"
+    "plugin:prettier/recommended",
   ],
   plugins: ["vuetify"],
   rules: {
@@ -16,13 +16,13 @@ module.exports = {
     "vue/return-in-computed-property": [
       "error",
       {
-        treatUndefinedAsUnspecified: false
-      }
+        treatUndefinedAsUnspecified: false,
+      },
     ],
     "vuetify/grid-unknown-attributes": "error",
-    "vuetify/no-deprecated-classes": "error"
+    "vuetify/no-deprecated-classes": "error",
   },
   parserOptions: {
-    parser: "babel-eslint"
-  }
+    parser: "babel-eslint",
+  },
 };

@@ -20,6 +20,8 @@ import vtkView from "vtk.js/Sources/Proxy/Core/ViewProxy";
 import vtkSource from "vtk.js/Sources/Proxy/Core/SourceProxy";
 import vtkGeometryRepresentation from "vtk.js/Sources/Proxy/Representations/GeometryRepresentationProxy";
 import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
+import vtkNorthActor from "@/config/northActor";
+import vtkOrientationMarkerWidget from 'vtk.js/Sources/Interaction/Widgets/OrientationMarkerWidget';
 
 import { CaptureOn } from "vtk.js/Sources/Widgets/Core/WidgetManager/Constants";
 
@@ -27,118 +29,113 @@ export default {
   namespaced: true,
   state: {
     view: {},
-    widgetManager: {}
+    widgetManager: {},
+    viewStream: {},
+    viewId: "",
   },
   getters: {
-    items: state => state.tree.filter(item => item.children.length),
+    items: (state) => state.tree.filter((item) => item.children.length),
     selections: (state, getters, rootState, rootGetters) =>
-      state.selectedTree.filter(item => rootGetters.object(item))
+      state.selectedTree.filter((item) => rootGetters.object(item)),
   },
   mutations: {
     registerView(state, view) {
       state.view = view;
     },
+    registerViewId(state, viewId) {
+      state.viewId = viewId;
+    },
     registerWidgetManager(state, widgetManager) {
       state.widgetManager = widgetManager;
-    }
+    },
+    registerViewStream(state, viewStream) {
+      state.viewStream = viewStream;
+    },
   },
   actions: {
-    createView({ commit }, { client, viewId }) {
-      let view = vtkView.newInstance();
-      // view.setContainer(state.$refs.vtkView);
-      // view.resize();
+    pushCamera({ state, dispatch }) {
+      const camera = state.view.getCamera();
+      dispatch(
+        "network/call",
+        {
+          command: "opengeode.camera.update",
+          args: [
+            state.viewId,
+            camera.getFocalPoint(),
+            camera.getViewUp(),
+            camera.getPosition(),
+            camera.getViewAngle(),
+            camera.getClippingRange(),
+          ],
+        },
+        { root: true }
+      );
+    },
+    createView({ commit, dispatch }, { client, viewId }) {
+      const view = vtkView.newInstance();
+      console.log(view);
+      console.log(view.listPropertyNames());
+      const viewStream = client.getImageStream().createViewStream(viewId);
+      viewStream.onImageReady((e) => {
+        const glwindow = view.getOpenglRenderWindow();
+        glwindow.setUseBackgroundImage(true);
+        glwindow.setUseOffScreen(true);
+      });
 
-      console.log( view );
-      console.log( client );
-      // Create and link viewStream
-      // let viewStream = client.getImageStream().createViewStream(viewId);
-      // console.log( viewStream );
-      // console.log( view.getOpenglRenderWindow() );
-      // view.getOpenglRenderWindow().setViewStream(viewStream);
-      view.setBackground([0, 0, 0, 0]);
-      // viewStream.setCamera(view.getCamera());
+      const north = vtkNorthActor.newInstance();
+      view.registerOrientationAxis("north", north);
+      view.setOrientationAxesType("north");
 
-      // Bind user input
       const interactor = view.getRenderWindow().getInteractor();
-      // interactor.onStartAnimation(viewStream.startInteraction);
-      // interactor.onEndAnimation(viewStream.endInteraction);
-      // state.mousePositionCache = vtkCacheMousePosition.newInstance();
-      // state.mousePositionCache.setInteractor(interactor);
-      console.log("interactor", interactor.getClassName(), interactor);
-      interactor.onLeftButtonPress(e => console.log("3PRESS=====", e));
-      interactor.onLeftButtonRelease(e => console.log("3RELEASE=====", e));
 
-      // Add orientation widget
-      // const orientationWidget = view.getReferenceByName("orientationWidget");
-      let widgetManager = vtkWidgetManager.newInstance();
-      widgetManager.setCaptureOn(CaptureOn.MOUSE_MOVE);
-      // widgetManager.setRenderer(orientationWidget.getRenderer());
+      // let orientationWidget = vtkOrientationMarkerWidget.newInstance({
+      //   actor: north,
+      //   interactor,
+      // });
+      // orientationWidget.setEnabled(true);
       // orientationWidget.setViewportCorner(
       //   vtkOrientationMarkerWidget.Corners.BOTTOM_LEFT
       // );
+      // orientationWidget.setViewportSize(0.1);
 
-      // const bounds = [-0.51, 0.51, -0.51, 0.51, -0.51, 0.51];
-      // let widget = vtkInteractiveOrientationWidget.newInstance();
-      // widget.placeWidget(bounds);
-      // widget.setBounds(bounds);
-      // widget.setPlaceFactor(1);
-      // widget.getWidgetState().onModified(() => {
-      //   const state = widget.getWidgetState();
-      //   if (!state.getActive()) {
-      //     state.orientationTooltip = "";
-      //     return;
-      //   }
-      //   const direction = state.getDirection();
-      //   const { axis, orientation, viewUp } = computeOrientation(
-      //     direction,
-      //     state.camera.getViewUp()
-      //   );
-      //   state.orientationTooltip = `Reset camera ${
-      //     orientation > 0 ? "+" : "-"
-      //   }${"XYZ"[axis]}/${vectorToLabel(viewUp)}`;
-      //   // state.tooltipStyle = toStyle(
-      //   //   state.mousePositionCache.getPosition(),
-      //   //   view.getOpenglRenderWindow().getSize()[1]
-      //   // );
-      // });
+      console.log("interactor", interactor.getClassName(), interactor);
+      interactor.onLeftButtonPress((e) => {
+        console.log("3PRESS=====", e);
+        const glwindow = view.getOpenglRenderWindow();
+        glwindow.setUseBackgroundImage(false);
+        glwindow.setUseOffScreen(false);
+      });
+      interactor.onLeftButtonRelease((e) => {
+        console.log("3RELEASE=====", e);
+        dispatch("pushCamera");
+        console.log("PUSH");
+      });
+      interactor.onEndMouseWheel((e) => {
+        console.log("3WHEEL=====", e);
+        dispatch("pushCamera");
+      });
 
-      // Manage user interaction
-      // let viewWidget = widgetManager.addWidget(widget);
-      // viewWidget.onOrientationChange(({ direction }) => {
-      //   state.updateOrientation(
-      //     computeOrientation(direction, view.getCamera().getViewUp())
-      //   );
-      // });
-
-      // Initial config
-      // state.updateQuality();
-      // state.updateRatio();
-      // client.getImageStream().setServerAnimationFPS(state.maxFPS);
-
-      // Expose viewProxy to store (for camera update...)
-      // state.$store.commit("PVL_VIEW_PVL_PROXY_SET", view);
-
-      // Link server side camera to local
-      // state.client.remote.Lite.getCamera(viewId).then(cameraInfo => {
-      //   state.updateCamera(cameraInfo);
-      //   viewStream.pushCamera();
-      // });
+      const widgetManager = vtkWidgetManager.newInstance();
+      widgetManager.setCaptureOn(CaptureOn.MOUSE_MOVE);
       commit("registerView", view);
+      commit("registerViewId", viewId);
       commit("registerWidgetManager", widgetManager);
+      commit("registerViewStream", viewStream);
+
+      dispatch("pushCamera");
     },
     createLocalObject({ state }, data) {
-      console.log(data);
-      let reader = vtkXMLPolyDataReader.newInstance();
+      const reader = vtkXMLPolyDataReader.newInstance();
       const textEncoder = new TextEncoder();
       reader.parseAsArrayBuffer(textEncoder.encode(data));
-      let polydata = reader.getOutputData();
-      console.log(polydata.getNumberOfLines());
-      let source = vtkSource.newInstance();
+      const polydata = reader.getOutputData();
+      const source = vtkSource.newInstance();
       source.setInputData(polydata);
-      let rep = vtkGeometryRepresentation.newInstance();
+      const rep = vtkGeometryRepresentation.newInstance();
       rep.setInput(source);
+      rep.setColor([0, 150 / 255, 136 / 255]);
       state.view.addRepresentation(rep);
       return { data: polydata, source, rep };
-    }
-  }
+    },
+  },
 };

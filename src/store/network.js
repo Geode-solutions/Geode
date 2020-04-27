@@ -36,7 +36,7 @@ export default {
     },
     set_busy(state, busy) {
       state.busy = busy;
-    }
+    },
   },
   actions: {
     connect({ commit, state, dispatch }) {
@@ -48,10 +48,10 @@ export default {
       clientToConnect.beginBusy();
       clientToConnect.onConnectionError(console.error);
       clientToConnect.onConnectionClose(console.error);
-      clientToConnect.onBusyChange(busy => {
+      clientToConnect.onBusyChange((busy) => {
         commit("set_busy", busy);
       });
-      clientToConnect.onConnectionReady(validClient => {
+      clientToConnect.onConnectionReady((validClient) => {
         commit("set_client", validClient);
         commit("set_connected", true);
         connectImageStream(validClient.getConnection().getSession());
@@ -75,16 +75,16 @@ export default {
             .getConnection()
             .getSession()
             .call(command, args)
-            .then(response => {
+            .then((response) => {
               state.client.endBusy();
               resolve(response);
             })
-            .catch(error => {
+            .catch((error) => {
               state.client.endBusy();
               reject(error);
             });
         });
       }
-    }
-  }
+    },
+  },
 };

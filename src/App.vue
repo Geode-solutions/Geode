@@ -25,7 +25,7 @@ Lesser General Public License for more details.
     >
       <v-row class="fill-height flex-nowrap" @contextmenu.ctrl="dialog = true">
         <route-selector visible="visible" />
-        <object-tree style="overflow-x: hidden" />
+        <object-tree style="overflow-x: hidden;" />
       </v-row>
     </v-navigation-drawer>
     <create-point v-model="dialog" />
@@ -46,7 +46,7 @@ Lesser General Public License for more details.
           type="file"
           accept=".js"
           multiple
-          style="display:none;"
+          style="display: none;"
           @change="loadModule"
         />
       </v-btn>
@@ -57,7 +57,7 @@ Lesser General Public License for more details.
         v-if="busy"
         indeterminate
         color="primary"
-        style="position: absolute; bottom: 10px; right: 10px"
+        style="position: absolute; bottom: 10px; right: 10px;"
         >{{ spinner }}</v-progress-circular
       >
     </v-content>
@@ -75,17 +75,17 @@ export default {
   components: {
     CreatePoint,
     RouteSelector,
-    ObjectTree
+    ObjectTree,
   },
   data: () => ({
     dialog: false,
-    visible: true
+    visible: true,
   }),
   computed: {
     ...mapState("network", ["connected", "busy"]),
     spinner() {
       return this.busy > 1 ? this.busy : "";
-    }
+    },
   },
   mounted() {
     this.$store.dispatch(
@@ -94,7 +94,7 @@ export default {
     );
 
     const config = Object.assign({}, this.$store.getters["network/config"], {
-      sessionURL: "ws://localhost:1234/ws"
+      sessionURL: "ws://localhost:1234/ws",
     });
     // if (this.token) {
     //   config.secret = this.token;
@@ -117,8 +117,8 @@ export default {
       for (let i = 0; i < files.length; i++) {
         this.$store.dispatch("loadModule", files.item(i).path);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

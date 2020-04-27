@@ -20,6 +20,6 @@ Lesser General Public License for more details.
 
 <script>
 export default {
-  name: "Logo"
+  name: "Logo",
 };
 </script>

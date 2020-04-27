@@ -47,10 +47,10 @@ export default {
       {
         tooltip: "Import file",
         icon: "fas fa-file-export",
-        route: "/data/import"
-      }
-    ]
-  })
+        route: "/data/import",
+      },
+    ],
+  }),
 };
 </script>
 

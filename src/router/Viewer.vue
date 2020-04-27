@@ -24,10 +24,10 @@ import VtkView from "@/components/view/VtkView";
 export default {
   name: "Viewer",
   components: {
-    VtkView
+    VtkView,
   },
   mounted() {
     console.log("MOUNTED VIEWER");
-  }
+  },
 };
 </script>

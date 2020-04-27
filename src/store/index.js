@@ -29,7 +29,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     vtkBackground: { r: 0.4, g: 0.4, b: 0.4 },
-    data: []
+    data: [],
   },
   mutations: {
     registerData(state, object) {
@@ -40,7 +40,7 @@ export default new Vuex.Store({
       state.vtkBackground = background;
     },
     setObjectStyle(state, { id, style, value }) {
-      const index = state.data.findIndex(item => item.id === id);
+      const index = state.data.findIndex((item) => item.id === id);
       let object = state.data[index].style;
       for (let i = 0; i < style.length - 1; ++i) {
         let key = style[i];
@@ -52,18 +52,18 @@ export default new Vuex.Store({
       if (key in object) {
         object[key] = value;
       }
-    }
+    },
   },
   getters: {
-    object: state => id => {
-      return state.data.find(item => item.id == id);
-    }
+    object: (state) => (id) => {
+      return state.data.find((item) => item.id == id);
+    },
   },
   actions: {
     loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
-        config.modules.forEach(module => dispatch("loadModule", module));
+        config.modules.forEach((module) => dispatch("loadModule", module));
       }
     },
     loadModule(context, module) {
@@ -74,14 +74,14 @@ export default new Vuex.Store({
     },
     addObject({ commit, dispatch }, { type, name, id, style, data }) {
       let objectStyle = style || {};
-      dispatch("view/createLocalObject", data).then(localObject => {
+      dispatch("view/createLocalObject", data).then((localObject) => {
         console.log(localObject);
         const newObject = {
-          id,                                                                                       
+          id,
           name,
           type,
           style: objectStyle,
-          vtk: localObject
+          vtk: localObject,
         };
         console.log(newObject);
       });
@@ -89,11 +89,11 @@ export default new Vuex.Store({
         id,
         name,
         type,
-        style: objectStyle
+        style: objectStyle,
       };
       dispatch("treeview/registerObject", newObject);
       commit("registerData", newObject);
-    }
+    },
   },
-  modules: { network, treeview, ui, view }
+  modules: { network, treeview, ui, view },
 });

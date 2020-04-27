@@ -40,7 +40,7 @@ function addColor(ds, r, g, b) {
     vtkDataArray.newInstance({
       name: "color",
       numberOfComponents: 3,
-      values: rgbArray
+      values: rgbArray,
     })
   );
 }
@@ -197,7 +197,7 @@ function vtkNorthActor(publicAPI, model) {
         Object.assign({
           height: cylinderHeight,
           resolution: 20,
-          direction: [0, 0, 1]
+          direction: [0, 0, 1],
         })
       )
       .getOutputData();
@@ -235,11 +235,11 @@ export const DEFAULT_VALUES = {
     tipLength: 0.2,
     shaftResolution: 60,
     shaftRadius: 0.03,
-    invert: false
+    invert: false,
   },
   xAxisColor: [255, 0, 0],
   yAxisColor: [255, 255, 0],
-  zAxisColor: [0, 128, 0]
+  zAxisColor: [0, 128, 0],
 };
 
 // ----------------------------------------------------------------------------

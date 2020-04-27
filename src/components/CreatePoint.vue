@@ -47,14 +47,14 @@ export default {
   props: {
     value: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     name: "debug",
     x: 0,
     y: 0,
-    z: 0
+    z: 0,
   }),
   computed: {},
   methods: {
@@ -69,17 +69,17 @@ export default {
       vtk.getVerts().setData(verts);
       this.$store
         .dispatch("addObject", { type: "PointSet3D", name: this.name, vtk })
-        .then(source =>
+        .then((source) =>
           this.proxyManager
             .getRepresentations()
-            .filter(r => r.getInput() === source)
-            .forEach(r => {
+            .filter((r) => r.getInput() === source)
+            .forEach((r) => {
               r.setRepresentation("Points");
               r.setPointSize(5);
             })
         );
-    }
-  }
+    },
+  },
 };
 </script>
 

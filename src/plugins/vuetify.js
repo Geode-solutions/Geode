@@ -30,19 +30,19 @@ export default new Vuetify({
       light: {
         primary: colors.teal.darken1,
         secondary: colors.teal.lighten4,
-        accent: colors.red.darken4
-      }
+        accent: colors.red.darken4,
+      },
     },
     options: {
-      customProperties: true
-    }
+      customProperties: true,
+    },
   },
   icons: {
     iconfont: "fa",
     values: {
       logo: {
-        component: Logo
-      }
-    }
-  }
+        component: Logo,
+      },
+    },
+  },
 });

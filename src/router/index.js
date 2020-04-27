@@ -35,10 +35,10 @@ export default new Router({
         { path: "home", component: DataManagerHome },
         {
           path: "import",
-          component: DataManagerImport
-        }
-      ]
+          component: DataManagerImport,
+        },
+      ],
     },
-    { path: "/viewer", component: Viewer }
-  ]
+    { path: "/viewer", component: Viewer },
+  ],
 });

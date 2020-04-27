@@ -15,19 +15,19 @@
  *
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 
 export default {
   namespaced: true,
   state: {
     tree: [],
     selectedTree: [],
-    active: []
+    active: [],
   },
   getters: {
-    items: state => state.tree.filter(item => item.children.length),
+    items: (state) => state.tree.filter((item) => item.children.length),
     selections: (state, getters, rootState, rootGetters) =>
-      state.selectedTree.filter(item => rootGetters.object(item))
+      state.selectedTree.filter((item) => rootGetters.object(item)),
   },
   mutations: {
     updateActive(state, value) {
@@ -43,23 +43,23 @@ export default {
       state.tree.push(value);
     },
     addChildrenTree(state, { type, value }) {
-      const node = state.tree.find(item => item.name === type);
+      const node = state.tree.find((item) => item.name === type);
       node.children.push(value);
-    }
+    },
   },
   actions: {
     registerObjectType({ state, commit }, type) {
-      if (!state.tree.filter(item => item.name === type).length) {
+      if (!state.tree.filter((item) => item.name === type).length) {
         commit("addTree", {
           id: uuidv4(),
           name: type,
-          children: []
+          children: [],
         });
       }
     },
     registerObject({ commit }, object) {
       commit("addChildrenTree", { type: object.type, value: object });
       commit("addSelectedTree", object.id);
-    }
-  }
+    },
+  },
 };
