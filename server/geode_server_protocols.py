@@ -24,7 +24,9 @@ class OpenGeodeServerProtocol(vtk_wslink.ServerProtocol):
         # Bring used components
         self.registerVtkWebProtocol(vtk_protocols.vtkWebMouseHandler())
         self.registerVtkWebProtocol(vtk_protocols.vtkWebViewPort())
-        self.registerVtkWebProtocol(vtk_protocols.vtkWebPublishImageDelivery(decode=False))
+        delivery = vtk_protocols.vtkWebPublishImageDelivery(decode=False)
+        delivery.deltaStaleTimeBeforeRender = 0.001
+        self.registerVtkWebProtocol(delivery)
 
         # tell the C++ web app to use no encoding. ParaViewWebPublishImageDelivery must be set to decode=False to match.
         self.getApplication().SetImageEncoding(0)
