@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -29,34 +29,36 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     vtkBackground: { r: 0.4, g: 0.4, b: 0.4 },
-    data: [],
+    data: new Map(),
   },
   mutations: {
     registerData(state, object) {
-      state.data.push(object);
+      state.data.set(object.id, object);
       console.log(object.id);
     },
     setBackground(state, background) {
       state.vtkBackground = background;
     },
     setObjectStyle(state, { id, style, value }) {
-      const index = state.data.findIndex((item) => item.id === id);
-      let object = state.data[index].style;
-      for (let i = 0; i < style.length - 1; ++i) {
-        let key = style[i];
-        if (key in object) {
-          object = object[key];
+      let object = state.data.get(id);
+      if (object !== undefined && object.style) {
+        object = object.style;
+        for (let i = 0; i < style.length - 1; ++i) {
+          const key = style[i];
+          if (key in object) {
+            object = object[key];
+          }
         }
-      }
-      let key = style[style.length - 1];
-      if (key in object) {
-        object[key] = value;
+        const key = style[style.length - 1];
+        if (key in object) {
+          object[key] = value;
+        }
       }
     },
   },
   getters: {
     object: (state) => (id) => {
-      return state.data.find((item) => item.id == id);
+      return state.data.get(id);
     },
   },
   actions: {
@@ -74,6 +76,7 @@ export default new Vuex.Store({
     },
     addObject({ commit, dispatch }, { type, name, id, style, data }) {
       let objectStyle = style || {};
+      console.log(data)
       dispatch("view/createLocalObject", data).then((localObject) => {
         console.log(localObject);
         const newObject = {
@@ -84,15 +87,9 @@ export default new Vuex.Store({
           vtk: localObject,
         };
         console.log(newObject);
+        dispatch("treeview/registerObject", newObject);
+        commit("registerData", newObject);
       });
-      const newObject = {
-        id,
-        name,
-        type,
-        style: objectStyle,
-      };
-      dispatch("treeview/registerObject", newObject);
-      commit("registerData", newObject);
     },
   },
   modules: { network, treeview, ui, view },

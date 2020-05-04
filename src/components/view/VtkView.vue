@@ -7,7 +7,7 @@
     <view-toolbar :view="viewId" />
     <v-row v-resize="resizeCurrentView" no-gutters class="fill-height">
       <v-col
-        ref="vtkView"
+        ref="vtkViewJS"
         style="
           overflow: hidden;
           height: calc(100vh - 64px);
@@ -27,17 +27,8 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import vtkRemoteView from "vtk.js/Sources/Rendering/Misc/RemoteView";
 import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
-
-import macro from "vtk.js/Sources/macro";
-import vtkInteractorObserver from "vtk.js/Sources/Rendering/Core/InteractorObserver";
-import vtkViewProxy from "vtk.js/Sources/Proxy/Core/ViewProxy";
-import vtkInteractiveOrientationWidget from "vtk.js/Sources/Widgets/Widgets3D/InteractiveOrientationWidget";
-import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
-import vtkOrientationMarkerWidget from "vtk.js/Sources/Interaction/Widgets/OrientationMarkerWidget";
-import { CaptureOn } from "vtk.js/Sources/Widgets/Core/WidgetManager/Constants";
 
 export default {
   name: "VtkView",
@@ -67,10 +58,34 @@ export default {
     }),
   },
   mounted() {
-    this.view.setContainer(this.$refs.vtkView);
+    this.view.setContainer(this.$refs.vtkViewJS);
     this.view.getOpenglRenderWindow().setViewStream(this.viewStream);
     this.widgetManager.setRenderer(this.view.getRenderer());
     this.resizeCurrentView();
+
+    this.view.getInteractor().onRightButtonPress((e) => {
+      console.log(this.$refs.vtkViewJS);
+      // const { width, height } = this.$refs.vtkViewJS.getBoundingClientRect();
+      const x = e.position.x; // * width;
+      const y = e.position.y; // * height;
+      this.call({
+        command: "opengeode.mouse.menu",
+        args: [x, y, this.selections],
+      }).then((id) => {
+        if (id != 0) {
+          const item = this.$store.getters.object(id);
+          console.log("FOUND ", item.name);
+          this.selectedItem = item;
+          this.displayMenu = true;
+          this.menuPosition = {
+            x: this.left + x,
+            y,
+          };
+        }
+      });
+    });
+    this.left = this.$refs.vtkViewJS.getBoundingClientRect().left;
+    this.$root.$on("hide_drawer", this.resizeCurrentView);
   },
   beforeDestroy() {
     this.view.setContainer(null);
@@ -82,6 +97,7 @@ export default {
         this.view.resize();
         this.view.renderLater();
         this.$store.dispatch("view/pushCamera");
+        this.$store.dispatch("view/pushMakerViewport");
       }
     },
   },

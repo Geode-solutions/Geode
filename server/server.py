@@ -41,6 +41,10 @@ class Backend(OpenGeodeServerProtocol):
             renderWindowInteractor.SetRenderWindow(renderWindow)
             renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
 
+            widget = vtk.vtkOrientationMarkerWidget()
+            widget.SetInteractor( renderWindowInteractor )
+            self.setSharedObject("marker", widget)
+
             renderer.ResetCamera()
             # renderWindow.OffScreenRenderingOn()
             renderWindow.Render()

@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -40,7 +40,7 @@ Lesser General Public License for more details.
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import ContextualMenu from "./ContextualMenu";
 
 export default {
@@ -78,20 +78,10 @@ export default {
     selections: function (newSelections, oldSelections) {
       oldSelections
         .filter((item) => newSelections.indexOf(item) < 0)
-        .forEach((item) =>
-          this.call({
-            command: "opengeode.actor.visibility",
-            args: [item, false],
-          })
-        );
+        .forEach((item) => this.changeVisibility(item, false));
       newSelections
         .filter((item) => oldSelections.indexOf(item) < 0)
-        .forEach((item) =>
-          this.call({
-            command: "opengeode.actor.visibility",
-            args: [item, true],
-          })
-        );
+        .forEach((item) => this.changeVisibility(item, true));
     },
   },
   mounted() {
@@ -100,6 +90,13 @@ export default {
   },
   methods: {
     ...mapActions("network", ["call"]),
+    changeVisibility(id, value) {
+      this.call({
+        command: "opengeode.actor.visibility",
+        args: [id, value],
+      });
+      this.$store.dispatch("view/setVisibility", { id, value });
+    },
     openContextualMenu(event, item) {
       if (!item.type) {
         return;

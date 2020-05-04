@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -16,12 +16,12 @@
  */
 
 import vtkXMLPolyDataReader from "vtk.js/Sources/IO/XML/XMLPolyDataReader";
+import vtkXMLPolyDataWriter from "vtk.js/Sources/IO/XML/XMLPolyDataWriter";
 import vtkView from "vtk.js/Sources/Proxy/Core/ViewProxy";
 import vtkSource from "vtk.js/Sources/Proxy/Core/SourceProxy";
 import vtkGeometryRepresentation from "vtk.js/Sources/Proxy/Representations/GeometryRepresentationProxy";
 import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
 import vtkNorthActor from "@/config/northActor";
-import vtkOrientationMarkerWidget from 'vtk.js/Sources/Interaction/Widgets/OrientationMarkerWidget';
 
 import { CaptureOn } from "vtk.js/Sources/Widgets/Core/WidgetManager/Constants";
 
@@ -32,11 +32,6 @@ export default {
     widgetManager: {},
     viewStream: {},
     viewId: "",
-  },
-  getters: {
-    items: (state) => state.tree.filter((item) => item.children.length),
-    selections: (state, getters, rootState, rootGetters) =>
-      state.selectedTree.filter((item) => rootGetters.object(item)),
   },
   mutations: {
     registerView(state, view) {
@@ -50,6 +45,12 @@ export default {
     },
     registerViewStream(state, viewStream) {
       state.viewStream = viewStream;
+    },
+    addRepresentation(state, rep) {
+      state.view.addRepresentation(rep);
+    },
+    removeRepresentation(state, rep) {
+      state.view.removeRepresentation(rep);
     },
   },
   actions: {
@@ -71,47 +72,58 @@ export default {
         { root: true }
       );
     },
+    pushMakerViewport({ state, dispatch }) {
+      const viewport = state.view
+        .getReferenceByName("orientationWidget")
+        .getRenderer()
+        .getViewport();
+      dispatch(
+        "network/call",
+        {
+          command: "opengeode.marker.viewport",
+          args: [viewport],
+        },
+        { root: true }
+      );
+    },
     createView({ commit, dispatch }, { client, viewId }) {
       const view = vtkView.newInstance();
-      console.log(view);
-      console.log(view.listPropertyNames());
       const viewStream = client.getImageStream().createViewStream(viewId);
-      viewStream.onImageReady((e) => {
+      viewStream.onImageReady(() => {
         const glwindow = view.getOpenglRenderWindow();
         glwindow.setUseBackgroundImage(true);
         glwindow.setUseOffScreen(true);
       });
 
       const north = vtkNorthActor.newInstance();
+      const writer = vtkXMLPolyDataWriter.newInstance();
+      const fileContent = writer.write(north.getMapper().getInputData());
+      dispatch(
+        "network/call",
+        {
+          command: "opengeode.marker.geometry",
+          args: [fileContent],
+        },
+        { root: true }
+      );
       view.registerOrientationAxis("north", north);
       view.setOrientationAxesType("north");
 
       const interactor = view.getRenderWindow().getInteractor();
-
-      // let orientationWidget = vtkOrientationMarkerWidget.newInstance({
-      //   actor: north,
-      //   interactor,
-      // });
-      // orientationWidget.setEnabled(true);
-      // orientationWidget.setViewportCorner(
-      //   vtkOrientationMarkerWidget.Corners.BOTTOM_LEFT
-      // );
-      // orientationWidget.setViewportSize(0.1);
-
-      console.log("interactor", interactor.getClassName(), interactor);
-      interactor.onLeftButtonPress((e) => {
-        console.log("3PRESS=====", e);
+      interactor.onLeftButtonPress(() => {
         const glwindow = view.getOpenglRenderWindow();
         glwindow.setUseBackgroundImage(false);
         glwindow.setUseOffScreen(false);
       });
-      interactor.onLeftButtonRelease((e) => {
-        console.log("3RELEASE=====", e);
+      interactor.onLeftButtonRelease(() => {
         dispatch("pushCamera");
-        console.log("PUSH");
       });
-      interactor.onEndMouseWheel((e) => {
-        console.log("3WHEEL=====", e);
+      interactor.onStartMouseWheel(() => {
+        const glwindow = view.getOpenglRenderWindow();
+        glwindow.setUseBackgroundImage(false);
+        glwindow.setUseOffScreen(false);
+      });
+      interactor.onEndMouseWheel(() => {
         dispatch("pushCamera");
       });
 
@@ -123,8 +135,9 @@ export default {
       commit("registerViewStream", viewStream);
 
       dispatch("pushCamera");
+      dispatch("pushMakerViewport");
     },
-    createLocalObject({ state }, data) {
+    createLocalObject({ commit }, data) {
       const reader = vtkXMLPolyDataReader.newInstance();
       const textEncoder = new TextEncoder();
       reader.parseAsArrayBuffer(textEncoder.encode(data));
@@ -133,9 +146,18 @@ export default {
       source.setInputData(polydata);
       const rep = vtkGeometryRepresentation.newInstance();
       rep.setInput(source);
-      rep.setColor([0, 150 / 255, 136 / 255]);
-      state.view.addRepresentation(rep);
+      rep.setPointSize(5);
+      rep.setColor([0, 150 / 255, 136 / 255]); // primary
+      commit("addRepresentation", rep);
       return { data: polydata, source, rep };
+    },
+    setVisibility({ commit, rootGetters }, { id, value }) {
+      const rep = rootGetters.object(id).vtk.rep;
+      if (value) {
+        commit("addRepresentation", rep);
+      } else {
+        commit("removeRepresentation", rep);
+      }
     },
   },
 };
