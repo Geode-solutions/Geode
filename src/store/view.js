@@ -89,9 +89,13 @@ export default {
     createView({ commit, dispatch }, { client, viewId }) {
       const view = vtkView.newInstance();
       const viewStream = client.getImageStream().createViewStream(viewId);
+      const glwindow = view.getOpenglRenderWindow();
+      const imageStyle = glwindow.getReferenceByName("bgImage").style;
+      imageStyle.transition = "opacity 0.5s linear";
+      console.log(imageStyle);
       viewStream.onImageReady(() => {
-        const glwindow = view.getOpenglRenderWindow();
-        glwindow.setUseBackgroundImage(true);
+        imageStyle.opacity = "1";
+        // glwindow.setUseBackgroundImage(true);
         glwindow.setUseOffScreen(true);
       });
 
@@ -111,16 +115,16 @@ export default {
 
       const interactor = view.getRenderWindow().getInteractor();
       interactor.onLeftButtonPress(() => {
-        const glwindow = view.getOpenglRenderWindow();
-        glwindow.setUseBackgroundImage(false);
+        imageStyle.opacity = "0";
+        // glwindow.setUseBackgroundImage(false);
         glwindow.setUseOffScreen(false);
       });
       interactor.onLeftButtonRelease(() => {
         dispatch("pushCamera");
       });
       interactor.onStartMouseWheel(() => {
-        const glwindow = view.getOpenglRenderWindow();
-        glwindow.setUseBackgroundImage(false);
+        imageStyle.opacity = "0";
+        // glwindow.setUseBackgroundImage(false);
         glwindow.setUseOffScreen(false);
       });
       interactor.onEndMouseWheel(() => {
