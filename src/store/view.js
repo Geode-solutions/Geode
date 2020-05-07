@@ -91,7 +91,7 @@ export default {
       const viewStream = client.getImageStream().createViewStream(viewId);
       const glwindow = view.getOpenglRenderWindow();
       const imageStyle = glwindow.getReferenceByName("bgImage").style;
-      imageStyle.transition = "opacity 0.5s linear";
+      imageStyle.transition = "opacity 0.2s ease-in";
       console.log(imageStyle);
       viewStream.onImageReady(() => {
         imageStyle.opacity = "1";
