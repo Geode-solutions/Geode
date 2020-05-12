@@ -92,7 +92,7 @@ export default {
     ...mapActions("network", ["call"]),
     changeVisibility(id, value) {
       this.call({
-        command: "opengeode.actor.visibility",
+        command: "geode.actor.visibility",
         args: [id, value],
       });
       this.$store.dispatch("view/setVisibility", { id, value });

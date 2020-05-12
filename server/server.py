@@ -1,4 +1,17 @@
-          # import to process args
+# Copyright (C) 2019 - 2020 Geode-solutions
+# 
+# This file is a part of Geode library.
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+
 import sys
 import os
 from importlib import import_module
@@ -9,15 +22,16 @@ from vtk.web import protocols
 from vtk.web import wslink as vtk_wslink
 from wslink import server
 
-from geode_server_protocols import OpenGeodeServerProtocol
+from geode_server_protocols import GeodeServerProtocol
 
 import argparse
 
-class Backend(OpenGeodeServerProtocol):
+class Backend(GeodeServerProtocol):
 
     # Application configuration
     view    = None
     authKey = "wslink-secret"
+    debug   = False
 
     def initialize(self):
         self.initializeProtocols()
@@ -46,7 +60,8 @@ class Backend(OpenGeodeServerProtocol):
             self.setSharedObject("marker", widget)
 
             renderer.ResetCamera()
-            # renderWindow.OffScreenRenderingOn()
+            print("Backend.debug ", Backend.debug)
+            renderWindow.SetOffScreenRendering(not Backend.debug)
             renderWindow.Render()
 
             # VTK Web application specific
@@ -73,7 +88,9 @@ if __name__ == "__main__":
 
     # Configure our current application
     Backend.authKey = args.authKey
-    OpenGeodeServerProtocol.modules = args.modules
+    Backend.debug = args.debug
+    print("modules", args.modules)
+    GeodeServerProtocol.modules = args.modules
 
     # Start server
     server.start_webserver(options=args, protocol=Backend)

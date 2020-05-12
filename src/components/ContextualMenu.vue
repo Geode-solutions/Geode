@@ -23,7 +23,6 @@
 
 <script>
 import detachable from "vuetify/lib/mixins/detachable";
-import { mapState } from "vuex";
 import dependent from "vuetify/lib/mixins/dependent";
 
 export default {

@@ -15,24 +15,129 @@
  *
  */
 
-"use strict";
-
 import { app, protocol, BrowserWindow } from "electron";
+import { spawn } from "child_process";
+import glob from "glob";
 import {
   createProtocol,
   installVueDevtools,
 } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
+import { sync as commandExists } from "command-exists";
+
+const Store = require("electron-store");
+
+const store = new Store({
+  schema: {
+    port: {
+      type: "number",
+      default: 1234,
+    },
+    modules: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          path: { type: "string" },
+          python: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
+          lib: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
+        },
+        required: ["name", "path", "python", "lib"],
+      },
+    },
+  },
+});
+
 const isDevelopment = process.env.NODE_ENV !== "production";
+const appRoot = isDevelopment
+  ? path.join(__dirname, "..")
+  : path.dirname(process.env.APPIMAGE);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win;
+let win = null;
+let server = null;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
+
+function startServer() {
+  let command = "python";
+  if (commandExists("python3")) {
+    command = "python3";
+  }
+  let PythonPath = [];
+  let LibrariesPath = [];
+  const serverPath = path.join(appRoot, "server");
+  console.log("serverPath ", serverPath);
+  let serverArguments = [
+    path.join(serverPath, "server.py"),
+    "-p ".concat(store.get("port")),
+  ];
+  let vtkInstall;
+  if (isDevelopment) {
+    serverArguments.push("-d");
+    const serverToolsPath = path.join(
+      appRoot,
+      "node_modules/@geode/geode-tools"
+    );
+    PythonPath.push(path.join(serverToolsPath, "server"));
+    vtkInstall = path.join(serverToolsPath, "build/vtk/install/lib");
+  } else {
+    vtkInstall = path.join(serverPath, "lib");
+  }
+  console.log("vtkInstall ", vtkInstall);
+  LibrariesPath.push(vtkInstall);
+  const files = glob.sync(
+    [vtkInstall, "/python*/site-packages/vtk.py"].join("")
+  );
+  console.log("files = ", files);
+  const vtkPython = path.dirname(files[0]);
+  console.log("vtkPython = ", vtkPython);
+  PythonPath.push(vtkPython);
+
+  const modules = [];
+  store.get("modules").forEach((module) => {
+    modules.push(module.name);
+    console.log("=", module.name, "=");
+    console.log(module.python);
+    PythonPath = PythonPath.concat(module.python);
+    LibrariesPath = LibrariesPath.concat(module.lib);
+  });
+  if (modules.length) {
+    serverArguments.push("-m ".concat(modules.join(" ")));
+  }
+  console.log(PythonPath);
+  const separator = process.platform === "win32" ? ";" : ":";
+  process.env.PYTHONPATH = PythonPath.join(separator);
+  console.log(process.env.PYTHONPATH);
+  process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
+  server = spawn(command, serverArguments);
+  server.stdout.on("data", (data) => {
+    console.log(`server: ${data}`);
+  });
+  server.stderr.on("data", (data) => {
+    console.log(`server: ${data}`);
+  });
+  server.on("close", (code) => {
+    console.log(`server exited with code ${code}`);
+    server = null;
+  });
+}
+
 function createWindow() {
   // Create the browser window.
   win = new BrowserWindow({
@@ -71,6 +176,7 @@ app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
+    startServer();
     createWindow();
   }
 });
@@ -79,6 +185,7 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
+  startServer();
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     await installVueDevtools();
@@ -102,5 +209,5 @@ if (isDevelopment) {
 }
 
 process.on("uncaughtException", function (err) {
-  console.log(err);
+  console.log("uncaughtException:", err);
 });

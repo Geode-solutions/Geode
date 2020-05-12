@@ -21,7 +21,8 @@ module.exports = {
     ],
     "vuetify/grid-unknown-attributes": "error",
     "vuetify/no-deprecated-classes": "error",
-    "prettier/prettier": "warn"
+    "no-undef": "warn",
+    "no-console": "off",
   },
   parserOptions: {
     parser: "babel-eslint",

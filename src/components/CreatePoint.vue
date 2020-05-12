@@ -40,7 +40,6 @@ Lesser General Public License for more details.
 </template>
 
 <script>
-import { mapState } from "vuex";
 import vtkPolyData from "vtk.js/Sources/Common/DataModel/PolyData";
 
 export default {
@@ -56,7 +55,6 @@ export default {
     y: 0,
     z: 0,
   }),
-  computed: {},
   methods: {
     close() {
       this.$emit("input", false);

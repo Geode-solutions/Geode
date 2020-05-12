@@ -69,7 +69,7 @@ export default {
       const x = e.position.x; // * width;
       const y = e.position.y; // * height;
       this.call({
-        command: "opengeode.mouse.menu",
+        command: "geode.mouse.menu",
         args: [x, y, this.selections],
       }).then((id) => {
         if (id != 0) {
