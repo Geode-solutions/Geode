@@ -1,7 +1,9 @@
 .DS_Store
 node_modules
-/dist
+build
+dist
 __pycache__
+wslink
 
 # local env files
 .env.local

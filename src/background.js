@@ -65,7 +65,8 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const isWindows = process.platform === "win32";
 const appRoot = isDevelopment
   ? path.join(__dirname, "..")
-  : path.dirname(process.env.APPIMAGE);
+  : process.env.APPDIR;
+console.log("DIRNAME", appRoot);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -96,7 +97,7 @@ function startServer() {
     PythonPath.push(path.join(serverToolsPath, "server"));
     vtkInstall = path.join(serverToolsPath, "build/vtk/install");
   } else {
-    vtkInstall = serverPath;
+    vtkInstall = path.join(serverPath, "vtk");
   }
   const vtkBin = path.join(vtkInstall, "bin");
   console.log("vtkInstall ", vtkInstall);
@@ -118,13 +119,14 @@ function startServer() {
   process.env.PYTHONPATH = PythonPath.join(separator);
   console.log(process.env.PYTHONPATH);
   if (isWindows) {
+    LibrariesPath.push(vtkBin);
     LibrariesPath.push(process.env.PATH);
     process.env.PATH = LibrariesPath.join(separator);
   } else {
+    LibrariesPath.push(path.join(vtkInstall, "lib"));
     LibrariesPath.push(process.env.LD_LIBRARY_PATH);
     process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
   }
-  console.log(process.env);
   server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server: ${data}`);
