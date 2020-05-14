@@ -17,13 +17,14 @@
 
 import { app, protocol, BrowserWindow } from "electron";
 import { spawn } from "child_process";
-import glob from "glob";
+// import glob from "glob";
 import {
   createProtocol,
   installVueDevtools,
 } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
-import { sync as commandExists } from "command-exists";
+
+console.log("======================");
 
 const Store = require("electron-store");
 
@@ -35,6 +36,7 @@ const store = new Store({
     },
     modules: {
       type: "array",
+      default: [],
       items: {
         type: "object",
         properties: {
@@ -53,13 +55,14 @@ const store = new Store({
             },
           },
         },
-        required: ["name", "path", "python", "lib"],
+        // required: ["name", "path", "python", "lib"],
       },
     },
   },
 });
 
 const isDevelopment = process.env.NODE_ENV !== "production";
+const isWindows = process.platform === "win32";
 const appRoot = isDevelopment
   ? path.join(__dirname, "..")
   : path.dirname(process.env.APPIMAGE);
@@ -75,10 +78,6 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 function startServer() {
-  let command = "python";
-  if (commandExists("python3")) {
-    command = "python3";
-  }
   let PythonPath = [];
   let LibrariesPath = [];
   const serverPath = path.join(appRoot, "server");
@@ -95,19 +94,12 @@ function startServer() {
       "node_modules/@geode/geode-tools"
     );
     PythonPath.push(path.join(serverToolsPath, "server"));
-    vtkInstall = path.join(serverToolsPath, "build/vtk/install/lib");
+    vtkInstall = path.join(serverToolsPath, "build/vtk/install");
   } else {
-    vtkInstall = path.join(serverPath, "lib");
+    vtkInstall = serverPath;
   }
+  const vtkBin = path.join(vtkInstall, "bin");
   console.log("vtkInstall ", vtkInstall);
-  LibrariesPath.push(vtkInstall);
-  const files = glob.sync(
-    [vtkInstall, "/python*/site-packages/vtk.py"].join("")
-  );
-  console.log("files = ", files);
-  const vtkPython = path.dirname(files[0]);
-  console.log("vtkPython = ", vtkPython);
-  PythonPath.push(vtkPython);
 
   const modules = [];
   store.get("modules").forEach((module) => {
@@ -121,11 +113,19 @@ function startServer() {
     serverArguments.push("-m ".concat(modules.join(" ")));
   }
   console.log(PythonPath);
-  const separator = process.platform === "win32" ? ";" : ":";
+  const separator = isWindows ? ";" : ":";
+  PythonPath.push(process.env.PYTHONPATH);
   process.env.PYTHONPATH = PythonPath.join(separator);
   console.log(process.env.PYTHONPATH);
-  process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
-  server = spawn(command, serverArguments);
+  if (isWindows) {
+    LibrariesPath.push(process.env.PATH);
+    process.env.PATH = LibrariesPath.join(separator);
+  } else {
+    LibrariesPath.push(process.env.LD_LIBRARY_PATH);
+    process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
+  }
+  console.log(process.env);
+  server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server: ${data}`);
   });
