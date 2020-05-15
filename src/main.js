@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -18,7 +18,6 @@
 import Vue from "vue";
 import vuetify from "./plugins/vuetify";
 import "roboto-fontface/css/roboto/roboto-fontface.css";
-import "material-design-icons-iconfont/dist/material-design-icons.css";
 import App from "./App";
 import store from "./store";
 import router from "./router";
@@ -29,5 +28,5 @@ new Vue({
   vuetify,
   store,
   router,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount("#app");

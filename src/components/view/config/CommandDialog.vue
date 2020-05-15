@@ -47,8 +47,8 @@ export default {
   props: {
     visible: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     buttons: [
@@ -56,23 +56,23 @@ export default {
         tooltip: "Apply",
         icon: "fas fa-check",
         color: "primary",
-        action: this.apply
+        action: this.apply,
       },
       {
         tooltip: "Apply & Close",
         icon: "fas fa-check-double",
         color: "primary",
-        action: this.applyClose
+        action: this.applyClose,
       },
       {
         tooltip: "Close",
         icon: "fas fa-times",
         color: "accent",
-        action: this.close
-      }
+        action: this.close,
+      },
     ],
     initX: "",
-    initY: ""
+    initY: "",
   }),
   computed: {
     dialog: {
@@ -81,8 +81,8 @@ export default {
       },
       set(value) {
         this.$emit("update:visible", value);
-      }
-    }
+      },
+    },
   },
   methods: {
     dragMouseDown(e) {
@@ -112,8 +112,8 @@ export default {
     applyClose() {
       this.apply();
       this.close();
-    }
-  }
+    },
+  },
 };
 </script>
 

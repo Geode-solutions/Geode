@@ -4,12 +4,12 @@ export default {
   props: {
     visible: {
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     item: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     hide: {
@@ -18,23 +18,23 @@ export default {
       },
       set(value) {
         this.$emit("update:visible", value);
-      }
-    }
+      },
+    },
   },
   watch: {
-    visible: function() {
+    visible: function () {
       if (this.visible) {
         console.log("HIDE2");
         this.hide = false;
       } else {
         console.log("HIDE3");
       }
-    }
+    },
   },
   created() {
     console.log("HIDE");
     this.visible = false;
   },
-  render() {}
+  render() {},
 };
 </script>

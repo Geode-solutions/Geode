@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -22,18 +22,33 @@ Lesser General Public License for more details.
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
   name: "ViewSettings",
+  props: {
+    view: {
+      required: true,
+      type: String,
+    },
+  },
   computed: {
+    ...mapState("network", ["client"]),
     color: {
       get() {
         return this.$store.state.vtkBackground;
       },
       set(value) {
         this.$store.commit("setBackground", value);
-      }
-    }
-  }
+        this.call({
+          command: "opengeode.ui.background",
+          args: [this.view, value.r / 255, value.g / 255, value.b / 255],
+        });
+      },
+    },
+  },
+  methods: {
+    ...mapActions("network", ["call"]),
+  },
 };
 </script>
 

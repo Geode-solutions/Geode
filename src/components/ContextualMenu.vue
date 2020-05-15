@@ -1,5 +1,5 @@
 <template>
-  <div ref="content" style="z-index:8">
+  <div ref="content" style="z-index: 8;">
     <div
       ref="ring"
       :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"
@@ -14,7 +14,6 @@
         :top="item.top"
         :btn-size="btnSize"
         :item="selectedItem"
-        :views="views"
         @update="computeItems"
       />
     </div>
@@ -34,20 +33,16 @@ export default {
     value: {
       default: false,
       required: true,
-      type: Boolean
+      type: Boolean,
     },
     position: {
       required: true,
-      type: Object
+      type: Object,
     },
     selectedItem: {
       required: true,
-      type: Object
+      type: Object,
     },
-    views: {
-      required: true,
-      type: Array
-    }
   },
   data: () => ({
     width: 300,
@@ -57,19 +52,18 @@ export default {
       height: "",
       borderWidth: "",
       bottom: "",
-      left: ""
+      left: "",
     },
     innerDiskStyle: {
       width: "",
       height: "",
       borderWidth: "",
       bottom: "",
-      left: ""
+      left: "",
     },
-    contextualItems: []
+    contextualItems: [],
   }),
   computed: {
-    ...mapState(["proxyManager"]),
     radius() {
       return this.width / 2;
     },
@@ -81,7 +75,7 @@ export default {
     },
     btnSize() {
       return (3 * this.ringWidth) / 4;
-    }
+    },
   },
   mounted() {
     this.isBooted = true;
@@ -100,9 +94,9 @@ export default {
       this.$emit("input", false);
     },
     configClose() {
-      const onClick = e => {
+      const onClick = (e) => {
         if (
-          ![this.$refs.ring, ...this.getOpenDependentElements()].some(el =>
+          ![this.$refs.ring, ...this.getOpenDependentElements()].some((el) =>
             el.contains(e.target)
           )
         ) {
@@ -146,8 +140,8 @@ export default {
           (Math.sin(angles[index]) * (this.innerRadius + this.radius)) / 2 -
           this.btnSize / 2;
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -35,10 +35,10 @@ export default new Router({
         { path: "home", component: DataManagerHome },
         {
           path: "import",
-          component: DataManagerImport
-        }
-      ]
+          component: DataManagerImport,
+        },
+      ],
     },
-    { path: "/viewer", component: Viewer }
-  ]
+    { path: "/viewer", component: Viewer },
+  ],
 });

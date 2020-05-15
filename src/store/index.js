@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -15,101 +15,82 @@
  *
  */
 
-import ProxyConfig from '@/config/proxy';
-import {DEFAULT_VIEW_TYPE} from '@/config/viewConstants';
-import viewHelper from '@/config/viewHelper';
-import os from 'os';
-import uuidv4 from 'uuid/v4';
-import vtkProxyManager from 'vtk.js/Sources/Proxy/Core/ProxyManager';
-import vtkImplicitPlaneWidget from 'vtk.js/Sources/Widgets/Widgets3D/ImplicitPlaneWidget';
-import Vue from 'vue';
-import Vuex from 'vuex';
+import os from "os";
+import Vue from "vue";
+import Vuex from "vuex";
 
-import treeview from './treeview';
-import ui from './ui';
+import network from "./network";
+import treeview from "./treeview";
+import ui from "./ui";
+import view from "./view";
 
 Vue.use(Vuex);
 
-function createSource(proxyManager, dataset) {
-  const source = proxyManager.createProxy('Sources', 'TrivialProducer');
-  source.setInputData(dataset);
-  source.activate();
-  proxyManager.createRepresentationInAllViews(source);
-  return source;
-}
-
 export default new Vuex.Store({
   state: {
-    proxyManager:
-        vtkProxyManager.newInstance({proxyConfiguration: ProxyConfig}),
-    vtkBackground: '#666',
-    data: []
-  },
-  getters: {
-    view: state => viewHelper.getView(state.proxyManager, DEFAULT_VIEW_TYPE)
+    vtkBackground: { r: 0.4, g: 0.4, b: 0.4 },
+    data: new Map(),
   },
   mutations: {
     registerData(state, object) {
-      state.data.push(object);
+      state.data.set(object.id, object);
+      console.log(object.id);
     },
     setBackground(state, background) {
       state.vtkBackground = background;
     },
-    setObjectStyle(state, {id, style, value}) {
-      const index = state.data.findIndex(item => item.id === id);
-      let object = state.data[index].style;
-      for (let i = 0; i < style.length - 1; ++i) {
-        let key = style[i];
+    setObjectStyle(state, { id, style, value }) {
+      let object = state.data.get(id);
+      if (object !== undefined && object.style) {
+        object = object.style;
+        for (let i = 0; i < style.length - 1; ++i) {
+          const key = style[i];
+          if (key in object) {
+            object = object[key];
+          }
+        }
+        const key = style[style.length - 1];
         if (key in object) {
-          object = object[key];
+          object[key] = value;
         }
       }
-      let key = style[style.length - 1];
-      if (key in object) {
-        object[key] = value;
-      }
-    }
+    },
+  },
+  getters: {
+    object: (state) => (id) => {
+      return state.data.get(id);
+    },
   },
   actions: {
-    loadConfigFile({dispatch}, path) {
+    loadConfigFile({ dispatch }, path) {
       const config = __non_webpack_require__(path);
       if (config.modules) {
-        config.modules.forEach(module => dispatch('loadModule', module));
+        config.modules.forEach((module) => dispatch("loadModule", module));
       }
     },
     loadModule(context, module) {
       __non_webpack_require__(module)(this, os.platform());
     },
-    registerObjectType({dispatch}, type) {
-      dispatch('treeview/registerObjectType', type);
+    registerObjectType({ dispatch }, type) {
+      dispatch("treeview/registerObjectType", type);
     },
-    addObject({state, commit, dispatch}, {type, name, cpp, vtk, style}) {
-      const proxyManager = state.proxyManager;
-      let source = {};
-      if (vtk.isA && vtk.isA('vtkPolyData')) {
-        source = createSource(proxyManager, vtk);
-      } else {
-        Object.keys(vtk).forEach(key => {
-          source[key] = [];
-          vtk[key].forEach(dataset => {
-            source[key].push(createSource(proxyManager, dataset));
-          });
-        });
-      }
-      let objectStyle = style || {};
-      objectStyle.clipper = {
-        widget: vtkImplicitPlaneWidget.newInstance(),
-        clip: false,
-        display: true,
-        fixed: false
-      };
-      const newObject =
-          {id: uuidv4(), name, cpp, source, type, style: objectStyle, vtk};
-      dispatch('treeview/registerObject', newObject);
-      commit('registerData', newObject);
-      proxyManager.renderAllViews();
-      return source;
-    }
+    addObject({ commit, dispatch }, { type, name, id, style, data }) {
+      let objectStyle = style || {};
+      console.log(data)
+      dispatch("view/createLocalObject", data).then((localObject) => {
+        console.log(localObject);
+        const newObject = {
+          id,
+          name,
+          type,
+          style: objectStyle,
+          vtk: localObject,
+        };
+        console.log(newObject);
+        dispatch("treeview/registerObject", newObject);
+        commit("registerData", newObject);
+      });
+    },
   },
-  modules: {treeview, ui}
+  modules: { network, treeview, ui, view },
 });

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -35,17 +35,17 @@ export default {
   namespaced: true,
   state: {
     inputs: [],
-    contextualItems: [] //initialContextualItems()
+    contextualItems: [], //initialContextualItems()
   },
   getters: {
-    filteredInputs: state => id => {
-      return state.inputs.filter(input => input.parent === id);
+    filteredInputs: (state) => (id) => {
+      return state.inputs.filter((input) => input.parent === id);
     },
-    contextualItems: state => type => {
+    contextualItems: (state) => (type) => {
       return state.contextualItems.filter(
-        item => (item.type === "all" || item.type === type) && item.visible
+        (item) => (item.type === "all" || item.type === type) && item.visible
       );
-    }
+    },
   },
   mutations: {
     registerContextualItem(state, { type, component }) {
@@ -61,15 +61,15 @@ export default {
         icon,
         component,
         tooltip,
-        action
+        action,
       });
     },
     setContextualItemVisibility(state, { name, value }) {
-      state.contextualItems.forEach(item => {
+      state.contextualItems.forEach((item) => {
         if (item.component.name === name) {
           item.visible = value;
         }
       });
-    }
-  }
+    },
+  },
 };

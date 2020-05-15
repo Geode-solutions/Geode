@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -47,10 +47,10 @@ export default {
       {
         tooltip: "Import file",
         icon: "fas fa-file-export",
-        route: "/data/import"
-      }
-    ]
-  })
+        route: "/data/import",
+      },
+    ],
+  }),
 };
 </script>
 

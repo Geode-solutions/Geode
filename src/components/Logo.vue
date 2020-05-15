@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -20,6 +20,6 @@ Lesser General Public License for more details.
 
 <script>
 export default {
-  name: "Logo"
+  name: "Logo",
 };
 </script>

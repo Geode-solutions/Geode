@@ -9,7 +9,7 @@
           </v-btn>
         </template>
       </v-tooltip>
-      <view-settings v-if="settings" />
+      <view-settings v-if="settings" :view="view" />
     </v-col>
     <v-col>
       <v-tooltip left>
@@ -31,7 +31,7 @@
         </template>
       </v-tooltip>
     </v-col>
-    <v-col>
+    <!-- <v-col>
       <v-tooltip left>
         Distance
         <template #activator="{ on }">
@@ -48,9 +48,9 @@
         </template>
       </v-tooltip>
     </v-col>
-      <v-snackbar v-model="distanceVisible" :timeout="timeout">
-        Distance = {{ distanceValue }}
-      </v-snackbar>
+    <v-snackbar v-model="distanceVisible" :timeout="timeout">
+      Distance = {{ distanceValue }}
+    </v-snackbar> -->
   </v-row>
 </template>
 
@@ -58,19 +58,13 @@
 import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import vtkDistanceWidget from "vtk.js/Sources/Widgets/Widgets3D/DistanceWidget";
 import vtkBoundingBox from "vtk.js/Sources/Common/DataModel/BoundingBox";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import ViewSettings from "./ViewSettings";
 
 export default {
   name: "ViewToolbar",
   components: {
-    ViewSettings
-  },
-  props: {
-    view: {
-      required: true,
-      type: Object
-    }
+    ViewSettings,
   },
   data: () => ({
     timeout: 0,
@@ -78,38 +72,25 @@ export default {
     centering: false,
     distanceWidget: {},
     distanceVisible: false,
-    distanceValue: 0
+    distanceValue: 0,
   }),
   computed: {
-    ...mapState(["proxyManager"]),
+    ...mapState("network", ["client"]),
+    ...mapState("view", ["view", "viewId"]),
     distanceStyle() {
-       return this.distanceVisible ? "teal" : "";
-    }
-  },
-  mounted() {
-    this.$nextTick(() => {
-      this.view
-        .getRenderWindow()
-        .getInteractor()
-        .onLeftButtonPress(callData => {
-          const renderer = this.view.getRenderer();
-          if (!this.centering || renderer !== callData.pokedRenderer) {
-            return;
-          }
-          const picker = vtkPicker.newInstance();
-          picker.pick(
-            [callData.position.x, callData.position.y, 0.0],
-            renderer
-          );
-          this.view.focusTo(...picker.getPickPosition());
-          this.view.getOpenglRenderWindow().setCursor("pointer");
-          this.centering = false;
-        });
-    });
+      return this.distanceVisible ? "teal" : "";
+    },
   },
   methods: {
+    ...mapActions("network", ["call"]),
     resetCamera() {
+      // this.call({
+      //   command: "opengeode.camera.reset",
+      //   args: [this.viewId],
+      // }).then(() => {
       this.view.resetCamera();
+      this.$store.dispatch("view/pushCamera");
+      // });
     },
     centerCamera() {
       this.view.getOpenglRenderWindow().setCursor("default");
@@ -140,8 +121,8 @@ export default {
         widgetManager.disablePicking();
       }
       this.view.modified();
-    }
-  }
+    },
+  },
 };
 </script>
 

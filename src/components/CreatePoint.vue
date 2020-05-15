@@ -15,14 +15,14 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-dialog v-model="value" max-width="290">
+  <v-dialog v-model="value" max-width="290" @keydown.esc="close">
     <v-card>
       <v-card-title>Create a point</v-card-title>
       <v-card-text>
         <v-text-field v-model="name" label="Name"></v-text-field>
-        <v-text-field v-model="x" label="X"></v-text-field>
-        <v-text-field v-model="y" label="Y"></v-text-field>
-        <v-text-field v-model="z" label="Z"></v-text-field>
+        <v-text-field type="number" v-model="x" label="X"></v-text-field>
+        <v-text-field type="number" v-model="y" label="Y"></v-text-field>
+        <v-text-field type="number" v-model="z" label="Z"></v-text-field>
       </v-card-text>
 
       <v-card-actions>
@@ -47,41 +47,29 @@ export default {
   props: {
     value: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   data: () => ({
     name: "debug",
     x: 0,
     y: 0,
-    z: 0
+    z: 0,
   }),
-  computed: {
-    ...mapState(["proxyManager"])
-  },
+  computed: {},
   methods: {
     close() {
       this.$emit("input", false);
     },
     create() {
-      let vtk = vtkPolyData.newInstance();
-      const points = new Float32Array([this.x, this.y, this.z]);
-      vtk.getPoints().setData(points, 3);
-      const verts = new Uint32Array([1, 0]);
-      vtk.getVerts().setData(verts);
-      this.$store
-        .dispatch("addObject", { type: "PointSet3D", name: this.name, vtk })
-        .then(source =>
-          this.proxyManager
-            .getRepresentations()
-            .filter(r => r.getInput() === source)
-            .forEach(r => {
-              r.setRepresentation("Points");
-              r.setPointSize(5);
-            })
-        );
-    }
-  }
+      this.$store.dispatch("mesh/createPoint", {
+        name: this.name,
+        x: parseFloat(this.x),
+        y: parseFloat(this.y),
+        z: parseFloat(this.z),
+      });
+    },
+  },
 };
 </script>
 

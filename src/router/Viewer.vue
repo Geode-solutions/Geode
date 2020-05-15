@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -24,10 +24,10 @@ import VtkView from "@/components/view/VtkView";
 export default {
   name: "Viewer",
   components: {
-    VtkView
+    VtkView,
   },
   mounted() {
     console.log("MOUNTED VIEWER");
-  }
+  },
 };
 </script>

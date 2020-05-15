@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Geode-solutions
+ * Copyright (C) 2019 - 2020 Geode-solutions
  *
  * This file is a part of Geode library.
  *
@@ -20,7 +20,7 @@
 import { app, protocol, BrowserWindow } from "electron";
 import {
   createProtocol,
-  installVueDevtools
+  installVueDevtools,
 } from "vue-cli-plugin-electron-builder/lib";
 import path from "path";
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -31,7 +31,7 @@ let win;
 
 // Standard scheme must be registered before the app is ready
 protocol.registerSchemesAsPrivileged([
-  { scheme: "app", privileges: { secure: true, standard: true } }
+  { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 function createWindow() {
   // Create the browser window.
@@ -39,9 +39,9 @@ function createWindow() {
     width: 800,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
     },
-    icon: path.join(__dirname, "icons/64x64.png")
+    icon: path.join(__dirname, "icons/64x64.png"),
   });
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -89,7 +89,7 @@ app.on("ready", async () => {
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
   if (process.platform === "win32") {
-    process.on("message", data => {
+    process.on("message", (data) => {
       if (data === "graceful-exit") {
         app.quit();
       }
@@ -101,6 +101,6 @@ if (isDevelopment) {
   }
 }
 
-process.on("uncaughtException", function(err) {
+process.on("uncaughtException", function (err) {
   console.log(err);
 });

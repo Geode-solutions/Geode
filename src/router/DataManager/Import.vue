@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -49,14 +49,14 @@ Lesser General Public License for more details.
                   :id="'Input' + node.name"
                   type="file"
                   multiple
-                  style="display:none;"
+                  style="display: none;"
                   @change="loadFile(node)"
                 />
                 <v-card-actions class="justify-center align-center">
                   <component
                     :is="node.component"
                     v-if="node.component"
-                    style="height: 200px; width: 200px"
+                    style="height: 200px; width: 200px;"
                   />
                   <v-icon v-else-if="node.icon" size="200">
                     {{ node.icon }}
@@ -79,14 +79,14 @@ Lesser General Public License for more details.
 export default {
   name: "DataManagerImport",
   data: () => ({
-    path: [{ text: "import" }]
+    path: [{ text: "import" }],
   }),
   computed: {
     nodes() {
       return this.$store.getters["ui/filteredInputs"](
         this.path[this.path.length - 1].text
       );
-    }
+    },
   },
   methods: {
     showInput(name) {
@@ -102,10 +102,10 @@ export default {
       this.dialog = false;
     },
     updateBreadcrumbs(text) {
-      const index = this.path.findIndex(item => item.text === text);
+      const index = this.path.findIndex((item) => item.text === text);
       this.path.splice(index + 1);
-    }
-  }
+    },
+  },
 };
 </script>
 

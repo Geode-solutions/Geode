@@ -1,5 +1,5 @@
 <!--
-Copyright (C) 2019 Geode-solutions
+Copyright (C) 2019 - 2020 Geode-solutions
 
 This file is a part of Geode library.
 
@@ -28,7 +28,7 @@ Lesser General Public License for more details.
           <template #activator="{ on }">
             <v-btn
               class="grey--text mx-2"
-              style="left: 10px"
+              style="left: 10px;"
               icon
               active-class="text--darken-2"
               :to="item.route"
@@ -50,15 +50,15 @@ export default {
   props: {
     visible: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   data: () => ({
     items: [
       { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
-      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" }
-    ]
-  })
+      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" },
+    ],
+  }),
 };
 </script>
 
