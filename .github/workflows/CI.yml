@@ -76,7 +76,7 @@ jobs:
         npm install
         npm run electron:package
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.TOKEN }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -92,7 +92,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - run: |
-        npm install -g @semantic-release/git
+        npm install
         npx semantic-release
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}

@@ -22,12 +22,7 @@ module.exports = {
     "vuetify/no-deprecated-classes": "error",
     "no-undef": "warn",
     "no-console": "off",
-    "prettier/prettier": [
-      "warn",
-      {
-        endOfLine: "lf",
-      },
-    ],
+    "prettier/prettier": "warn",
   },
   parserOptions: {
     parser: "babel-eslint",
