@@ -28,7 +28,7 @@ jobs:
         npm run build:vtk
         npm run electron:build
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.TOKEN }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -97,6 +97,6 @@ jobs:
     # needs: [build-linux, build-mac, build-windows]
     steps:
     - uses: actions/checkout@v1
-    - run: npx semantic-release
+    - run: npx -p @semantic-release/git semantic-release
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}

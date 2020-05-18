@@ -8,36 +8,40 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
-        files: [
-          "**/*"
-        ],
-        "extraFiles": [
+        files: ["**/*"],
+        extraFiles: [
           {
-            "from": "server",
-            "to": "server",
-            "filter": ["**/*.py"]
+            from: "server",
+            to: "server",
+            filter: ["**/*.py"],
           },
           {
-            "from": "wslink",
-            "to": "server",
-            "filter": ["**/*.py"]
+            from: "wslink",
+            to: "server",
+            filter: ["**/*.py"],
           },
           {
-            "from": "node_modules/@geode/geode-tools/server",
-            "to": "server",
-            "filter": ["**/*.py"]
+            from: "node_modules/@geode/geode-tools/server",
+            to: "server",
+            filter: ["**/*.py"],
           },
           {
-            "from": "node_modules/@geode/geode-tools/build/vtk/install",
-            "to": "server/vtk",
-            "filter": ["**/*.so", "**/*.dylib", "**/*.dll", "**/*.py", "**/vtkpython*"]
-          }
+            from: "node_modules/@geode/geode-tools/build/vtk/install",
+            to: "server/vtk",
+            filter: [
+              "**/*.so",
+              "**/*.dylib",
+              "**/*.dll",
+              "**/*.py",
+              "**/vtkpython*",
+            ],
+          },
         ],
         linux: {
           target: "AppImage",
-          category: "Science"
-        }
-      }
-    }
-  }
+          category: "Science",
+        },
+      },
+    },
+  },
 };

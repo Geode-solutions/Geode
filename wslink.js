@@ -15,17 +15,17 @@
  *
  */
 
-const commandExistsSync = require('command-exists').sync;
-const { exec } = require('child_process');
+const commandExistsSync = require("command-exists").sync;
+const { exec } = require("child_process");
 
-if (commandExistsSync('pip3')) {
-    exec('pip3 install wslink -t wslink', (err, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);    
-    });
+if (commandExistsSync("pip3")) {
+  exec("pip3 install wslink -t wslink", (err, stdout, stderr) => {
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  });
 } else {
-    exec('pip install wslink -t wslink', (err, stdout, stderr) => {
-      console.log(`stdout: ${stdout}`);
-      console.log(`stderr: ${stderr}`);
-    });
+  exec("pip install wslink -t wslink", (err, stdout, stderr) => {
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  });
 }
