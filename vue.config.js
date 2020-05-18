@@ -41,6 +41,9 @@ module.exports = {
           target: "AppImage",
           category: "Science",
         },
+        win: {
+          target: "portable",
+        },
       },
     },
   },

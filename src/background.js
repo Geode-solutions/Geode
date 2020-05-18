@@ -65,6 +65,7 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 const isWindows = process.platform === "win32";
 const appRoot = isDevelopment ? path.join(__dirname, "..") : process.env.APPDIR;
 console.log("DIRNAME", appRoot);
+console.log(process.env);
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

@@ -16,6 +16,8 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:icons": "electron-icon-builder -i=src/assets/logo.png -o=build -f",
+    "electron:package": "npm run electron:build",
+    "electron:package2": "npm run build:wslink && npm run build:vtk && npm run electron:icons && npm run electron:build",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
