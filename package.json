@@ -25,7 +25,7 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:icons": "electron-icon-builder -i=src/assets/logo.png -o=build -f",
-    "electron:package": "npm run build:wslink && npm run build:vtk && npm run electron:icons && npm run electron:build",
+    "electron:package": "npm run build:wslink && npm run electron:icons && npm run build:vtk && npm run electron:build",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
@@ -54,6 +54,7 @@
     "command-exists": "^1.2.9",
     "electron": "^8.3.0",
     "electron-icon-builder": "^1.0.2",
+    "es6-promise": "^4.2.8",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-loader": "^4.0.2",
