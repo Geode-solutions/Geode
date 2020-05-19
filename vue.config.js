@@ -18,7 +18,7 @@ module.exports = {
           {
             from: "wslink",
             to: "server",
-            filter: ["**/*.py", "**/*.pyd"],
+            filter: ["**/*.so*", "**/*.dylib", "**/*.py", "**/*.pyd"],
           },
           {
             from: "node_modules/@geode/geode-tools/server",
@@ -29,7 +29,7 @@ module.exports = {
             from: "node_modules/@geode/geode-tools/build/vtk/install",
             to: "server/vtk",
             filter: [
-              "**/*.so",
+              "**/*.so*",
               "**/*.dylib",
               "**/*.dll",
               "**/*.py",
@@ -47,7 +47,7 @@ module.exports = {
         },
         portable: {
           unpackDirName: "unpackGeodeDirectory",
-        }
+        },
       },
     },
   },

@@ -36,30 +36,30 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
-  # build-mac:
-  #   runs-on: macos-latest
+  build-mac:
+    runs-on: macos-latest
 
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Cache node modules
-  #     uses: actions/cache@v1.2.0
-  #     with:
-  #       path: node_modules
-  #       key: node-darwin-${{ hashFiles('package-lock.json') }}
-  #   - name: Compile
-  #     run: |
-  #       npm install
-        # npm run electron:package
-      # env:
-      #   GH_TOKEN: ${{ secrets.TOKEN }}
-  #   - name: Notify slack
-  #     if: failure() && github.ref == 'refs/heads/master'
-  #     uses: 8398a7/action-slack@v2
-  #     with:
-  #       status: failure
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache node modules
+      uses: actions/cache@v1.2.0
+      with:
+        path: node_modules
+        key: node-darwin-${{ hashFiles('package-lock.json') }}
+    - name: Compile
+      run: |
+        npm install
+        npm run electron:package
+      env:
+        GH_TOKEN: ${{ secrets.TOKEN }}
+    - name: Notify slack
+      if: failure() && github.ref == 'refs/heads/master'
+      uses: 8398a7/action-slack@v2
+      with:
+        status: failure
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
   build-windows:
     runs-on: windows-2016
@@ -88,11 +88,10 @@ jobs:
       
   semantic-release:
     runs-on: ubuntu-18.04
-    # needs: [build-linux, build-mac, build-windows]
+    needs: [build-linux, build-mac, build-windows]
     steps:
     - uses: actions/checkout@v1
     - run: |
-        npm install
-        npx semantic-release
+        npx -p @semantic-release/git -p semantic-release semantic-release
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
