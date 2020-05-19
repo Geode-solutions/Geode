@@ -25,6 +25,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
     "@geode/geode-tools": "^1.0.3",
+    "electron-log": "^4.1.2",
     "electron-store": "^5.1.1",
     "glob": "^7.1.6",
     "roboto-fontface": "*",
