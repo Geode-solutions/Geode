@@ -17,7 +17,6 @@
   },
   "license": "LGPL-3.0",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -69,11 +68,8 @@
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.4.3",
+    "watchpack": "^1.7.2",
     "worker-loader": "^2.0.0",
     "wslink": "^0.1.14"
-  },
-  "resolutions": {
-    "fsevents": "1.2.9",
-    "**/fsevents": "1.2.9"
   }
 }
