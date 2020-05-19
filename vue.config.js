@@ -39,14 +39,14 @@ module.exports = {
           },
         ],
         linux: {
-          target: "AppImage",
+          target: "tar.gz",
           category: "Science",
         },
-        win: {
-          target: "portable",
+        mac: {
+          target: "tar.gz",
         },
-        portable: {
-          unpackDirName: "unpackGeodeDirectory",
+        win: {
+          target: "zip",
         },
       },
     },

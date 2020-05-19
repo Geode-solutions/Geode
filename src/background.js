@@ -93,6 +93,30 @@ try {
     { scheme: "app", privileges: { secure: true, standard: true } },
   ]);
 
+  function createWindow() {
+    // Create the browser window.
+    win = new BrowserWindow({
+      width: 800,
+      height: 600,
+      webPreferences: {
+        nodeIntegration: true,
+      },
+    });
+    if (process.env.WEBPACK_DEV_SERVER_URL) {
+      // Load the url of the dev server if in development mode
+      win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+      if (!process.env.IS_TEST) win.webContents.openDevTools();
+    } else {
+      createProtocol("app");
+      // Load the index.html when not in development
+      win.loadURL("app://./index.html");
+    }
+
+    win.on("closed", () => {
+      win = null;
+    });
+  }
+
   function startServer() {
     let PythonPath = [];
     let LibrariesPath = [];
@@ -150,35 +174,16 @@ try {
     });
     server.stderr.on("data", (data) => {
       console.log(`server: ${data}`);
+      if (data.indexOf("Starting factory") !== -1) {
+        createWindow();
+      }
     });
     server.on("close", (code) => {
       console.log(`server exited with code ${code}`);
+      if (data.indexOf("Starting factory") !== -1) {
+        createWindow();
+      }
       server = null;
-    });
-  }
-
-  function createWindow() {
-    // Create the browser window.
-    win = new BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-        nodeIntegration: true,
-      },
-      icon: path.join(__dirname, "icons/64x64.png"),
-    });
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Load the url of the dev server if in development mode
-      win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-      if (!process.env.IS_TEST) win.webContents.openDevTools();
-    } else {
-      createProtocol("app");
-      // Load the index.html when not in development
-      win.loadURL("app://./index.html");
-    }
-
-    win.on("closed", () => {
-      win = null;
     });
   }
 
@@ -196,7 +201,6 @@ try {
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
       startServer();
-      createWindow();
     }
   });
 
@@ -209,7 +213,6 @@ try {
       // Install Vue Devtools
       await installVueDevtools();
     }
-    createWindow();
   });
 
   // Exit cleanly on request from parent process in development mode.
