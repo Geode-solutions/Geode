@@ -20,9 +20,9 @@ Lesser General Public License for more details.
       <v-card-title>Create a point</v-card-title>
       <v-card-text>
         <v-text-field v-model="name" label="Name"></v-text-field>
-        <v-text-field type="number" v-model="x" label="X"></v-text-field>
-        <v-text-field type="number" v-model="y" label="Y"></v-text-field>
-        <v-text-field type="number" v-model="z" label="Z"></v-text-field>
+        <v-text-field v-model="x" type="number" label="X"></v-text-field>
+        <v-text-field v-model="y" type="number" label="Y"></v-text-field>
+        <v-text-field v-model="z" type="number" label="Z"></v-text-field>
       </v-card-text>
 
       <v-card-actions>
@@ -40,8 +40,6 @@ Lesser General Public License for more details.
 </template>
 
 <script>
-import vtkPolyData from "vtk.js/Sources/Common/DataModel/PolyData";
-
 export default {
   props: {
     value: {
