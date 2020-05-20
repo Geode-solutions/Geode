@@ -38,6 +38,8 @@ module.exports = {
             ],
           },
         ],
+        artifactName: "${productName}-${env.VERSION}-${env.PLATFORM}.${ext}",
+        publish: null,
         linux: {
           target: "tar.gz",
           category: "Science",

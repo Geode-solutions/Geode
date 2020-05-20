@@ -1,8 +1,8 @@
-name: CI
+name: CD
 
 on: 
   push:
-  pull_request:
+    tags: 'v*'
 
 jobs:
   build-linux:
@@ -23,11 +23,19 @@ jobs:
         key: node-${{ matrix.config.system }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        version="${GITHUB_REF##*/*/}"
+        echo ::set-output name=version::$version
+        export VERSION=$version
         npm install
         npm run electron:package
       env:
-        VERSION: "unknown"
         PLATFORM: ${{ matrix.config.system }}
+    - name: Upload
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "geode-${{ steps.package.outputs.version }}-${{ matrix.config.system }}.tar.gz"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -49,11 +57,19 @@ jobs:
         key: node-darwin-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        version="${GITHUB_REF##*/*/}"
+        echo ::set-output name=version::$version
+        export VERSION=$version
         npm install
         npm run electron:package
       env:
-        VERSION: "unknown"
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "darwin"
+    - name: Upload
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "geode-${{ steps.package.outputs.version }}-darwin.tar.gz"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -75,11 +91,19 @@ jobs:
         key: node-win64-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        $version = ${env:GITHUB_REF} -replace 'refs\/tags\/', ''
+        echo "::set-output name=version::$version"
+        $env:VERSION = $version
         npm install
         npm run electron:package
       env:
-        VERSION: "unknown"
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "win64"
+    - name: Upload
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "geode-${{ steps.package.outputs.version }}-win64.zip"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -88,12 +112,3 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      
-  semantic-release:
-    runs-on: ubuntu-18.04
-    needs: [build-linux, build-mac, build-windows]
-    steps:
-    - uses: actions/checkout@v1
-    - run: npx semantic-release
-      env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }}
