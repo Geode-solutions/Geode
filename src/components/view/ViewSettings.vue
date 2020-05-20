@@ -40,7 +40,7 @@ export default {
       set(value) {
         this.$store.commit("setBackground", value);
         this.call({
-          command: "opengeode.ui.background",
+          command: "geode.ui.background",
           args: [this.view, value.r / 255, value.g / 255, value.b / 255],
         });
       },

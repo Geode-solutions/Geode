@@ -8,18 +8,47 @@ module.exports = {
   pluginOptions: {
     electronBuilder: {
       builderOptions: {
-        // options placed here will be merged with default configuration and passed to electron-builder
-        files: [
-          "**/*"
-        ],
-        "extraFiles": [
+        files: ["**/*"],
+        extraFiles: [
           {
-            "from": "server",
-            "to": "server",
-            "filter": ["**/*"]
-          }
-        ]
-      }
-    }
-  }
+            from: "server",
+            to: "server",
+            filter: ["**/*.py"],
+          },
+          {
+            from: "wslink",
+            to: "server",
+            filter: ["**/*.so*", "**/*.dylib", "**/*.py", "**/*.pyd"],
+          },
+          {
+            from: "node_modules/@geode/geode-tools/server",
+            to: "server",
+            filter: ["**/*.py"],
+          },
+          {
+            from: "node_modules/@geode/geode-tools/build/vtk/install",
+            to: "server/vtk",
+            filter: [
+              "**/*.so*",
+              "**/*.dylib",
+              "**/*.dll",
+              "**/*.py",
+              "**/*.pyd",
+              "**/vtkpython*",
+            ],
+          },
+        ],
+        linux: {
+          target: "tar.gz",
+          category: "Science",
+        },
+        mac: {
+          target: "tar.gz",
+        },
+        win: {
+          target: "zip",
+        },
+      },
+    },
+  },
 };

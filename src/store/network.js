@@ -61,7 +61,7 @@ export default {
           { root: true }
         );
         console.log("RESET");
-        dispatch("call", { command: "opengeode.reset" });
+        dispatch("call", { command: "geode.reset" });
         clientToConnect.endBusy();
       });
 

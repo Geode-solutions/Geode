@@ -55,7 +55,7 @@
 </template>
 
 <script>
-import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
+// import vtkPicker from "vtk.js/Sources/Rendering/Core/Picker";
 import vtkDistanceWidget from "vtk.js/Sources/Widgets/Widgets3D/DistanceWidget";
 import vtkBoundingBox from "vtk.js/Sources/Common/DataModel/BoundingBox";
 import { mapActions, mapState } from "vuex";
@@ -85,7 +85,7 @@ export default {
     ...mapActions("network", ["call"]),
     resetCamera() {
       // this.call({
-      //   command: "opengeode.camera.reset",
+      //   command: "geode.camera.reset",
       //   args: [this.viewId],
       // }).then(() => {
       this.view.resetCamera();

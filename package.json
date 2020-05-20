@@ -1,27 +1,48 @@
 {
   "name": "geode",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.0",
+  "description": "Geode-solutions software for visualization, modeling and much more",
+  "author": {
+    "name": "Geode-solutions",
+    "email": "contact@geode-solutions.com",
+    "url": "https://geode-solutions.com/"
+  },
+  "homepage": "https://github.com/Geode-solutions/Geode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Geode-solutions/Geode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Geode-solutions/Geode/issues"
+  },
+  "license": "LGPL-3.0",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "build:vtk": "npm explore @geode/geode-tools -- npm run build:vtk",
+    "build:wslink": "node wslink",
+    "build:icons": "mkdirp build && icon-gen -i src/assets/logo.svg -o build",
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
-    "electron:generate-icons": "electron-icon-builder --input=./src/assets/logo.png --output=dist_electron --flatten",
+    "electron:package": "npm run build:wslink && npm run build:icons && npm run build:vtk && npm run electron:build",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },
   "main": "background.js",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
+    "@geode/geode-tools": "^1.0.3",
+    "electron-log": "^4.1.2",
+    "electron-store": "^5.1.1",
+    "glob": "^7.1.6",
     "roboto-fontface": "*",
     "uuid": "^8.0.0",
-    "vtk.js": "^13.18.0",
+    "vtk.js": "^14.0.3",
     "vue": "^2.6.11",
-    "vue-router": "^3.1.6",
-    "vuetify": "^2.2.27",
-    "vuex": "^3.3.0"
+    "vue-router": "^3.2.0",
+    "vuetify": "^2.2.29",
+    "vuex": "^3.4.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.3.1",
@@ -29,14 +50,18 @@
     "@vue/cli-service": "^4.3.1",
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
-    "electron": "^8.2.5",
-    "electron-icon-builder": "^1.0.2",
+    "cmake-js": "^6.1.0",
+    "command-exists": "^1.2.9",
+    "electron": "^9.0.0",
+    "es6-promise": "^4.2.8",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-loader": "^4.0.2",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-vue": "^6.2.2",
     "eslint-plugin-vuetify": "^1.0.0-beta.6",
+    "icon-gen": "^2.0.0",
+    "mkdirp": "^1.0.4",
     "prettier": "^2.0.5",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
@@ -45,6 +70,8 @@
     "vue-cli-plugin-vuetify": "^2.0.5",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.4.3",
+    "watchpack": "^1.7.2",
+    "worker-loader": "^2.0.0",
     "wslink": "^0.1.14"
   }
 }

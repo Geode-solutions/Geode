@@ -11,7 +11,6 @@ module.exports = {
   ],
   plugins: ["vuetify"],
   rules: {
-    "no-console": process.env.NODE_ENV === "production" ? "error" : "off",
     "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
     "vue/return-in-computed-property": [
       "error",
@@ -21,7 +20,9 @@ module.exports = {
     ],
     "vuetify/grid-unknown-attributes": "error",
     "vuetify/no-deprecated-classes": "error",
-    "prettier/prettier": "warn"
+    "no-undef": "warn",
+    "no-console": "off",
+    "prettier/prettier": "warn",
   },
   parserOptions: {
     parser: "babel-eslint",

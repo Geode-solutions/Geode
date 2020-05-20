@@ -59,7 +59,7 @@ export default {
       dispatch(
         "network/call",
         {
-          command: "opengeode.camera.update",
+          command: "geode.camera.update",
           args: [
             state.viewId,
             camera.getFocalPoint(),
@@ -80,7 +80,7 @@ export default {
       dispatch(
         "network/call",
         {
-          command: "opengeode.marker.viewport",
+          command: "geode.marker.viewport",
           args: [viewport],
         },
         { root: true }
@@ -105,7 +105,7 @@ export default {
       dispatch(
         "network/call",
         {
-          command: "opengeode.marker.geometry",
+          command: "geode.marker.geometry",
           args: [fileContent],
         },
         { root: true }

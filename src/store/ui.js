@@ -15,14 +15,10 @@
  *
  */
 
-import Hide from "@/components/view/config/Hide";
-//import Rename from "@/components/view/config/Rename";
-import Vue from "vue";
-
-function createContextualItem(type, icon, tooltip, component) {
-  Vue.component(component.name + "ContextualItem", component);
-  return { type, icon, tooltip, component };
-}
+// function createContextualItem(type, icon, tooltip, component) {
+//   Vue.component(component.name + "ContextualItem", component);
+//   return { type, icon, tooltip, component };
+// }
 
 // function initialContextualItems() {
 //   let items = [];
