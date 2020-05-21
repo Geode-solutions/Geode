@@ -41,11 +41,11 @@ module.exports = {
         artifactName: "${productName}-${env.VERSION}-${env.PLATFORM}.${ext}",
         publish: null,
         linux: {
-          target: "tar.gz",
+          target: "zip",
           category: "Science",
         },
         mac: {
-          target: "tar.gz",
+          target: "zip",
         },
         win: {
           target: "zip",
