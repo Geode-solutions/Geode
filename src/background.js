@@ -17,7 +17,6 @@
 
 import { app, protocol, BrowserWindow } from "electron";
 import { spawn } from "child_process";
-// import glob from "glob";
 import {
   createProtocol,
   installVueDevtools,
