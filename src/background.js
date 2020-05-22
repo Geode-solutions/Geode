@@ -21,6 +21,7 @@ import {
   createProtocol,
   installVueDevtools,
 } from "vue-cli-plugin-electron-builder/lib";
+import fs from "fs";
 import path from "path";
 var log = require("electron-log");
 
@@ -32,206 +33,206 @@ console.error = function (message) {
 };
 console.log("======================");
 
-try {
-  const Store = require("electron-store");
+const isDevelopment = process.env.NODE_ENV !== "production";
+const isWindows = process.platform === "win32";
+const appRoot = isDevelopment
+  ? path.join(__dirname, "..")
+  : path.dirname(app.getPath("exe"));
 
-  const store = new Store({
-    schema: {
-      port: {
-        type: "number",
-        default: 1234,
-      },
-      modules: {
-        type: "array",
-        default: [],
-        items: {
-          type: "object",
-          properties: {
-            name: { type: "string" },
-            path: { type: "string" },
-            python: {
-              type: "array",
-              items: {
-                type: "string",
-              },
-            },
-            lib: {
-              type: "array",
-              items: {
-                type: "string",
-              },
+const Store = require("electron-store");
+const cwd = fs.existsSync(path.join(appRoot, "config.json"))
+  ? appRoot
+  : app.getPath("userData");
+const store = new Store({
+  cwd,
+  schema: {
+    port: {
+      type: "number",
+      default: 1234,
+    },
+    modules: {
+      type: "array",
+      default: [],
+      items: {
+        type: "object",
+        properties: {
+          name: { type: "string" },
+          path: { type: "string" },
+          python: {
+            type: "array",
+            items: {
+              type: "string",
             },
           },
-          required: ["name", "path", "python", "lib"],
+          lib: {
+            type: "array",
+            items: {
+              type: "string",
+            },
+          },
         },
+        required: ["name", "path", "python", "lib"],
       },
     },
+  },
+});
+
+// ? process.env.PORTABLE_EXECUTABLE_DIR
+// : process.env.APPDIR;
+console.log("DIRNAME ".concat(appRoot));
+console.log(app.getPath("userData"));
+console.log(app.getPath("exe"));
+console.log(app.getPath("temp"));
+console.log(app.getAppPath());
+console.log(process.env.PORTABLE_EXECUTABLE_DIR);
+
+// Keep a global reference of the window object, if you don't, the window will
+// be closed automatically when the JavaScript object is garbage collected.
+let win = null;
+let server = null;
+
+// Standard scheme must be registered before the app is ready
+protocol.registerSchemesAsPrivileged([
+  { scheme: "app", privileges: { secure: true, standard: true } },
+]);
+
+function createWindow() {
+  // Create the browser window.
+  win = new BrowserWindow({
+    width: 800,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+    },
   });
-
-  const isDevelopment = process.env.NODE_ENV !== "production";
-  const isWindows = process.platform === "win32";
-  const appRoot = isDevelopment
-    ? path.join(__dirname, "..")
-    : path.dirname(app.getPath("exe"));
-  // ? process.env.PORTABLE_EXECUTABLE_DIR
-  // : process.env.APPDIR;
-  console.log("DIRNAME ".concat(appRoot));
-  console.log(app.getPath("userData"));
-  console.log(app.getPath("exe"));
-  console.log(app.getPath("temp"));
-  console.log(app.getAppPath());
-  console.log(process.env.PORTABLE_EXECUTABLE_DIR);
-
-  // Keep a global reference of the window object, if you don't, the window will
-  // be closed automatically when the JavaScript object is garbage collected.
-  let win = null;
-  let server = null;
-
-  // Standard scheme must be registered before the app is ready
-  protocol.registerSchemesAsPrivileged([
-    { scheme: "app", privileges: { secure: true, standard: true } },
-  ]);
-
-  function createWindow() {
-    // Create the browser window.
-    win = new BrowserWindow({
-      width: 800,
-      height: 600,
-      webPreferences: {
-        nodeIntegration: true,
-      },
-    });
-    if (process.env.WEBPACK_DEV_SERVER_URL) {
-      // Load the url of the dev server if in development mode
-      win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
-      if (!process.env.IS_TEST) win.webContents.openDevTools();
-    } else {
-      createProtocol("app");
-      // Load the index.html when not in development
-      win.loadURL("app://./index.html");
-    }
-
-    win.on("closed", () => {
-      win = null;
-    });
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    // Load the url of the dev server if in development mode
+    win.loadURL(process.env.WEBPACK_DEV_SERVER_URL);
+    if (!process.env.IS_TEST) win.webContents.openDevTools();
+  } else {
+    createProtocol("app");
+    // Load the index.html when not in development
+    win.loadURL("app://./index.html");
   }
 
-  function startServer() {
-    let PythonPath = [];
-    let LibrariesPath = [];
-    const serverPath = path.join(appRoot, "server");
-    console.log("serverPath ".concat(serverPath));
-    let serverArguments = [
-      path.join(serverPath, "server.py"),
-      "-p ".concat(store.get("port")),
-    ];
-    let vtkInstall;
-    if (isDevelopment) {
-      serverArguments.push("-d");
-      const serverToolsPath = path.join(
-        appRoot,
-        "node_modules/@geode/geode-tools"
-      );
-      PythonPath.push(path.join(serverToolsPath, "server"));
-      vtkInstall = path.join(serverToolsPath, "build/vtk/install");
-    } else {
-      vtkInstall = path.join(serverPath, "vtk");
-    }
-    const vtkBin = path.join(vtkInstall, "bin");
-    console.log("vtkInstall ".concat(vtkInstall));
-
-    const modules = [];
-    store.get("modules").forEach((module) => {
-      modules.push(module.name);
-      console.log("=", module.name, "=");
-      console.log(module.python);
-      PythonPath = PythonPath.concat(module.python);
-      LibrariesPath = LibrariesPath.concat(module.lib);
-    });
-    if (modules.length) {
-      serverArguments.push("-m ".concat(modules.join(" ")));
-    }
-    console.log("PythonPath ".concat(PythonPath));
-    const separator = isWindows ? ";" : ":";
-    PythonPath.push(process.env.PYTHONPATH);
-    process.env.PYTHONPATH = PythonPath.join(separator);
-    console.log(process.env.PYTHONPATH);
-    if (isWindows) {
-      LibrariesPath.push(vtkBin);
-      LibrariesPath.push(process.env.PATH);
-      process.env.PATH = LibrariesPath.join(separator);
-    } else {
-      LibrariesPath.push(path.join(vtkInstall, "lib"));
-      LibrariesPath.push(process.env.LD_LIBRARY_PATH);
-      process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
-    }
-    console.log(process.env.PATH);
-    console.log(process.env.LD_LIBRARY_PATH);
-    server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
-    server.stdout.on("data", (data) => {
-      console.log(`server: ${data}`);
-    });
-    server.stderr.on("data", (data) => {
-      console.log(`server: ${data}`);
-      if (data.indexOf("Starting factory") !== -1) {
-        createWindow();
-      }
-    });
-    server.on("close", (code) => {
-      console.log(`server exited with code ${code}`);
-      if (data.indexOf("Starting factory") !== -1) {
-        createWindow();
-      }
-      server = null;
-    });
-  }
-
-  // Quit when all windows are closed.
-  app.on("window-all-closed", () => {
-    // On macOS it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
-    if (process.platform !== "darwin") {
-      app.quit();
-    }
+  win.on("closed", () => {
+    win = null;
   });
-
-  app.on("activate", () => {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (win === null) {
-      startServer();
-    }
-  });
-
-  // This method will be called when Electron has finished
-  // initialization and is ready to create browser windows.
-  // Some APIs can only be used after this event occurs.
-  app.on("ready", async () => {
-    startServer();
-    if (isDevelopment && !process.env.IS_TEST) {
-      // Install Vue Devtools
-      await installVueDevtools();
-    }
-  });
-
-  // Exit cleanly on request from parent process in development mode.
-  if (isDevelopment) {
-    if (process.platform === "win32") {
-      process.on("message", (data) => {
-        if (data === "graceful-exit") {
-          app.quit();
-        }
-      });
-    } else {
-      process.on("SIGTERM", () => {
-        app.quit();
-      });
-    }
-  }
-
-  process.on("uncaughtException", function (err) {
-    console.log("uncaughtException:", err);
-  });
-} catch (e) {
-  console.log(e.name + ": " + e.message);
 }
+
+function startServer() {
+  let PythonPath = [];
+  let LibrariesPath = [];
+  const serverPath = path.join(appRoot, "server");
+  console.log("serverPath ".concat(serverPath));
+  let serverArguments = [
+    path.join(serverPath, "server.py"),
+    "-p ".concat(store.get("port")),
+  ];
+  let vtkInstall;
+  if (isDevelopment) {
+    serverArguments.push("-d");
+    const serverToolsPath = path.join(
+      appRoot,
+      "node_modules/@geode/geode-tools"
+    );
+    PythonPath.push(path.join(serverToolsPath, "server"));
+    vtkInstall = path.join(serverToolsPath, "build/vtk/install");
+  } else {
+    vtkInstall = path.join(serverPath, "vtk");
+  }
+  const vtkBin = path.join(vtkInstall, "bin");
+  console.log("vtkInstall ".concat(vtkInstall));
+
+  const modules = [];
+  store.get("modules").forEach((module) => {
+    modules.push(module.name);
+    console.log("=", module.name, "=");
+    console.log(module.python);
+    PythonPath = PythonPath.concat(module.python);
+    LibrariesPath = LibrariesPath.concat(module.lib);
+  });
+  if (modules.length) {
+    serverArguments.push("-m ".concat(modules.join(" ")));
+  }
+  console.log("PythonPath ".concat(PythonPath));
+  const separator = isWindows ? ";" : ":";
+  PythonPath.push(process.env.PYTHONPATH);
+  process.env.PYTHONPATH = PythonPath.join(separator);
+  console.log(process.env.PYTHONPATH);
+  if (isWindows) {
+    LibrariesPath.push(vtkBin);
+    LibrariesPath.push(process.env.PATH);
+    process.env.PATH = LibrariesPath.join(separator);
+  } else {
+    LibrariesPath.push(path.join(vtkInstall, "lib"));
+    LibrariesPath.push(process.env.LD_LIBRARY_PATH);
+    process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
+  }
+  console.log(process.env.PATH);
+  console.log(process.env.LD_LIBRARY_PATH);
+  server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
+  server.stdout.on("data", (data) => {
+    console.log(`server: ${data}`);
+    if (data.indexOf("Starting factory") !== -1) {
+      createWindow();
+    }
+  });
+  server.stderr.on("data", (data) => {
+    console.log(`server: ${data}`);
+    if (data.indexOf("Starting factory") !== -1) {
+      createWindow();
+    }
+  });
+  server.on("close", (code) => {
+    console.log(`server exited with code ${code}`);
+    server = null;
+  });
+}
+
+// Quit when all windows are closed.
+app.on("window-all-closed", () => {
+  // On macOS it is common for applications and their menu bar
+  // to stay active until the user quits explicitly with Cmd + Q
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+
+app.on("activate", () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (win === null) {
+    startServer();
+  }
+});
+
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on("ready", async () => {
+  startServer();
+  if (isDevelopment && !process.env.IS_TEST) {
+    // Install Vue Devtools
+    await installVueDevtools();
+  }
+});
+
+// Exit cleanly on request from parent process in development mode.
+if (isDevelopment) {
+  if (process.platform === "win32") {
+    process.on("message", (data) => {
+      if (data === "graceful-exit") {
+        app.quit();
+      }
+    });
+  } else {
+    process.on("SIGTERM", () => {
+      app.quit();
+    });
+  }
+}
+
+process.on("uncaughtException", function (err) {
+  console.log("uncaughtException:", err);
+});
