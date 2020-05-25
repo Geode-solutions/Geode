@@ -25,12 +25,7 @@ import fs from "fs";
 import path from "path";
 var log = require("electron-log");
 
-console.log = function (message) {
-  log.info(message);
-};
-console.error = function (message) {
-  log.error(message);
-};
+Object.assign(console, log.functions);
 console.log("======================");
 
 const isDevelopment = process.env.NODE_ENV !== "production";
@@ -48,31 +43,11 @@ const store = new Store({
   schema: {
     port: {
       type: "number",
-      default: 1234,
+      default: 8119,
     },
     modules: {
       type: "array",
-      default: [],
-      items: {
-        type: "object",
-        properties: {
-          name: { type: "string" },
-          path: { type: "string" },
-          python: {
-            type: "array",
-            items: {
-              type: "string",
-            },
-          },
-          lib: {
-            type: "array",
-            items: {
-              type: "string",
-            },
-          },
-        },
-        required: ["name", "path", "python", "lib"],
-      },
+      default: []
     },
   },
 });
@@ -96,7 +71,17 @@ protocol.registerSchemesAsPrivileged([
   { scheme: "app", privileges: { secure: true, standard: true } },
 ]);
 
+function makeModuleAbsolute(module) {
+  if (!path.isAbsolute(module)) {
+    module = path.join(cwd, module);
+  }
+  return module;
+}
+
 function createWindow() {
+  if(win) {
+    return;
+  }
   // Create the browser window.
   win = new BrowserWindow({
     width: 800,
@@ -117,6 +102,16 @@ function createWindow() {
 
   win.on("closed", () => {
     win = null;
+    server.kill();
+  });
+}
+
+function addAbsolutePathToArray(input, output, dir) {
+  input.forEach((value) => {
+    if (!path.isAbsolute(value)) {
+      value = path.join(dir, value);
+    }
+    output.push(value);
   });
 }
 
@@ -144,13 +139,24 @@ function startServer() {
   const vtkBin = path.join(vtkInstall, "bin");
   console.log("vtkInstall ".concat(vtkInstall));
 
-  const modules = [];
-  store.get("modules").forEach((module) => {
+  const readModule = (module, dir) => {
     modules.push(module.name);
     console.log("=", module.name, "=");
     console.log(module.python);
-    PythonPath = PythonPath.concat(module.python);
-    LibrariesPath = LibrariesPath.concat(module.lib);
+    addAbsolutePathToArray(module.python, PythonPath, dir);
+    addAbsolutePathToArray(module.lib, LibrariesPath, dir);
+  };
+
+  const modules = [];
+  store.get("modules").forEach((module) => {
+    if (typeof module === "string") {
+      module = makeModuleAbsolute(module);
+      let rawdata = fs.readFileSync(module);
+      let config = JSON.parse(rawdata);
+      readModule(config, path.dirname(module));
+    } else {
+      readModule(module, cwd);
+    }
   });
   if (modules.length) {
     serverArguments.push("-m ".concat(modules.join(" ")));
@@ -159,7 +165,6 @@ function startServer() {
   const separator = isWindows ? ";" : ":";
   PythonPath.push(process.env.PYTHONPATH);
   process.env.PYTHONPATH = PythonPath.join(separator);
-  console.log(process.env.PYTHONPATH);
   if (isWindows) {
     LibrariesPath.push(vtkBin);
     LibrariesPath.push(process.env.PATH);
@@ -169,17 +174,15 @@ function startServer() {
     LibrariesPath.push(process.env.LD_LIBRARY_PATH);
     process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
   }
-  console.log(process.env.PATH);
-  console.log(process.env.LD_LIBRARY_PATH);
   server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
-    console.log(`server: ${data}`);
+    console.log(`server output: ${data}`);
     if (data.indexOf("Starting factory") !== -1) {
       createWindow();
     }
   });
   server.stderr.on("data", (data) => {
-    console.log(`server: ${data}`);
+    console.log(`server error: ${data}`);
     if (data.indexOf("Starting factory") !== -1) {
       createWindow();
     }
@@ -187,6 +190,7 @@ function startServer() {
   server.on("close", (code) => {
     console.log(`server exited with code ${code}`);
     server = null;
+    win.close();
   });
 }
 
@@ -203,7 +207,8 @@ app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-    startServer();
+  console.log("ACTIVE !!!!!!");
+  startServer();
   }
 });
 
@@ -211,9 +216,10 @@ app.on("activate", () => {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
+  console.log("READY !!!!!!");
   startServer();
   if (isDevelopment && !process.env.IS_TEST) {
-    // Install Vue Devtools
+    // Install Vue Devtoolsmodules
     await installVueDevtools();
   }
 });
