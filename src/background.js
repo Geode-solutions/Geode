@@ -23,7 +23,8 @@ import {
 } from "vue-cli-plugin-electron-builder/lib";
 import fs from "fs";
 import path from "path";
-var log = require("electron-log");
+import { ipcMain } from "electron";
+import log from "electron-log";
 
 Object.assign(console, log.functions);
 console.log("======================");
@@ -47,7 +48,7 @@ const store = new Store({
     },
     modules: {
       type: "array",
-      default: []
+      default: [],
     },
   },
 });
@@ -79,7 +80,7 @@ function makeModuleAbsolute(module) {
 }
 
 function createWindow() {
-  if(win) {
+  if (win) {
     return;
   }
   // Create the browser window.
@@ -102,7 +103,9 @@ function createWindow() {
 
   win.on("closed", () => {
     win = null;
-    server.kill();
+    if (server) {
+      server.kill();
+    }
   });
 }
 
@@ -190,7 +193,9 @@ function startServer() {
   server.on("close", (code) => {
     console.log(`server exited with code ${code}`);
     server = null;
-    win.close();
+    if (win) {
+      win.close();
+    }
   });
 }
 
@@ -207,8 +212,8 @@ app.on("activate", () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (win === null) {
-  console.log("ACTIVE !!!!!!");
-  startServer();
+    console.log("ACTIVE !!!!!!");
+    startServer();
   }
 });
 
@@ -241,4 +246,12 @@ if (isDevelopment) {
 
 process.on("uncaughtException", function (err) {
   console.log("uncaughtException:", err);
+});
+
+ipcMain.on("port", (event) => {
+  event.returnValue = store.get("port");
+});
+
+ipcMain.on("cwd", (event) => {
+  event.returnValue = cwd;
 });

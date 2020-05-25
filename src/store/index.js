@@ -18,6 +18,7 @@
 import os from "os";
 import Vue from "vue";
 import Vuex from "vuex";
+import path from "path";
 
 import network from "./network";
 import treeview from "./treeview";
@@ -62,10 +63,22 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loadConfigFile({ dispatch }, path) {
-      const config = __non_webpack_require__(path);
+    loadConfigFile({ dispatch }, file) {
+      console.log(file);
+      const config = __non_webpack_require__(file);
+      console.log("config.modules", config.modules);
       if (config.modules) {
-        config.modules.forEach((module) => dispatch("loadModule", module.js));
+        config.modules.forEach((module) => {
+          console.log("module", module);
+          if (typeof module === "string") {
+            const configFile = path.resolve(module);
+            console.log("configFile", configFile);
+            console.log("configModule", path.dirname(configFile));
+            dispatch("loadModule", path.dirname(configFile));
+          } else {
+            dispatch("loadModule", module.js);
+          }
+        });
       }
     },
     loadModule(context, module) {

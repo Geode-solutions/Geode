@@ -69,8 +69,7 @@ import CreatePoint from "@/components/CreatePoint";
 import RouteSelector from "@/components/RouteSelector";
 import ObjectTree from "@/components/ObjectTree";
 import { mapState } from "vuex";
-const { app } = require("electron").remote;
-import fs from "fs";
+import { ipcRenderer } from "electron";
 import path from "path";
 
 export default {
@@ -90,18 +89,12 @@ export default {
     },
   },
   mounted() {
-    const isDevelopment = process.env.NODE_ENV !== "production";
-    const appRoot = isDevelopment
-      ? path.join(__dirname, "..")
-      : path.dirname(app.getPath("exe"));
-    console.log("DIR ", appRoot);
-    const cwd = fs.existsSync(path.join(appRoot, "config.json"))
-      ? appRoot
-      : app.getPath("userData");
+    const cwd = ipcRenderer.sendSync("cwd");
     this.$store.dispatch("loadConfigFile", path.join(cwd, "config.json"));
 
+    const port = ipcRenderer.sendSync("port");
     const config = Object.assign({}, this.$store.getters["network/config"], {
-      sessionURL: "ws://localhost:8119/ws",
+      sessionURL: "ws://localhost:" + port + "/ws",
     });
     // if (this.token) {
     //   config.secret = this.token;
