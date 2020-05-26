@@ -29,6 +29,8 @@ jobs:
         key: node-${{ matrix.config.system }}-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        export Python3_ROOT_DIR=$pythonLocation
+        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
       env:
@@ -62,6 +64,8 @@ jobs:
         key: node-darwin-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        export Python3_ROOT_DIR=$pythonLocation
+        npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
       env:
@@ -95,6 +99,8 @@ jobs:
         key: node-win64-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        $Env:Python3_ROOT_DIR=$Env:pythonLocation
+        npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
       env:
