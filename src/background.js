@@ -164,7 +164,6 @@ function startServer() {
   if (modules.length) {
     serverArguments.push("-m ".concat(modules.join(" ")));
   }
-  console.log("PythonPath ".concat(PythonPath));
   const separator = isWindows ? ";" : ":";
   PythonPath.push(process.env.PYTHONPATH);
   process.env.PYTHONPATH = PythonPath.join(separator);
@@ -177,6 +176,8 @@ function startServer() {
     LibrariesPath.push(process.env.LD_LIBRARY_PATH);
     process.env.LD_LIBRARY_PATH = LibrariesPath.join(separator);
   }
+  console.log("PythonPath ".concat(PythonPath));
+  console.log("LibrariesPath ".concat(LibrariesPath));
   server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);
