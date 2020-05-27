@@ -11,26 +11,34 @@ jobs:
     strategy:
       matrix:
         config:
-        - {container: "geodesolutions/ubuntu", system: "ubuntu"}
-        - {container: "geodesolutions/centos", system: "rhel"}
+        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.6}
+        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.7}
+        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.8}
+        - {container: "geodesolutions/centos", system: "rhel", python: 2.7}
 
     steps:
     - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.config.python }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.config.python }}
     - name: Cache node modules
       uses: actions/cache@v1.2.0
       with:
         path: node_modules
-        key: node-${{ matrix.config.system }}-${{ hashFiles('package-lock.json') }}
+        key: node-${{ matrix.config.system }}-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Generate package
       id: package
       run: |
         version="${GITHUB_REF##*/*/}"
-        echo ::set-output name=version::$version
-        export VERSION=$version
+        echo ::set-output name=version::$version-python${{ matrix.config.python }}
+        export VERSION=$version-python${{ matrix.config.python }}
+        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
       env:
         PLATFORM: ${{ matrix.config.system }}
+        Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
@@ -48,24 +56,33 @@ jobs:
       
   build-mac:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        python: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
     - name: Cache node modules
       uses: actions/cache@v1.2.0
       with:
         path: node_modules
-        key: node-darwin-${{ hashFiles('package-lock.json') }}
+        key: node-darwin-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Generate package
       id: package
       run: |
         version="${GITHUB_REF##*/*/}"
-        echo ::set-output name=version::$version
-        export VERSION=$version
+        echo ::set-output name=version::$version-python${{ matrix.config.python }}
+        export VERSION=$version-python${{ matrix.config.python }}
+        npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
       env:
         PLATFORM: "darwin"
+        Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
@@ -83,24 +100,33 @@ jobs:
       
   build-windows:
     runs-on: windows-2016
+    strategy:
+      matrix:
+        python: [3.6, 3.7]
 
     steps:
     - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python }}
     - name: Cache node modules
       uses: actions/cache@v1.2.0
       with:
         path: node_modules
-        key: node-win64-${{ hashFiles('package-lock.json') }}
+        key: node-win64-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Generate package
       id: package
       run: |
         $version = ${env:GITHUB_REF} -replace 'refs\/tags\/', ''
-        echo "::set-output name=version::$version"
-        $env:VERSION = $version
+        echo "::set-output name=version::$version-python${{ matrix.config.python }}"
+        $env:VERSION = $version-python${{ matrix.config.python }}
+        npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
       env:
         PLATFORM: "win64"
+        Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
