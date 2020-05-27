@@ -30,11 +30,11 @@ jobs:
     - name: Compile
       run: |
         echo "DIR"
-        echo $pythonLocation
+        ls $pythonLocation
         echo "LIB"
-        echo $pythonLocation/lib
+        ls $pythonLocation/lib
         echo "BIN"
-        echo $pythonLocation/bin
+        ls $pythonLocation/bin
         npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         # npm run electron:package
@@ -70,11 +70,11 @@ jobs:
     - name: Compile
       run: |
         echo "DIR"
-        echo $pythonLocation
+        ls $pythonLocation
         echo "LIB"
-        echo $pythonLocation/lib
+        ls $pythonLocation/lib
         echo "BIN"
-        echo $pythonLocation/bin
+        ls $pythonLocation/bin
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         # npm run electron:package
@@ -111,12 +111,11 @@ jobs:
     - name: Compile
       run: |
         echo "DIR"
-        echo $Env:pythonLocation
+        dir $Env:pythonLocation
         echo "LIB"
-        echo $Env:pythonLocation/lib
+        dir $Env:pythonLocation/lib
         echo "BIN"
-        echo $Env:pythonLocation/bin
-        echo $Env:Python3_ROOT_DIR
+        dir $Env:pythonLocation/bin
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         # npm run electron:package
