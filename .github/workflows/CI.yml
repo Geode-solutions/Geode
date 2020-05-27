@@ -29,10 +29,15 @@ jobs:
         key: node-${{ matrix.config.system }}-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        export Python3_ROOT_DIR=$pythonLocation
+        echo "DIR"
+        echo $pythonLocation
+        echo "LIB"
+        echo $pythonLocation/lib
+        echo "BIN"
+        echo $pythonLocation/bin
         npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
-        npm run electron:package
+        # npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: ${{ matrix.config.system }}
@@ -64,13 +69,19 @@ jobs:
         key: node-darwin-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        export Python3_ROOT_DIR=$pythonLocation
+        echo "DIR"
+        echo $pythonLocation
+        echo "LIB"
+        echo $pythonLocation/lib
+        echo "BIN"
+        echo $pythonLocation/bin
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
-        npm run electron:package
+        # npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: ${{ matrix.config.system }}
+        Python3_ROOT_DIR: $pythonLocation
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -99,13 +110,20 @@ jobs:
         key: node-win64-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        $Env:Python3_ROOT_DIR=$Env:pythonLocation
+        echo "DIR"
+        echo $Env:pythonLocation
+        echo "LIB"
+        echo $Env:pythonLocation/lib
+        echo "BIN"
+        echo $Env:pythonLocation/bin
+        echo $Env:Python3_ROOT_DIR
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
-        npm run electron:package
+        # npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: ${{ matrix.config.system }}
+        Python3_ROOT_DIR: $pythonLocation
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
