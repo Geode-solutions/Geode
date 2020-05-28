@@ -59,7 +59,7 @@ jobs:
         npm run electron:package
       env:
         VERSION: "unknown"
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "rhel"
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -128,7 +128,7 @@ jobs:
         npm run electron:package
       env:
         VERSION: "unknown"
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "win64"
         Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
