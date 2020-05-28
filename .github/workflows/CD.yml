@@ -153,7 +153,7 @@ jobs:
       run: |
         $version = ${env:GITHUB_REF} -replace 'refs\/tags\/', ''
         echo "::set-output name=version::$version-python${{ matrix.python }}"
-        $env:VERSION = $version-python${{ matrix.python }}
+        $env:VERSION = "$version-python${{ matrix.python }}"
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
