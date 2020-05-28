@@ -5,44 +5,77 @@ on:
     tags: 'v*'
 
 jobs:
-  build-linux:
+  build-ubuntu:
     runs-on: ubuntu-18.04
-    container: ${{ matrix.config.container }}
+    container: "geodesolutions/ubuntu"
     strategy:
       matrix:
-        config:
-        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.6}
-        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.7}
-        - {container: "geodesolutions/ubuntu", system: "ubuntu", python: 3.8}
-        - {container: "geodesolutions/centos", system: "rhel", python: 2.7}
+        python: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python ${{ matrix.config.python }}
+    - name: Set up Python ${{ matrix.python }}
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ matrix.config.python }}
+        python-version: ${{ matrix.python }}
     - name: Cache node modules
       uses: actions/cache@v1.2.0
       with:
         path: node_modules
-        key: node-${{ matrix.config.system }}-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
+        key: node-ubuntu-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
     - name: Generate package
       id: package
       run: |
         version="${GITHUB_REF##*/*/}"
-        echo ::set-output name=version::$version-python${{ matrix.config.python }}
-        export VERSION=$version-python${{ matrix.config.python }}
-        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
+        echo ::set-output name=version::$version-python${{ matrix.python }}
+        export VERSION=$version-python${{ matrix.python }}
+        npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
       env:
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "ubuntu"
         Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
-        files: "dist_electron/geode-${{ steps.package.outputs.version }}-${{ matrix.config.system }}.zip"
+        files: "dist_electron/geode-${{ steps.package.outputs.version }}-ubuntu.zip"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Notify slack
+      if: failure() && github.ref == 'refs/heads/master'
+      uses: 8398a7/action-slack@v2
+      with:
+        status: failure
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+  build-rhel:
+    runs-on: ubuntu-18.04
+    container: "geodesolutions/centos"
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cache node modules
+      uses: actions/cache@v1.2.0
+      with:
+        path: node_modules
+        key: node-rhel-${{ hashFiles('package-lock.json') }}
+    - name: Generate package
+      id: package
+      run: |
+        version="${GITHUB_REF##*/*/}"
+        echo ::set-output name=version::$version-python2.7
+        export VERSION=$version-python2.7
+        npm config set cmake_PYTHON_VERSION 2.7
+        npm install
+        npm run electron:package
+      env:
+        PLATFORM: "rhel"
+    - name: Upload
+      uses: softprops/action-gh-release@v1
+      with:
+        files: "dist_electron/geode-${{ steps.package.outputs.version }}-rhel.zip"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Notify slack
