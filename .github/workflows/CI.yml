@@ -93,7 +93,7 @@ jobs:
         npm run electron:package
       env:
         VERSION: "unknown"
-        PLATFORM: ${{ matrix.config.system }}
+        PLATFORM: "darwin"
         Python3_ROOT_DIR: ${{ env.pythonLocation }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'

@@ -108,8 +108,8 @@ jobs:
       id: package
       run: |
         version="${GITHUB_REF##*/*/}"
-        echo ::set-output name=version::$version-python${{ matrix.config.python }}
-        export VERSION=$version-python${{ matrix.config.python }}
+        echo ::set-output name=version::$version-python${{ matrix.python }}
+        export VERSION=$version-python${{ matrix.python }}
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
@@ -152,8 +152,8 @@ jobs:
       id: package
       run: |
         $version = ${env:GITHUB_REF} -replace 'refs\/tags\/', ''
-        echo "::set-output name=version::$version-python${{ matrix.config.python }}"
-        $env:VERSION = $version-python${{ matrix.config.python }}
+        echo "::set-output name=version::$version-python${{ matrix.python }}"
+        $env:VERSION = $version-python${{ matrix.python }}
         npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
         npm install
         npm run electron:package
