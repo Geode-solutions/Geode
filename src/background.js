@@ -162,7 +162,7 @@ function startServer() {
     }
   });
   if (modules.length) {
-    serverArguments.push("-m ".concat(modules.join(" ")));
+    serverArguments.push("-m ".concat(modules.join(",")));
   }
   const separator = isWindows ? ";" : ":";
   PythonPath.push(process.env.PYTHONPATH);
@@ -178,6 +178,7 @@ function startServer() {
   }
   console.log("PythonPath ".concat(PythonPath));
   console.log("LibrariesPath ".concat(LibrariesPath));
+  console.log(serverArguments);
   server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);

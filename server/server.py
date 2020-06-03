@@ -79,7 +79,7 @@ if __name__ == "__main__":
     # Add default arguments
     server.add_arguments(parser)
 
-    parser.add_argument("-m", "--modules", nargs='*', default=[], help="additional modules")
+    parser.add_argument("-m", "--modules", type=str help="additional modules")
 
     # Extract arguments
     args = parser.parse_args()
@@ -90,7 +90,7 @@ if __name__ == "__main__":
     Backend.authKey = args.authKey
     Backend.debug = args.debug
     print("modules", args.modules)
-    GeodeServerProtocol.modules = args.modules
+    GeodeServerProtocol.modules = args.modules.split(",")
 
     # Start server
     server.start_webserver(options=args, protocol=Backend)
