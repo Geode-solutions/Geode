@@ -15,7 +15,6 @@
  *
  */
 
-import os from "os";
 import Vue from "vue";
 import Vuex from "vuex";
 import path from "path";
@@ -82,7 +81,8 @@ export default new Vuex.Store({
       }
     },
     loadModule(context, module) {
-      __non_webpack_require__(module)(this, os.platform());
+      console.log("JS", module);
+      __non_webpack_require__(module)(this);
     },
     registerObjectType({ dispatch }, type) {
       dispatch("treeview/registerObjectType", type);

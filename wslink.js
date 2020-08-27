@@ -18,14 +18,14 @@
 const commandExistsSync = require("command-exists").sync;
 const { exec } = require("child_process");
 
+let exe = "pip";
 if (commandExistsSync("pip3")) {
-  exec("pip3 install wslink -t wslink", (err, stdout, stderr) => {
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
-} else {
-  exec("pip install wslink -t wslink", (err, stdout, stderr) => {
-    console.log(`stdout: ${stdout}`);
-    console.log(`stderr: ${stderr}`);
-  });
+  exe = exe.concat("3");
 }
+exec(
+  exe.concat(" install wslink msgpack idna==2.6 -t wslink --upgrade"),
+  (err, stdout, stderr) => {
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+  }
+);

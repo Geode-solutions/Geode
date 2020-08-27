@@ -15,23 +15,17 @@
  *
  */
 
-// function createContextualItem(type, icon, tooltip, component) {
-//   Vue.component(component.name + "ContextualItem", component);
-//   return { type, icon, tooltip, component };
-// }
-
-// function initialContextualItems() {
-//   let items = [];
-//   items.push(createContextualItem("all", "fas fa-eye-slash", "Hide", Hide));
-//   items.push(createContextualItem("all", "fas fa-edit", "Rename", Rename));
-//   return items;
-//}
+import router from "@/router";
 
 export default {
   namespaced: true,
   state: {
     inputs: [],
-    contextualItems: [], //initialContextualItems()
+    contextualItems: [],
+    routes: [
+      { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
+      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" },
+    ],
   },
   getters: {
     filteredInputs: (state) => (id) => {
@@ -66,6 +60,29 @@ export default {
           item.visible = value;
         }
       });
+    },
+    registerRoute(
+      state,
+      { tooltip, icon, iconComponent, route, component, children }
+    ) {
+      state.routes.push({ tooltip, icon, iconComponent, route });
+      router.addRoutes([{ path: route, component, children }]);
+
+      let { routes } = router.options;
+      console.log(this.$router)
+      console.log("add routes", routes);
+    },
+    addRouteChild(state, { route, path, component }) {
+      router.addRoutes([{ path, component, props: true }]);
+      // let { routes } = router.options;
+      // console.log("add routes 2", routes);
+      // let routeData = routes.find((r) => console.log(r.path));
+      console.log(route)
+      // console.log(routeData)
+      // console.log(path)
+      // console.log(component)
+      // routeData.children.push({ path, component });
+      // router.addRoutes([routeData]);
     },
   },
 };

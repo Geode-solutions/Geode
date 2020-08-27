@@ -51,7 +51,7 @@ Lesser General Public License for more details.
         />
       </v-btn>
     </v-app-bar>
-    <v-content>
+    <v-main>
       <router-view v-if="connected" />
       <v-progress-circular
         v-if="busy"
@@ -60,7 +60,7 @@ Lesser General Public License for more details.
         style="position: absolute; bottom: 10px; right: 10px;"
         >{{ spinner }}</v-progress-circular
       >
-    </v-content>
+    </v-main>
   </v-app>
 </template>
 

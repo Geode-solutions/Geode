@@ -24,7 +24,7 @@ import Viewer from "./Viewer";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     { path: "", redirect: "/data" },
     {
@@ -42,3 +42,5 @@ export default new Router({
     { path: "/viewer", component: Viewer },
   ],
 });
+
+export default router;

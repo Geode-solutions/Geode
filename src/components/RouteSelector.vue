@@ -23,7 +23,7 @@ Lesser General Public License for more details.
     class="secondary"
   >
     <v-row dense class="flex-column">
-      <v-col v-for="item in items" :key="item.tooltip">
+      <v-col v-for="route in routes" :key="route.tooltip">
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-btn
@@ -31,13 +31,20 @@ Lesser General Public License for more details.
               style="left: 10px;"
               icon
               active-class="text--darken-2"
-              :to="item.route"
+              :to="route.route"
               v-on="on"
             >
-              <v-icon>{{ item.icon }}</v-icon>
+              <component
+                :is="route.iconComponent"
+                v-if="route.iconComponent"
+                style="height: 30px; width: 30px; fill='currentColor'"
+              />
+              <v-icon v-else>
+                {{ route.icon }}
+              </v-icon>
             </v-btn>
           </template>
-          <span>{{ item.tooltip }}</span>
+          <span>{{ route.tooltip }}</span>
         </v-tooltip>
       </v-col>
     </v-row>
@@ -45,6 +52,8 @@ Lesser General Public License for more details.
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "RouteSelector",
   props: {
@@ -53,12 +62,9 @@ export default {
       default: true,
     },
   },
-  data: () => ({
-    items: [
-      { tooltip: "Data manager", icon: "fas fa-database", route: "/data" },
-      { tooltip: "Viewer", icon: "fas fa-video", route: "/viewer" },
-    ],
-  }),
+  computed: {
+    ...mapState("ui", ["routes"]),
+  },
 };
 </script>
 

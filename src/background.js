@@ -135,6 +135,7 @@ function startServer() {
       "node_modules/@geode/geode-tools"
     );
     PythonPath.push(path.join(serverToolsPath, "server"));
+    PythonPath.push(path.join(appRoot, "wslink"));
     vtkInstall = path.join(serverToolsPath, "build/vtk/install");
   } else {
     vtkInstall = path.join(serverPath, "vtk");
@@ -143,11 +144,16 @@ function startServer() {
   console.log("vtkInstall ".concat(vtkInstall));
 
   const readModule = (module, dir) => {
-    modules.push(module.name);
+    if (module.name) {
+      modules.push(module.name);
+    }
     console.log("=", module.name, "=");
-    console.log(module.python);
-    addAbsolutePathToArray(module.python, PythonPath, dir);
-    addAbsolutePathToArray(module.lib, LibrariesPath, dir);
+    if (module.python) {
+      addAbsolutePathToArray(module.python, PythonPath, dir);
+    }
+    if (module.lib) {
+      addAbsolutePathToArray(module.lib, LibrariesPath, dir);
+    }
   };
 
   const modules = [];
