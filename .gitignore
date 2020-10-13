@@ -3,7 +3,7 @@ node_modules
 build
 dist
 __pycache__
-wslink
+server/pip
 
 # local env files
 .env.local

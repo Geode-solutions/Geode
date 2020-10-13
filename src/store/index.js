@@ -75,7 +75,9 @@ export default new Vuex.Store({
             console.log("configModule", path.dirname(configFile));
             dispatch("loadModule", path.dirname(configFile));
           } else {
-            dispatch("loadModule", module.js);
+            if (module.js) {
+              dispatch("loadModule", module.js);
+            }
           }
         });
       }

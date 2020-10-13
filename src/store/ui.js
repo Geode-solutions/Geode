@@ -15,7 +15,7 @@
  *
  */
 
-import router from "@/router";
+import router from "../router";
 
 export default {
   namespaced: true,
@@ -69,7 +69,7 @@ export default {
       router.addRoutes([{ path: route, component, children }]);
 
       let { routes } = router.options;
-      console.log(this.$router)
+      console.log(this.$router);
       console.log("add routes", routes);
     },
     addRouteChild(state, { route, path, component }) {
@@ -77,7 +77,7 @@ export default {
       // let { routes } = router.options;
       // console.log("add routes 2", routes);
       // let routeData = routes.find((r) => console.log(r.path));
-      console.log(route)
+      console.log(route);
       // console.log(routeData)
       // console.log(path)
       // console.log(component)

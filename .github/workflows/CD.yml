@@ -50,42 +50,42 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-  build-rhel:
-    runs-on: ubuntu-18.04
-    container: "geodesolutions/centos"
+  # build-rhel:
+  #   runs-on: ubuntu-18.04
+  #   container: "geodesolutions/centos"
 
-    steps:
-    - uses: actions/checkout@v1
-    - name: Cache node modules
-      uses: actions/cache@v1.2.0
-      with:
-        path: node_modules
-        key: node-rhel-${{ hashFiles('package-lock.json') }}
-    - name: Generate package
-      id: package
-      run: |
-        version="${GITHUB_REF##*/*/}"
-        echo ::set-output name=version::$version-python2.7
-        export VERSION=$version-python2.7
-        npm config set cmake_PYTHON_VERSION 2.7
-        npm install
-        npm run electron:package
-      env:
-        PLATFORM: "rhel"
-    - name: Upload
-      uses: softprops/action-gh-release@v1
-      with:
-        files: "dist_electron/geode-${{ steps.package.outputs.version }}-rhel.zip"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Notify slack
-      if: failure() && github.ref == 'refs/heads/master'
-      uses: 8398a7/action-slack@v2
-      with:
-        status: failure
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Cache node modules
+  #     uses: actions/cache@v1.2.0
+  #     with:
+  #       path: node_modules
+  #       key: node-rhel-${{ hashFiles('package-lock.json') }}
+  #   - name: Generate package
+  #     id: package
+  #     run: |
+  #       version="${GITHUB_REF##*/*/}"
+  #       echo ::set-output name=version::$version-python2.7
+  #       export VERSION=$version-python2.7
+  #       npm config set cmake_PYTHON_VERSION 2.7
+  #       npm install
+  #       npm run electron:package
+  #     env:
+  #       PLATFORM: "rhel"
+  #   - name: Upload
+  #     uses: softprops/action-gh-release@v1
+  #     with:
+  #       files: "dist_electron/geode-${{ steps.package.outputs.version }}-rhel.zip"
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Notify slack
+  #     if: failure() && github.ref == 'refs/heads/master'
+  #     uses: 8398a7/action-slack@v2
+  #     with:
+  #       status: failure
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
   build-mac:
     runs-on: macos-latest

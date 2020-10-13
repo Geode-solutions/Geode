@@ -10,7 +10,7 @@
     <v-card>
       <v-card-title
         class="headline"
-        style="cursor: move;"
+        style="cursor: move"
         primary-title
         @mousedown="dragMouseDown"
       >

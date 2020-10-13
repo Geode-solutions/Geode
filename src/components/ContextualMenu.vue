@@ -1,5 +1,5 @@
 <template>
-  <div ref="content" style="z-index: 8;">
+  <div ref="content" style="z-index: 8">
     <div
       ref="ring"
       :class="[$style.disk, $style.outerDisk, 'ring', 'elevation-10']"

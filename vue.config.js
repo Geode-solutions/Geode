@@ -11,14 +11,14 @@ module.exports = {
         files: ["**/*"],
         extraFiles: [
           {
-            from: "server",
+            from: "server/protocols",
             to: "server",
-            filter: ["**/*.py"],
+            filter: ["!**/__pycache__"],
           },
           {
-            from: "wslink",
+            from: "server",
             to: "server",
-            filter: ["**/*.so*", "**/*.dylib", "**/*.py", "**/*.pyd"],
+            filter: ["!**/protocols","!**/pip"],
           },
           {
             from: "node_modules/@geode/geode-tools/server",

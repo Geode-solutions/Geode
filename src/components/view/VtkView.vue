@@ -2,7 +2,7 @@
   <v-container
     class="pa-0 ma-0"
     fluid
-    style="height: 100%; background-color: grey;"
+    style="height: 100%; background-color: grey"
   >
     <view-toolbar :view="viewId" />
     <v-row v-resize="resizeCurrentView" no-gutters class="fill-height">

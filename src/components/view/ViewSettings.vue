@@ -17,7 +17,7 @@ Lesser General Public License for more details.
 <template>
   <v-color-picker
     v-model="color"
-    style="position: absolute; top: 10px; right: 50px;"
+    style="position: absolute; top: 10px; right: 50px"
   ></v-color-picker>
 </template>
 

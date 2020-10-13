@@ -19,7 +19,7 @@ Lesser General Public License for more details.
 </template>
 
 <script>
-import VtkView from "@/components/view/VtkView";
+import VtkView from "../components/view/VtkView";
 
 export default {
   name: "Viewer",

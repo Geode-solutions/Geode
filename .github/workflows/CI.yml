@@ -41,33 +41,33 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
-  build-rhel:
-    runs-on: ubuntu-18.04
-    container: "geodesolutions/centos"
+  # build-rhel:
+  #   runs-on: ubuntu-18.04
+  #   container: "geodesolutions/centos"
 
-    steps:
-    - uses: actions/checkout@v1
-    - name: Cache node modules
-      uses: actions/cache@v1.2.0
-      with:
-        path: node_modules
-        key: node-rhel-${{ hashFiles('package-lock.json') }}
-    - name: Compile
-      run: |
-        npm config set cmake_PYTHON_VERSION 2.7
-        npm install
-        npm run electron:package
-      env:
-        VERSION: "unknown"
-        PLATFORM: "rhel"
-    - name: Notify slack
-      if: failure() && github.ref == 'refs/heads/master'
-      uses: 8398a7/action-slack@v2
-      with:
-        status: failure
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Cache node modules
+  #     uses: actions/cache@v1.2.0
+  #     with:
+  #       path: node_modules
+  #       key: node-rhel-${{ hashFiles('package-lock.json') }}
+  #   - name: Compile
+  #     run: |
+  #       npm config set cmake_PYTHON_VERSION 2.7
+  #       npm install
+  #       npm run electron:package
+  #     env:
+  #       VERSION: "unknown"
+  #       PLATFORM: "rhel"
+  #   - name: Notify slack
+  #     if: failure() && github.ref == 'refs/heads/master'
+  #     uses: 8398a7/action-slack@v2
+  #     with:
+  #       status: failure
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
   build-mac:
     runs-on: macos-latest
@@ -141,7 +141,7 @@ jobs:
       
   semantic-release:
     runs-on: ubuntu-18.04
-    needs: [build-ubuntu, build-rhel, build-mac, build-windows]
+    needs: [build-ubuntu, build-mac, build-windows]
     steps:
     - uses: actions/checkout@v1
     - run: npx semantic-release
