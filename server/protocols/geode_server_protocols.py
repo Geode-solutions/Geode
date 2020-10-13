@@ -45,7 +45,7 @@ class GeodeServerProtocol(vtk_wslink.ServerProtocol):
 
         print(GeodeServerProtocol.modules)
         for module_name in GeodeServerProtocol.modules:
-            module = import_module(module_name.strip())
+            module = import_module(module_name.strip()+"_protocols")
             for module_protocol in module.protocols:
                 self.registerVtkWebProtocol(module_protocol())
 

@@ -28,7 +28,7 @@ Lesser General Public License for more details.
           <template #activator="{ on }">
             <v-btn
               class="grey--text mx-2"
-              style="left: 10px;"
+              style="left: 10px"
               icon
               active-class="text--darken-2"
               :to="route.route"

@@ -25,16 +25,14 @@ Lesser General Public License for more details.
     >
       <v-row class="fill-height flex-nowrap" @contextmenu.ctrl="dialog = true">
         <route-selector visible="visible" />
-        <object-tree style="overflow-x: hidden;" />
+        <object-tree style="overflow-x: hidden" />
       </v-row>
     </v-navigation-drawer>
     <create-point v-model="dialog" />
     <v-app-bar app dark clipped-left color="primary">
       <v-btn text class="pa-0" @click="visible = !visible">
         <v-app-bar-nav-icon>
-          <v-icon large>
-            $vuetify.icons.logo
-          </v-icon>
+          <v-icon large> $vuetify.icons.logo </v-icon>
         </v-app-bar-nav-icon>
         <v-toolbar-title>Geode-solutions</v-toolbar-title>
       </v-btn>
@@ -46,7 +44,7 @@ Lesser General Public License for more details.
           type="file"
           accept=".js"
           multiple
-          style="display: none;"
+          style="display: none"
           @change="loadModule"
         />
       </v-btn>
@@ -57,7 +55,7 @@ Lesser General Public License for more details.
         v-if="busy"
         indeterminate
         color="primary"
-        style="position: absolute; bottom: 10px; right: 10px;"
+        style="position: absolute; bottom: 10px; right: 10px"
         >{{ spinner }}</v-progress-circular
       >
     </v-main>
@@ -65,9 +63,9 @@ Lesser General Public License for more details.
 </template>
 
 <script>
-import CreatePoint from "@/components/CreatePoint";
-import RouteSelector from "@/components/RouteSelector";
-import ObjectTree from "@/components/ObjectTree";
+import CreatePoint from "./components/CreatePoint";
+import RouteSelector from "./components/RouteSelector";
+import ObjectTree from "./components/ObjectTree";
 import { mapState } from "vuex";
 import { ipcRenderer } from "electron";
 import path from "path";

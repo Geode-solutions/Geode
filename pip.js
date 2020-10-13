@@ -15,15 +15,10 @@
  *
  */
 
-const commandExistsSync = require("command-exists").sync;
 const { exec } = require("child_process");
 
-let exe = "pip";
-if (commandExistsSync("pip3")) {
-  exe = exe.concat("3");
-}
 exec(
-  exe.concat(" install wslink msgpack idna==2.6 -t wslink --upgrade"),
+  "python -m pip install -r server/requirements.txt -t server/pip",
   (err, stdout, stderr) => {
     console.log(`stdout: ${stdout}`);
     console.log(`stderr: ${stderr}`);

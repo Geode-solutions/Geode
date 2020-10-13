@@ -21,7 +21,7 @@ import vtkView from "vtk.js/Sources/Proxy/Core/ViewProxy";
 import vtkSource from "vtk.js/Sources/Proxy/Core/SourceProxy";
 import vtkGeometryRepresentation from "vtk.js/Sources/Proxy/Representations/GeometryRepresentationProxy";
 import vtkWidgetManager from "vtk.js/Sources/Widgets/Core/WidgetManager";
-import vtkNorthActor from "@/config/northActor";
+import vtkNorthActor from "../config/northActor";
 
 import { CaptureOn } from "vtk.js/Sources/Widgets/Core/WidgetManager/Constants";
 

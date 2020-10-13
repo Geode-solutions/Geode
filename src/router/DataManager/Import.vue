@@ -49,21 +49,19 @@ Lesser General Public License for more details.
                   :id="'Input' + node.name"
                   type="file"
                   multiple
-                  style="display: none;"
+                  style="display: none"
                   @change="loadFile(node)"
                 />
                 <v-card-actions class="justify-center align-center">
                   <component
                     :is="node.component"
                     v-if="node.component"
-                    style="height: 200px; width: 200px;"
+                    style="height: 200px; width: 200px"
                   />
                   <v-icon v-else-if="node.icon" size="200">
                     {{ node.icon }}
                   </v-icon>
-                  <v-icon v-else size="200">
-                    fas fa-question
-                  </v-icon>
+                  <v-icon v-else size="200"> fas fa-question </v-icon>
                 </v-card-actions>
               </v-card>
             </template>

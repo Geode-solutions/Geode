@@ -15,7 +15,7 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <img src="@/assets/logo.svg" />
+  <img src="../assets/logo.svg" />
 </template>
 
 <script>

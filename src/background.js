@@ -135,7 +135,8 @@ function startServer() {
       "node_modules/@geode/geode-tools"
     );
     PythonPath.push(path.join(serverToolsPath, "server"));
-    PythonPath.push(path.join(appRoot, "wslink"));
+    PythonPath.push(path.join(appRoot, "server/protocols"));
+    PythonPath.push(path.join(appRoot, "server/pip"));
     vtkInstall = path.join(serverToolsPath, "build/vtk/install");
   } else {
     vtkInstall = path.join(serverPath, "vtk");
@@ -185,6 +186,7 @@ function startServer() {
   console.log("PythonPath ".concat(PythonPath));
   console.log("LibrariesPath ".concat(LibrariesPath));
   console.log(serverArguments);
+  // server = spawn("python3", ["--version"]);
   server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);

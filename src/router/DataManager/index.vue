@@ -18,9 +18,7 @@ Lesser General Public License for more details.
   <v-container class="fill-height">
     <v-row class="flex-column">
       <v-col>
-        <h1 class="display-3">
-          Data Manager
-        </h1>
+        <h1 class="display-3">Data Manager</h1>
       </v-col>
       <v-col>
         <router-view />
