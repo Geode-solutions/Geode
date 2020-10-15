@@ -139,7 +139,7 @@ function startServer() {
     PythonPath.push(path.join(appRoot, "server/pip"));
     vtkInstall = path.join(serverToolsPath, "build/vtk/install");
   } else {
-    PythonPath = path.join(serverPath);
+    PythonPath.push(path.join(serverPath));
     vtkInstall = path.join(serverPath, "vtk");
   }
   const vtkBin = path.join(vtkInstall, "bin");
