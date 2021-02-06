@@ -41,69 +41,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
       
-  # build-rhel:
-  #   runs-on: ubuntu-18.04
-  #   container: "geodesolutions/centos"
-
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Cache node modules
-  #     uses: actions/cache@v1.2.0
-  #     with:
-  #       path: node_modules
-  #       key: node-rhel-${{ hashFiles('package-lock.json') }}
-  #   - name: Compile
-  #     run: |
-  #       npm config set cmake_PYTHON_VERSION 2.7
-  #       npm install
-  #       npm run electron:package
-  #     env:
-  #       VERSION: "unknown"
-  #       PLATFORM: "rhel"
-  #   - name: Notify slack
-  #     if: failure() && github.ref == 'refs/heads/master'
-  #     uses: 8398a7/action-slack@v2
-  #     with:
-  #       status: failure
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      
-  # build-mac:
-  #   runs-on: macos-latest
-  #   strategy:
-  #     matrix:
-  #       python: [3.6, 3.7, 3.8]
-
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Set up Python ${{ matrix.python }}
-  #     uses: actions/setup-python@v2
-  #     with:
-  #       python-version: ${{ matrix.python }}
-  #   - name: Cache node modules
-  #     uses: actions/cache@v1.2.0
-  #     with:
-  #       path: node_modules
-  #       key: node-darwin-${{ matrix.python }}-${{ hashFiles('package-lock.json') }}
-  #   - name: Compile
-  #     run: |
-  #       npm config set cmake_PYTHON_VERSION ${{ matrix.python }}
-  #       npm install
-  #       npm run electron:package
-  #     env:
-  #       VERSION: "unknown"
-  #       PLATFORM: "darwin"
-  #       Python3_ROOT_DIR: ${{ env.pythonLocation }}
-  #   - name: Notify slack
-  #     if: failure() && github.ref == 'refs/heads/master'
-  #     uses: 8398a7/action-slack@v2
-  #     with:
-  #       status: failure
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-      
   build-windows:
     runs-on: windows-2016
     strategy:
@@ -130,6 +67,8 @@ jobs:
         VERSION: "unknown"
         PLATFORM: "win64"
         Python3_ROOT_DIR: ${{ env.pythonLocation }}
+        CSC_LINK: ${{ secrets.CODE_SIGN_CERTIFICATE }}
+        CSC_KEY_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
