@@ -90,7 +90,8 @@ if __name__ == "__main__":
     Backend.authKey = args.authKey
     Backend.debug = args.debug
     print("modules", args.modules)
-    GeodeServerProtocol.modules = args.modules.split(",")
+    if args.modules:
+        GeodeServerProtocol.modules = args.modules.split(",")
 
     # Start server
     server.start_webserver(options=args, protocol=Backend)
