@@ -1,28 +1,17 @@
 <template>
-  <v-container
-    class="pa-0 ma-0"
-    fluid
-    style="height: 100%; background-color: grey"
-  >
+  <v-row v-resize="resizeCurrentView" no-gutters class="fill-height">
     <view-toolbar :view="viewId" />
-    <v-row v-resize="resizeCurrentView" no-gutters class="fill-height">
-      <v-col
-        ref="vtkViewJS"
-        style="
-          overflow: hidden;
-          height: calc(100vh - 64px);
-          position: relative;
-          z-index: 0;
-        "
-      />
-    </v-row>
+    <v-col
+      ref="vtkViewJS"
+      style="overflow: hidden; position: relative; z-index: 0"
+    />
     <contextual-menu
       v-if="displayMenu"
       v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
     />
-  </v-container>
+  </v-row>
 </template>
 
 <script>

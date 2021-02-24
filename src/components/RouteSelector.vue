@@ -19,16 +19,15 @@ Lesser General Public License for more details.
     v-model="visible"
     stateless
     mini-variant
-    mini-variant-width="60"
+    mini-variant-width="50"
     class="secondary"
   >
-    <v-row dense class="flex-column">
-      <v-col v-for="route in routes" :key="route.tooltip">
+    <v-list dense nav>
+      <v-list-item v-for="route in routes" :key="route.tooltip">
         <v-tooltip bottom>
           <template #activator="{ on }">
             <v-btn
-              class="grey--text mx-2"
-              style="left: 10px"
+              class="grey--text"
               icon
               active-class="text--darken-2"
               :to="route.route"
@@ -37,7 +36,7 @@ Lesser General Public License for more details.
               <component
                 :is="route.iconComponent"
                 v-if="route.iconComponent"
-                style="height: 30px; width: 30px; fill='currentColor'"
+                style=" fill='currentColor'"
               />
               <v-icon v-else>
                 {{ route.icon }}
@@ -46,8 +45,8 @@ Lesser General Public License for more details.
           </template>
           <span>{{ route.tooltip }}</span>
         </v-tooltip>
-      </v-col>
-    </v-row>
+      </v-list-item>
+    </v-list>
   </v-navigation-drawer>
 </template>
 

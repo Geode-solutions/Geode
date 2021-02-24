@@ -18,7 +18,7 @@ module.exports = {
           {
             from: "server",
             to: "server",
-            filter: ["!**/protocols","!**/pip"],
+            filter: ["!**/protocols", "!**/pip"],
           },
           {
             from: "node_modules/@geode/geode-tools/server",

@@ -16,18 +16,6 @@ Lesser General Public License for more details.
 
 <template>
   <v-app>
-    <v-navigation-drawer
-      v-model="visible"
-      stateless
-      app
-      clipped
-      @transitionend="hide_drawer"
-    >
-      <v-row class="fill-height flex-nowrap" @contextmenu.ctrl="dialog = true">
-        <route-selector visible="visible" />
-        <object-tree style="overflow-x: hidden" />
-      </v-row>
-    </v-navigation-drawer>
     <create-point v-model="dialog" />
     <v-app-bar app dark clipped-left color="primary">
       <v-btn text class="pa-0" @click="visible = !visible">
@@ -49,6 +37,18 @@ Lesser General Public License for more details.
         />
       </v-btn>
     </v-app-bar>
+    <v-navigation-drawer
+      v-model="visible"
+      stateless
+      app
+      clipped
+      @transitionend="hide_drawer"
+    >
+      <v-row class="fill-height" no-gutters @contextmenu.ctrl="dialog = true">
+        <route-selector visible="visible" />
+        <object-tree style="overflow-x: hidden" />
+      </v-row>
+    </v-navigation-drawer>
     <v-main>
       <router-view v-if="connected" />
       <v-progress-circular
