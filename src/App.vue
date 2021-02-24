@@ -44,7 +44,11 @@ Lesser General Public License for more details.
       clipped
       @transitionend="hide_drawer"
     >
-      <v-row class="fill-height" no-gutters @contextmenu.ctrl="dialog = true">
+      <v-row
+        class="fill-height flex-nowrap"
+        no-gutters
+        @contextmenu.ctrl="dialog = true"
+      >
         <route-selector visible="visible" />
         <object-tree style="overflow-x: hidden" />
       </v-row>
