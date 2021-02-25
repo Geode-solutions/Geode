@@ -15,26 +15,28 @@ Lesser General Public License for more details.
 -->
 
 <template>
-  <v-treeview
-    v-model="selectedTree"
-    :items="items"
-    :active.sync="active"
-    activatable
-    selectable
-    dense
-  >
-    <template slot="label" slot-scope="{ item }">
-      <span @contextmenu="openContextualMenu($event, item)">{{
-        item.name
-      }}</span>
-    </template>
+  <div>
+    <v-treeview
+      v-model="selectedTree"
+      :items="items"
+      :active.sync="active"
+      activatable
+      selectable
+      dense
+    >
+      <template slot="label" slot-scope="{ item }">
+        <span @contextmenu="openContextualMenu($event, item)">{{
+          item.name
+        }}</span>
+      </template>
+    </v-treeview>
     <contextual-menu
       v-if="displayMenu"
       v-model="displayMenu"
       :selected-item="selectedItem"
       :position="menuPosition"
     />
-  </v-treeview>
+  </div>
 </template>
 
 <script>
