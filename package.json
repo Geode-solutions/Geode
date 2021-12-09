@@ -32,7 +32,7 @@
   "main": "background.js",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.2",
-    "@geode/geode-tools": "^1.1.11",
+    "@geode/geode-tools": "^1.1.19",
     "electron-log": "^4.2.4",
     "electron-store": "^5.2.0",
     "roboto-fontface": "0.10.0",
