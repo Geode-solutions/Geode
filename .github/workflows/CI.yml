@@ -15,7 +15,7 @@ jobs:
         - {python: "3.7", tag: "cp37-cp37m", dir: "3.7m",}
         - {python: "3.8", tag: "cp38-cp38", dir: "3.8",}
         - {python: "3.9", tag: "cp39-cp39", dir: "3.9",}
-        - {python: "3.10", tag: "cp310-cp310", dir: "3.10",}
+        # - {python: "3.10", tag: "cp310-cp310", dir: "3.10",}
 
     steps:
     - uses: actions/checkout@v1
@@ -28,6 +28,9 @@ jobs:
       run: |
         echo $Python3_INCLUDE_DIRS
         ls $Python3_INCLUDE_DIRS
+        export PATH=/opt/python/${{ matrix.config.tag }}:/opt/python/${{ matrix.config.tag }}/bin:$PATH
+        echo $PATH
+        export LD_LIBRARY_PATH=/opt/python/${{ matrix.config.tag }}/lib:$LD_LIBRARY_PATH
         npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
