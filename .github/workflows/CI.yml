@@ -26,6 +26,7 @@ jobs:
         key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        echo $Python3_INCLUDE_DIRS
         ls $Python3_INCLUDE_DIRS
         npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
