@@ -25,6 +25,9 @@ jobs:
         key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        ls $PYTHON_PREFIX
+        ls $PYTHON_PREFIX/bin
+        ls $PYTHON_PREFIX/include
         npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
