@@ -6,12 +6,11 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-18.04
-    container: "geodesolutions/centos"
+    runs-on: ubuntu-latest
+    container: "ghcr.io/geode-solutions/centos:master"
     strategy:
       matrix:
         config:
-        - {python: "3.6", tag: "cp36-cp36m", dir: "3.6m"}
         - {python: "3.7", tag: "cp37-cp37m", dir: "3.7m"}
         - {python: "3.8", tag: "cp38-cp38", dir: "3.8"}
         - {python: "3.9", tag: "cp39-cp39", dir: "3.9"}
@@ -35,8 +34,7 @@ jobs:
         npm run electron:package
       env:
         PLATFORM: "linux"
-        Python3_EXECUTABLE: /opt/python/${{ matrix.config.tag }}/bin/python${{ matrix.config.dir }}
-        Python3_INCLUDE_DIR: /opt/python/${{ matrix.config.tag }}/include/python${{ matrix.config.dir }}
+        PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
@@ -53,11 +51,10 @@ jobs:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   build-windows:
-    runs-on: windows-2016
+    runs-on: windows-2019
     strategy:
       matrix:
         config:
-        - {python: "3.6", tag: "cp36-cp36m"}
         - {python: "3.7", tag: "cp37-cp37m"}
         - {python: "3.8", tag: "cp38-cp38"}
         - {python: "3.9", tag: "cp39-cp39"}
@@ -85,9 +82,7 @@ jobs:
         npm run electron:package
       env:
         PLATFORM: "win64"
-        Python3_ROOT_DIR: ${{ env.pythonLocation }}
-        CSC_LINK: ${{ secrets.CODE_SIGN_CERTIFICATE }}
-        CSC_KEY_PASSWORD: ${{ secrets.CODE_SIGN_PASSWORD }}
+        PYTHON_PREFIX: ${{ env.pythonLocation }}
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
