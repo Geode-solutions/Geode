@@ -63,6 +63,8 @@ jobs:
         key: node-win64-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        dir ${{ env.pythonLocation }}
+        dir ${{ env.pythonLocation }}/bin
         npm install
         npm run electron:package
       env:
