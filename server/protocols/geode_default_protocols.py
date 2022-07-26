@@ -1,12 +1,12 @@
-# Copyright (C) 2019 - 2021 Geode-solutions
-# 
+# Copyright (C) 2019 - 2022 Geode-solutions
+#
 # This file is a part of Geode library.
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -19,10 +19,11 @@ from wslink import register as exportRpc
 
 from geode_protocols import GeodeProtocol
 
+
 class GeodeDefault(GeodeProtocol):
     @exportRpc("geode.ui.background")
     def setBackground(self, viewId, r, g, b):
-        self.getSharedObject("renderer").SetBackground(r,g,b)
+        self.getSharedObject("renderer").SetBackground(r, g, b)
         view = self.getView(viewId)
         view.Render()
         self.getApplication().InvokeEvent('UpdateEvent')
@@ -65,20 +66,20 @@ class GeodeDefault(GeodeProtocol):
         actor = vtk.vtkActor()
         actor.SetMapper(mapper)
         widget = self.getSharedObject("marker")
-        widget.SetOrientationMarker( actor )
+        widget.SetOrientationMarker(actor)
         widget.EnabledOn()
 
     @exportRpc("geode.marker.viewport")
     def setMarkerViewport(self, viewport):
         widget = self.getSharedObject("marker")
-        widget.SetViewport( viewport )
+        widget.SetViewport(viewport)
 
     @exportRpc("geode.reset")
     def reset(self):
         self.getDataBase().clear()
         self.getRenderer().RemoveAllViewProps()
 
-    def computeEpsilon(self,renderer, z):
+    def computeEpsilon(self, renderer, z):
         renderer.SetDisplayPoint(0, 0, z)
         renderer.DisplayToWorld()
         windowLowerLeft = renderer.GetWorldPoint()
@@ -88,14 +89,15 @@ class GeodeDefault(GeodeProtocol):
         windowUpperRight = renderer.GetWorldPoint()
         epsilon = 0
         for i in range(3):
-            epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * (windowUpperRight[i] - windowLowerLeft[i])
+            epsilon += (windowUpperRight[i] - windowLowerLeft[i]) * \
+                (windowUpperRight[i] - windowLowerLeft[i])
         return math.sqrt(epsilon) * 0.0125
 
     @exportRpc("geode.mouse.menu")
     def menu(self, x, y, ids):
         renderer = self.getRenderer()
         picker = vtk.vtkWorldPointPicker()
-        ret = picker.Pick([x,y,0],renderer)
+        ret = picker.Pick([x, y, 0], renderer)
         point = picker.GetPickPosition()
         epsilon = self.computeEpsilon(renderer, point[2])
         bbox = vtk.vtkBoundingBox()
@@ -105,5 +107,6 @@ class GeodeDefault(GeodeProtocol):
             if self.getObject(id)['bbox'].Intersects(bbox):
                 return id
         return 0
+
 
 protocols = [GeodeDefault]

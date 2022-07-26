@@ -11,10 +11,10 @@ jobs:
     strategy:
       matrix:
         config:
-        - {python: "3.7", tag: "cp37-cp37m", dir: "3.7m"}
-        - {python: "3.8", tag: "cp38-cp38", dir: "3.8"}
-        - {python: "3.9", tag: "cp39-cp39", dir: "3.9"}
-        - {python: "3.10", tag: "cp310-cp310", dir: "3.10"}
+        - {python: "3.7", tag: "cp37-cp37m"}
+        - {python: "3.8", tag: "cp38-cp38"}
+        - {python: "3.9", tag: "cp39-cp39"}
+        - {python: "3.10", tag: "cp310-cp310"}
 
     steps:
     - uses: actions/checkout@v1
@@ -29,12 +29,11 @@ jobs:
         version="${GITHUB_REF##*/*/v}"
         echo ::set-output name=version::$version-python${{ matrix.config.python }}
         export VERSION=$version-python${{ matrix.config.python }}
-        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
       env:
         PLATFORM: "linux"
-        PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
+        PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
@@ -77,12 +76,12 @@ jobs:
         $version = ${env:GITHUB_REF} -replace 'refs\/tags\/v', ''
         echo "::set-output name=version::$version-python${{ matrix.config.python }}"
         $env:VERSION = "$version-python${{ matrix.config.python }}"
-        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
+        npm config set cmake_PYTHON_VERSION ${{ matrix.config.pythdon }}
         npm install
         npm run electron:package
       env:
         PLATFORM: "win64"
-        PYTHON_PREFIX: ${{ env.pythonLocation }}
+        PYTHON_EXE: ${{ env.pythonLocation }}/python
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:

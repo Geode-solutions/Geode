@@ -1,12 +1,12 @@
-# Copyright (C) 2019 - 2021 Geode-solutions
-# 
+# Copyright (C) 2019 - 2022 Geode-solutions
+#
 # This file is a part of Geode library.
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -26,12 +26,13 @@ from geode_server_protocols import GeodeServerProtocol
 
 import argparse
 
+
 class Backend(GeodeServerProtocol):
 
     # Application configuration
-    view    = None
+    view = None
     authKey = "wslink-secret"
-    debug   = False
+    debug = False
 
     def initialize(self):
         self.initializeProtocols()
@@ -56,7 +57,7 @@ class Backend(GeodeServerProtocol):
             renderWindowInteractor.GetInteractorStyle().SetCurrentStyleToTrackballCamera()
 
             widget = vtk.vtkOrientationMarkerWidget()
-            widget.SetInteractor( renderWindowInteractor )
+            widget.SetInteractor(renderWindowInteractor)
             self.setSharedObject("marker", widget)
 
             renderer.ResetCamera()
@@ -72,9 +73,11 @@ class Backend(GeodeServerProtocol):
 # Main: Parse args and start server
 # =============================================================================
 
+
 if __name__ == "__main__":
     # Create argument parser
-    parser = argparse.ArgumentParser(description="VTK/Web Cone web-application")
+    parser = argparse.ArgumentParser(
+        description="VTK/Web Cone web-application")
 
     # Add default arguments
     server.add_arguments(parser)
