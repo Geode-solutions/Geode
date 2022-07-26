@@ -30,7 +30,7 @@ jobs:
       env:
         VERSION: "unknown"
         PLATFORM: "linux"
-        PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
+        PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -63,14 +63,12 @@ jobs:
         key: node-win64-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        dir ${{ env.pythonLocation }}
-        dir ${{ env.pythonLocation }}/bin
         npm install
         npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: "win64"
-        PYTHON_PREFIX: ${{ env.pythonLocation }}
+        PYTHON_EXE: ${{ env.pythonLocation }}/python
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2

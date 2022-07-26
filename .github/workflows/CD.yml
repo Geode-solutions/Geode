@@ -33,7 +33,7 @@ jobs:
         npm run electron:package
       env:
         PLATFORM: "linux"
-        PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
+        PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
@@ -81,7 +81,7 @@ jobs:
         npm run electron:package
       env:
         PLATFORM: "win64"
-        PYTHON_PREFIX: ${{ env.pythonLocation }}
+        PYTHON_EXE: ${{ env.pythonLocation }}/python
     - name: Upload
       uses: softprops/action-gh-release@v1
       with:
