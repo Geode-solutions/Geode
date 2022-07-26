@@ -38,7 +38,7 @@ jobs:
         PLATFORM: "linux"
         PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
         PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
-        PYTHON_INCLUDE: /opt/python/${{ matrix.config.tag }}/include/python{{ matrix.config.dir }}
+        PYTHON_INCLUDE: /opt/python/${{ matrix.config.tag }}/include/python${{ matrix.config.dir }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
