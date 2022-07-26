@@ -18,11 +18,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Cache node modules
-      uses: actions/cache@v1.2.0
-      with:
-        path: node_modules
-        key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
+    # - name: Cache node modules
+    #   uses: actions/cache@v1.2.0
+    #   with:
+    #     path: node_modules
+    #     key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
         echo $PYTHON_PREFIX
