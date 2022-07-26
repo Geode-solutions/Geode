@@ -20,7 +20,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "build:vtk": "npm explore @geode/geode-tools -- npm run build:vtk",
+    "build:vtk": "cmake @geode/geode-tools/server && npm explore @geode/geode-tools -- npm run build:vtk",
     "build:pip": "node pip",
     "build:icons": "mkdirp build && icon-gen -i src/assets/logo.svg -o build",
     "electron:build": "vue-cli-service electron:build",
