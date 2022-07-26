@@ -32,7 +32,7 @@
   "main": "background.js",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
-    "@geode/geode-tools": "^1.1.24",
+    "@geode/geode-tools": "^1.1.25",
     "electron-log": "^4.4.8",
     "electron-store": "^5.2.0",
     "roboto-fontface": "0.10.0",
@@ -51,7 +51,7 @@
     "@vue/eslint-config-prettier": "^6.0.0",
     "babel-eslint": "^10.1.0",
     "chokidar": "^3.5.1",
-    "cmake-js": "^6.1.0",
+    "cmake-js": "^6.3.2",
     "command-exists": "^1.2.9",
     "electron": "^11.2.3",
     "es6-promise": "^4.2.8",
