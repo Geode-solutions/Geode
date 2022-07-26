@@ -25,16 +25,20 @@ jobs:
         key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
+        echo $PYTHON_PREFIX
         ls $PYTHON_PREFIX
-        ls $PYTHON_PREFIX/bin
-        ls $PYTHON_PREFIX/include
-        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
+        echo $PYTHON_EXE
+        ls $PYTHON_EXE
+        echo $PYTHON_INCLUDE
+        ls $PYTHON_INCLUDE
         npm install
         npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: "linux"
         PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
+        PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
+        PYTHON_INCLUDE: /opt/python/${{ matrix.config.tag }}/include/python{{ matrix.config.dir }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
