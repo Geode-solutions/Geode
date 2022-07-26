@@ -11,34 +11,26 @@ jobs:
     strategy:
       matrix:
         config:
-        - {python: "3.7", tag: "cp37-cp37m", dir: "3.7m"}
-        - {python: "3.8", tag: "cp38-cp38", dir: "3.8"}
-        - {python: "3.9", tag: "cp39-cp39", dir: "3.9"}
-        - {python: "3.10", tag: "cp310-cp310", dir: "3.10"}
+        - {python: "3.7", tag: "cp37-cp37m"}
+        - {python: "3.8", tag: "cp38-cp38"}
+        - {python: "3.9", tag: "cp39-cp39"}
+        - {python: "3.10", tag: "cp310-cp310"}
 
     steps:
     - uses: actions/checkout@v1
-    # - name: Cache node modules
-    #   uses: actions/cache@v1.2.0
-    #   with:
-    #     path: node_modules
-    #     key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
+    - name: Cache node modules
+      uses: actions/cache@v1.2.0
+      with:
+        path: node_modules
+        key: node-rhel-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        echo $PYTHON_PREFIX
-        ls $PYTHON_PREFIX
-        echo $PYTHON_EXE
-        ls $PYTHON_EXE
-        echo $PYTHON_INCLUDE
-        ls $PYTHON_INCLUDE
         npm install
         npm run electron:package
       env:
         VERSION: "unknown"
         PLATFORM: "linux"
         PYTHON_PREFIX: /opt/python/${{ matrix.config.tag }}
-        PYTHON_EXE: /opt/python/${{ matrix.config.tag }}/bin/python
-        PYTHON_INCLUDE: /opt/python/${{ matrix.config.tag }}/include/python${{ matrix.config.dir }}
     - name: Notify slack
       if: failure() && github.ref == 'refs/heads/master'
       uses: 8398a7/action-slack@v2
@@ -71,7 +63,6 @@ jobs:
         key: node-win64-${{ matrix.config.python }}-${{ hashFiles('package-lock.json') }}
     - name: Compile
       run: |
-        npm config set cmake_PYTHON_VERSION ${{ matrix.config.python }}
         npm install
         npm run electron:package
       env:
