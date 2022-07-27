@@ -188,7 +188,8 @@ function startServer() {
   console.log("LibrariesPath ".concat(LibrariesPath));
   console.log(serverArguments);
   // server = spawn("python3", ["--version"]);
-  server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
+  // server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
+  server = spawn("python3", serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);
     if (data.indexOf("Starting factory") !== -1) {
