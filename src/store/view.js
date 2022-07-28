@@ -56,6 +56,7 @@ export default {
   actions: {
     pushCamera({ state, dispatch }) {
       const camera = state.view.getCamera();
+      console.log("camera",camera);
       dispatch(
         "network/call",
         {
