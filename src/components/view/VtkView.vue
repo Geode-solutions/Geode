@@ -57,6 +57,7 @@ export default {
       // const { width, height } = this.$refs.vtkViewJS.getBoundingClientRect();
       const x = e.position.x; // * width;
       const y = e.position.y; // * height;
+      console.log("x/y", x, y);
       this.call({
         command: "geode.mouse.menu",
         args: [x, y, this.selections],
