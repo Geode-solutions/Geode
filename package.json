@@ -37,12 +37,12 @@
     "electron-store": "^5.2.0",
     "roboto-fontface": "0.10.0",
     "uuid": "^8.3.2",
-    "vtk.js": "^16.7.3",
+    "vtk.js": "^19.8.0",
     "vue": "^2.6.12",
     "vue-router": "^3.5.1",
     "vuetify": "^2.4.5",
     "vuex": "^3.6.2",
-    "wslink": "^0.1.15"
+    "wslink": "^1.0.7"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.11",
