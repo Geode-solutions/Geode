@@ -18,6 +18,7 @@
 import { mapActions, mapGetters, mapState } from "vuex";
 import ContextualMenu from "../ContextualMenu";
 import ViewToolbar from "./ViewToolbar";
+import "vtk.js/Sources/Rendering/OpenGL/Profiles/Geometry";
 
 export default {
   name: "VtkView",
