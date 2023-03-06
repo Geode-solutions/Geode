@@ -35,6 +35,7 @@
     "@geode/geode-tools": "^1.1.33",
     "electron-log": "^4.2.4",
     "electron-store": "^5.2.0",
+    "hasbin": "^1.2.3",
     "roboto-fontface": "0.10.0",
     "uuid": "^8.3.2",
     "vtk.js": "^19.8.0",
