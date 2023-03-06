@@ -187,9 +187,19 @@ function startServer() {
   console.log("PythonPath ".concat(PythonPath));
   console.log("LibrariesPath ".concat(LibrariesPath));
   console.log(serverArguments);
-  const python_exe = which.sync("python3", { nothrow: true }) ?? which.sync("python", { nothrow: true })?? which.sync("py", { nothrow: true });
-  n.first.sync(["python3", "py3", "python", "py"]);
-  server = spawn(python_exe, serverArguments);
+  const python3_exe = which.sync("python3", { nothrow: true }) ;
+  const python_exe = which.sync("python", { nothrow: true }) ;
+  const py_exe = which.sync("py", { nothrow: true }) ;
+  let python_run;
+  if (python3_exe !== null){
+    python_run = python3_exe;
+  }
+  else if (python_exe !== null){
+    python_run = python_exe;
+  }else{
+    python_run = py_exe;
+  }
+  server = spawn(python_run, serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);
     if (data.indexOf("Starting factory") !== -1) {
