@@ -37,7 +37,7 @@
     "electron-store": "^5.2.0",
     "roboto-fontface": "0.10.0",
     "uuid": "^8.3.2",
-    "vtk.js": "^19.8.0",
+    "vtk.js": "^26.8.0",
     "vue": "^2.6.12",
     "vue-router": "^3.5.1",
     "vuetify": "^2.6.8",
