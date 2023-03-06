@@ -26,7 +26,7 @@ import path from "path";
 import { ipcMain } from "electron";
 import log from "electron-log";
 
-import hasbin from "hasbin";
+import which from "which";
 
 Object.assign(console, log.functions);
 console.log("======================");
@@ -187,7 +187,8 @@ function startServer() {
   console.log("PythonPath ".concat(PythonPath));
   console.log("LibrariesPath ".concat(LibrariesPath));
   console.log(serverArguments);
-  const python_exe = hasbin.first.sync(["python3", "py3", "python", "py"]);
+  const python_exe = which.sync("python3", { nothrow: true }) ?? which.sync("python", { nothrow: true })?? which.sync("py", { nothrow: true });
+  n.first.sync(["python3", "py3", "python", "py"]);
   server = spawn(python_exe, serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);
