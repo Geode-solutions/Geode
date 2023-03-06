@@ -26,6 +26,8 @@ import path from "path";
 import { ipcMain } from "electron";
 import log from "electron-log";
 
+import hasbin from "hasbin";
+
 Object.assign(console, log.functions);
 console.log("======================");
 
@@ -142,7 +144,6 @@ function startServer() {
     PythonPath.push(path.join(serverPath));
     vtkInstall = path.join(serverPath, "vtk");
   }
-  const vtkBin = path.join(vtkInstall, "bin");
   console.log("vtkInstall ".concat(vtkInstall));
 
   const readModule = (module, dir) => {
@@ -176,7 +177,6 @@ function startServer() {
   PythonPath.push(process.env.PYTHONPATH);
   process.env.PYTHONPATH = PythonPath.join(separator);
   if (isWindows) {
-    LibrariesPath.push(vtkBin);
     LibrariesPath.push(process.env.PATH);
     process.env.PATH = LibrariesPath.join(separator);
   } else {
@@ -187,9 +187,8 @@ function startServer() {
   console.log("PythonPath ".concat(PythonPath));
   console.log("LibrariesPath ".concat(LibrariesPath));
   console.log(serverArguments);
-  // server = spawn("python3", ["--version"]);
-  // server = spawn(path.join(vtkBin, "vtkpython"), serverArguments);
-  server = spawn("python3", serverArguments);
+  const python_exe = hasbin.first.sync(["python3", "py3", "python", "py"]);
+  server = spawn(python_exe, serverArguments);
   server.stdout.on("data", (data) => {
     console.log(`server output: ${data}`);
     if (data.indexOf("Starting factory") !== -1) {
